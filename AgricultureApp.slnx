@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="agricultureapp.client/agricultureapp.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="AgricultureApp.Server/AgricultureApp.Server.csproj" />
+</Solution>
