@@ -20,7 +20,10 @@ FROM with-node AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["AgricultureApp.Server/AgricultureApp.Server.csproj", "AgricultureApp.Server/"]
-COPY ["agricultureapp.client/agricultureapp.client.esproj", "agricultureapp.client/"]
+COPY ["AgricultureApp.Domain/AgricultureApp.Domain.csproj", "AgricultureApp.Domain/"]
+COPY ["AgricultureApp.Application/AgricultureApp.Application.csproj", "AgricultureApp.Application/"]
+COPY ["AgricultureApp.Infrastructure/AgricultureApp.Infrastructure.csproj", "AgricultureApp.Infrastructure/"]
+#COPY ["agricultureapp.client/agricultureapp.client.esproj", "agricultureapp.client/"]
 RUN dotnet restore "./AgricultureApp.Server/AgricultureApp.Server.csproj"
 COPY . .
 WORKDIR "/src/AgricultureApp.Server"

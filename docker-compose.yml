@@ -1,0 +1,35 @@
+services:
+  agricultureapp.server:
+    image: ${DOCKER_REGISTRY-}agricultureappserver
+    build:
+      context: .
+      dockerfile: AgricultureApp.Server/Dockerfile
+    networks:
+      - appnet
+
+  agricultureapp.client:
+    depends_on:
+      - agricultureapp.server
+    networks:
+      - appnet
+
+  nginx_proxy:
+    image: ${DOCKER_REGISTRY-}nginxproxy
+    depends_on:
+        - agricultureapp.server
+        - agricultureapp.client
+    build:
+        context: ./nginx-proxy
+        dockerfile: Dockerfile
+    ports:
+        - "80:80"
+        - "443:443"
+        - "8080:8080"
+        - "8081:8081"
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge
+

@@ -7,30 +7,31 @@ import path from 'path';
 import child_process from 'child_process';
 import { env } from 'process';
 
-const baseFolder =
-    env.APPDATA !== undefined && env.APPDATA !== ''
-        ? `${env.APPDATA}/ASP.NET/https`
-        : `${env.HOME}/.aspnet/https`;
+const isDocker = process.env.DOCKER_BUILD === 'true';
 
+const baseFolder = env.APPDATA !== undefined && env.APPDATA !== ''
+    ? `${env.APPDATA}/ASP.NET/https`
+    : `${env.HOME}/.aspnet/https`;
 const certificateName = "agricultureapp.client";
 const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
 const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
+if (!isDocker) {
+    if (!fs.existsSync(baseFolder)) {
+        fs.mkdirSync(baseFolder, { recursive: true });
+    }
 
-if (!fs.existsSync(baseFolder)) {
-    fs.mkdirSync(baseFolder, { recursive: true });
-}
-
-if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
-    if (0 !== child_process.spawnSync('dotnet', [
-        'dev-certs',
-        'https',
-        '--export-path',
-        certFilePath,
-        '--format',
-        'Pem',
-        '--no-password',
-    ], { stdio: 'inherit', }).status) {
-        throw new Error("Could not create certificate.");
+    if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
+        if (0 !== child_process.spawnSync('dotnet', [
+            'dev-certs',
+            'https',
+            '--export-path',
+            certFilePath,
+            '--format',
+            'Pem',
+            '--no-password',
+        ], { stdio: 'inherit', }).status) {
+            throw new Error("Could not create certificate.");
+        }
     }
 }
 
@@ -45,17 +46,17 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./src', import.meta.url))
         }
     },
-    server: {
+    server: isDocker ? {} : {
         proxy: {
-            '^/weatherforecast': {
+            '^/api': {
                 target,
                 secure: false
             }
         },
         port: parseInt(env.DEV_SERVER_PORT || '53185'),
-        https: {
+        https: !isDocker ? {
             key: fs.readFileSync(keyFilePath),
             cert: fs.readFileSync(certFilePath),
-        }
+        } : {}
     }
 })

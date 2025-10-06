@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AgricultureApp.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries =
@@ -14,6 +14,7 @@ namespace AgricultureApp.Server.Controllers
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+            Console.WriteLine("TEST");
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),

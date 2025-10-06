@@ -1,7 +1,13 @@
 <Solution>
+  <Project Path="AgricultureApp.Application/AgricultureApp.Application.csproj" />
   <Project Path="agricultureapp.client/agricultureapp.client.esproj">
     <Build />
     <Deploy />
   </Project>
+  <Project Path="AgricultureApp.Domain/AgricultureApp.Domain.csproj" />
+  <Project Path="AgricultureApp.Infrastructure/AgricultureApp.Infrastructure.csproj" />
   <Project Path="AgricultureApp.Server/AgricultureApp.Server.csproj" />
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
 </Solution>
