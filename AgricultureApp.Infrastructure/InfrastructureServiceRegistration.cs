@@ -1,4 +1,6 @@
-﻿using AgricultureApp.Infrastructure.Persistence;
+﻿using AgricultureApp.Application.Auth;
+using AgricultureApp.Infrastructure.Auth;
+using AgricultureApp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +14,8 @@ namespace AgricultureApp.Infrastructure
             var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             services.AddDbContext<AgricultureAppDbContext>(options =>
                 options.UseSqlServer(connectionString));
+
+            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }
