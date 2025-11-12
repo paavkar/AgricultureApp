@@ -90,6 +90,7 @@ namespace AgricultureApp.Infrastructure.Auth
                 };
             }
 
+            // This is to ensure the old refresh token cannot be used
             await cache.RemoveAsync(refreshToken);
             return await GenerateAuthResultAsync(user, tokenInfo.Platform);
         }
@@ -103,7 +104,7 @@ namespace AgricultureApp.Infrastructure.Auth
         private async Task<AuthResult> GenerateAuthResultAsync(ApplicationUser user, string platform)
         {
             JwtSecurityTokenHandler tokenHandler = new();
-            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Secret"]!);
+            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]!);
 
             List<Claim> claims =
             [
