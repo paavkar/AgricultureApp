@@ -21,13 +21,54 @@ namespace AgricultureApp.Server.Controllers
 
             if (string.IsNullOrEmpty(userId))
             {
-                return Unauthorized();
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = ["User authentication failed."]
+                    });
             }
 
             FarmResult result = await farmService.CreateAsync(farmDto, userId);
             return !result.Succeeded
                 ? BadRequest(result)
                 : CreatedAtAction(nameof(CreateFarm), result);
+        }
+
+        [HttpPatch("update/{farmId}")]
+        public async Task<IActionResult> UpdateFarm(string farmId, [FromBody] UpdateFarmDto farmDto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = ["User authentication failed."]
+                    });
+            }
+
+            if (farmDto.OwnerId != userId)
+            {
+                return Forbid();
+            }
+
+            if (farmDto.Id != farmId)
+            {
+                return BadRequest(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = ["Farm ID in the URL does not match the ID in the body."]
+                    });
+            }
+
+            FarmResult result = await farmService.UpdateAsync(farmDto, userId);
+            return !result.Succeeded
+                ? BadRequest(result)
+                : Ok(result);
         }
     }
 }

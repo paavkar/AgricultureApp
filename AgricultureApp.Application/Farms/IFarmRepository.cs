@@ -1,4 +1,5 @@
-﻿using AgricultureApp.Domain.Farms;
+﻿using AgricultureApp.Application.DTOs;
+using AgricultureApp.Domain.Farms;
 
 namespace AgricultureApp.Application.Farms
 {
@@ -7,5 +8,6 @@ namespace AgricultureApp.Application.Farms
         Task<int> AddAsync(Farm farm);
         Task<Farm?> GetByIdAsync(string farmId);
         Task<IEnumerable<Farm>?> GetByOwnerAsync(string ownerId);
+        Task<int> UpdateAsync(UpdateFarmDto farmDto, string userId);
     }
 }

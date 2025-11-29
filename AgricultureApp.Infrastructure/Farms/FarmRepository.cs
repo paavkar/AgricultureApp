@@ -1,4 +1,5 @@
-﻿using AgricultureApp.Application.Farms;
+﻿using AgricultureApp.Application.DTOs;
+using AgricultureApp.Application.Farms;
 using AgricultureApp.Domain.Farms;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -34,7 +35,45 @@ namespace AgricultureApp.Infrastructure.Farms
                 return 0;
             }
         }
-        public Task<Farm?> GetByIdAsync(string farmId) => throw new NotImplementedException();
+        public async Task<Farm?> GetByIdAsync(string farmId)
+        {
+            const string sql = """
+                SELECT *
+                FROM Farms
+                WHERE Id = @Id
+                """;
+            using SqlConnection connection = GetConnection();
+            return await connection.QueryFirstOrDefaultAsync<Farm>(sql, new { Id = farmId });
+        }
         public Task<IEnumerable<Farm>?> GetByOwnerAsync(string ownerId) => throw new NotImplementedException();
+
+        public async Task<int> UpdateAsync(UpdateFarmDto farmDto, string userId)
+        {
+            const string sql = """
+                UPDATE Farms
+                SET Name = @Name,
+                    OwnerId = @OwnerId,
+                    UpdatedAt = @UpdatedAt,
+                    UpdatedBy = @UpdatedBy
+                WHERE Id = @Id
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                return await connection.ExecuteAsync(sql, new
+                {
+                    farmDto.Name,
+                    farmDto.OwnerId,
+                    UpdatedAt = DateTimeOffset.UtcNow,
+                    UpdatedBy = userId,
+                    farmDto.Id
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error updating farm: {Method}", nameof(UpdateAsync));
+                return 0;
+            }
+        }
     }
 }
