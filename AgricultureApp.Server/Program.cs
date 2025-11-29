@@ -14,6 +14,11 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Logging.ClearProviders();
+builder.Logging
+       .AddConsole()
+       .AddDebug();
+
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
