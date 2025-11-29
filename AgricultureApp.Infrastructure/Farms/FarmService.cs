@@ -38,17 +38,6 @@ namespace AgricultureApp.Infrastructure.Farms
 
         public async Task<FarmResult> UpdateAsync(UpdateFarmDto farmDto, string userId)
         {
-            Farm? existingFarm = await farmRepository.GetByIdAsync(farmDto.Id);
-            if (existingFarm == null)
-            {
-                logger.LogWarning("Farm with ID {FarmId} not found for update.", farmDto.Id);
-                return new FarmResult
-                {
-                    Succeeded = false,
-                    Errors = ["Farm not found."]
-                };
-            }
-
             var rowsAffected = await farmRepository.UpdateAsync(farmDto, userId);
             if (rowsAffected == 0)
             {
@@ -66,6 +55,27 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 Succeeded = true,
                 UpdatedFarm = farmDto
+            };
+        }
+
+        public async Task<BaseResult> DeleteAsync(string farmId, string userId)
+        {
+            var rowsAffected = await farmRepository.DeleteAsync(farmId, userId);
+            if (rowsAffected == 0)
+            {
+                logger.LogError("Failed to delete farm {FarmId}.", farmId);
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["Failed to delete farm."]
+                };
+            }
+
+            logger.LogInformation("Successfully deleted farm {FarmId}.", farmId);
+
+            return new BaseResult
+            {
+                Succeeded = true
             };
         }
     }

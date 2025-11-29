@@ -19,7 +19,7 @@ namespace AgricultureApp.Server.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
 
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
             {
                 return Unauthorized(
                     new BaseResult
@@ -40,7 +40,7 @@ namespace AgricultureApp.Server.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
 
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrWhiteSpace(userId))
             {
                 return Unauthorized(
                     new BaseResult
@@ -69,6 +69,26 @@ namespace AgricultureApp.Server.Controllers
             return !result.Succeeded
                 ? BadRequest(result)
                 : Ok(result);
+        }
+
+        [HttpDelete("delete/{farmId}")]
+        public async Task<IActionResult> DeleteFarm(string farmId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = ["User authentication failed."]
+                    });
+            }
+
+            BaseResult result = await farmService.DeleteAsync(farmId, userId);
+            return !result.Succeeded
+                ? BadRequest(result)
+                : NoContent();
         }
     }
 }

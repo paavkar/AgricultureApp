@@ -9,5 +9,6 @@ namespace AgricultureApp.Application.Farms
         Task<FarmResult> GetByIdAsync(string farmId);
         Task<FarmListResult> GetByOwnerAsync(string ownerId);
         Task<FarmResult> UpdateAsync(UpdateFarmDto farmDto, string userId);
+        Task<BaseResult> DeleteAsync(string farmId, string userId);
     }
 }

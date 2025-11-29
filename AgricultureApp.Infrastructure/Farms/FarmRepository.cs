@@ -75,5 +75,24 @@ namespace AgricultureApp.Infrastructure.Farms
                 return 0;
             }
         }
+
+        public async Task<int> DeleteAsync(string farmId, string userId)
+        {
+            const string sql = """
+                DELETE FROM Farms
+                WHERE Id = @Id
+                AND OwnerId = @OwnerId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                return await connection.ExecuteAsync(sql, new { Id = farmId, OwnerId = userId });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error deleting farm: {Method}", nameof(DeleteAsync));
+                return 0;
+            }
+        }
     }
 }
