@@ -14,5 +14,6 @@ namespace AgricultureApp.Application.Farms
         Task<BaseResult> DeleteAsync(string farmId, string userId);
 
         Task<ManagerResult> AddManagerAsync(string userId, string farmId, string email);
+        Task<BaseResult> DeleteManagerAsync(string farmId, string userId, string managerId);
     }
 }

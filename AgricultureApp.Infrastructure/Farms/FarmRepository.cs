@@ -178,5 +178,29 @@ namespace AgricultureApp.Infrastructure.Farms
                 return 0;
             }
         }
+
+        public async Task<int> DeleteManagerAsync(string farmId, string userId)
+        {
+            const string sql = """
+                DELETE FROM FarmManagers
+                WHERE FarmId = @FarmId
+                AND UserId = @UserId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                return await connection.ExecuteAsync(sql,
+                    new
+                    {
+                        FarmId = farmId,
+                        UserId = userId
+                    });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error deleting farm manager: {Method}", nameof(DeleteManagerAsync));
+                return 0;
+            }
+        }
     }
 }

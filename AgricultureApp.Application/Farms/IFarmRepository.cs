@@ -13,5 +13,6 @@ namespace AgricultureApp.Application.Farms
         Task<int> DeleteAsync(string farmId, string userId);
 
         Task<int> AddManagerAsync(string farmId, string userId, DateTimeOffset assigned);
+        Task<int> DeleteManagerAsync(string farmId, string userId);
     }
 }

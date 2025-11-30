@@ -117,7 +117,7 @@ namespace AgricultureApp.Infrastructure.Farms
                 return new ManagerResult
                 {
                     Succeeded = false,
-                    Errors = ["Only the farm owner can add managers."]
+                    Errors = ["Only the farm owner can manage managers."]
                 };
             }
 
@@ -160,6 +160,42 @@ namespace AgricultureApp.Infrastructure.Farms
                         Email = user.Email!,
                         AssignedAt = assigned
                     }
+                };
+        }
+
+        public async Task<BaseResult> DeleteManagerAsync(string farmId, string userId, string managerId)
+        {
+            Farm? farm = await farmRepository.GetByIdAsync(farmId);
+
+            if (farm is null)
+            {
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["Farm not found."]
+                };
+            }
+
+            if (farm.OwnerId != userId)
+            {
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["Only the farm owner can manage managers."]
+                };
+            }
+
+            var result = await farmRepository.DeleteManagerAsync(farmId, managerId);
+
+            return result == 0
+                ? new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["Failed to remove manager with given ID from farm."]
+                }
+                : new BaseResult
+                {
+                    Succeeded = true
                 };
         }
     }

@@ -144,5 +144,35 @@ namespace AgricultureApp.Server.Controllers
                 ? BadRequest(result)
                 : Ok(result);
         }
+
+        [HttpDelete("remove-manager/{farmId}")]
+        public async Task<IActionResult> RemoveFarmManager(string farmId, [FromBody] string managerId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = ["User authentication failed."]
+                    });
+            }
+
+            if (string.IsNullOrWhiteSpace(managerId))
+            {
+                return BadRequest(new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["ID belonging to a manager must be provided."]
+                });
+            }
+
+            BaseResult result = await farmService.DeleteManagerAsync(farmId, userId, managerId);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : NoContent();
+        }
     }
 }
