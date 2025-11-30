@@ -110,10 +110,39 @@ namespace AgricultureApp.Server.Controllers
 
             BaseResult result = await farmService.DeleteAsync(farmId, userId);
 
-
             return !result.Succeeded
                 ? BadRequest(result)
                 : NoContent();
+        }
+
+        [HttpPost("add-manager/{farmId}")]
+        public async Task<IActionResult> AddFarmManager(string farmId, [FromBody] string email)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = ["User authentication failed."]
+                    });
+            }
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return BadRequest(new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["Email must be provided to be able to add manager."]
+                });
+            }
+
+            ManagerResult result = await farmService.AddManagerAsync(userId, farmId, email);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : Ok(result);
         }
     }
 }

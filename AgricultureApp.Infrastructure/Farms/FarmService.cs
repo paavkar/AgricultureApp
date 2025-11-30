@@ -2,13 +2,16 @@
 using AgricultureApp.Application.Farms;
 using AgricultureApp.Application.ResultModels;
 using AgricultureApp.Domain.Farms;
+using AgricultureApp.Domain.Users;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace AgricultureApp.Infrastructure.Farms
 {
     public class FarmService(
         ILogger<FarmService> logger,
-        IFarmRepository farmRepository) : IFarmService
+        IFarmRepository farmRepository,
+        UserManager<ApplicationUser> userManager) : IFarmService
     {
         public async Task<FarmResult<Farm>> CreateAsync(CreateFarmDto farmDto, string userId)
         {
@@ -94,6 +97,70 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 Succeeded = true
             };
+        }
+
+        public async Task<ManagerResult> AddManagerAsync(string userId, string farmId, string email)
+        {
+            Farm? farm = await farmRepository.GetByIdAsync(farmId);
+
+            if (farm is null)
+            {
+                return new ManagerResult
+                {
+                    Succeeded = false,
+                    Errors = ["Farm not found."]
+                };
+            }
+
+            if (farm.OwnerId != userId)
+            {
+                return new ManagerResult
+                {
+                    Succeeded = false,
+                    Errors = ["Only the farm owner can add managers."]
+                };
+            }
+
+            ApplicationUser? user = await userManager.FindByEmailAsync(email);
+
+            if (user is null)
+            {
+                return new ManagerResult
+                {
+                    Succeeded = false,
+                    Errors = ["User not found with given email."]
+                };
+            }
+
+            if (farm.OwnerId == user.Id)
+            {
+                return new ManagerResult
+                {
+                    Succeeded = false,
+                    Errors = ["The owner cannot be added as a manager."]
+                };
+            }
+
+            DateTimeOffset assigned = DateTimeOffset.UtcNow;
+            var rowsAffected = await farmRepository.AddManagerAsync(farmId, user.Id, assigned);
+
+            return rowsAffected == 0
+                ? new ManagerResult
+                {
+                    Succeeded = false,
+                    Errors = ["Failed to add manager to farm."]
+                }
+                : new ManagerResult
+                {
+                    Succeeded = true,
+                    FarmManager = new FarmManagerDto
+                    {
+                        UserId = user.Id,
+                        Name = user.Name,
+                        Email = user.Email!,
+                        AssignedAt = assigned
+                    }
+                };
         }
     }
 }

@@ -24,7 +24,8 @@ namespace AgricultureApp.Infrastructure.Auth
             ApplicationUser user = new()
             {
                 UserName = registerDto.UserName,
-                Email = registerDto.Email
+                Email = registerDto.Email,
+                Name = registerDto.Name
             };
 
             IdentityResult result = await userManager.CreateAsync(user, registerDto.Password);

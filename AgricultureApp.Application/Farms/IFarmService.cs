@@ -12,5 +12,7 @@ namespace AgricultureApp.Application.Farms
         Task<FarmListResult> GetByOwnerAsync(string ownerId);
         Task<FarmResult<Farm>> UpdateAsync(UpdateFarmDto farmDto, string userId);
         Task<BaseResult> DeleteAsync(string farmId, string userId);
+
+        Task<ManagerResult> AddManagerAsync(string userId, string farmId, string email);
     }
 }

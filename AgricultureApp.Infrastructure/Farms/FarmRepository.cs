@@ -154,5 +154,29 @@ namespace AgricultureApp.Infrastructure.Farms
                 return 0;
             }
         }
+
+        public async Task<int> AddManagerAsync(string farmId, string userId, DateTimeOffset assigned)
+        {
+            const string sql = """
+                INSERT INTO FarmManagers (FarmId, UserId, AssignedAt)
+                VALUES (@FarmId, @UserId, @AssignedAt)
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                return await connection.ExecuteAsync(sql,
+                    new
+                    {
+                        FarmId = farmId,
+                        UserId = userId,
+                        AssignedAt = assigned
+                    });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error adding farm manager: {Method}", nameof(AddManagerAsync));
+                return 0;
+            }
+        }
     }
 }
