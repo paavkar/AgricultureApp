@@ -14,14 +14,18 @@ namespace AgricultureApp.Server.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto registerDto)
         {
-            AuthResult result = await authService.RegisterAsync(registerDto);
+            var platform = Request.Headers["X-Client-Platform"].ToString();
+
+            AuthResult result = await authService.RegisterAsync(registerDto, platform);
             return !result.Succeeded ? BadRequest(result) : Ok(result);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
-            AuthResult result = await authService.LoginAsync(loginDto);
+            var platform = Request.Headers["X-Client-Platform"].ToString();
+
+            AuthResult result = await authService.LoginAsync(loginDto, platform);
             return !result.Succeeded ? Unauthorized(result) : Ok(result);
         }
 

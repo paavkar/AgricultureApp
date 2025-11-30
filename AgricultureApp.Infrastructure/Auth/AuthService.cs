@@ -19,12 +19,13 @@ namespace AgricultureApp.Infrastructure.Auth
     {
         private const int RefreshTokenExpiryDays = 7;
 
-        public async Task<AuthResult> RegisterAsync(RegisterDto registerDto)
+        public async Task<AuthResult> RegisterAsync(RegisterDto registerDto, string platform)
         {
             ApplicationUser user = new()
             {
                 UserName = registerDto.UserName,
-                Email = registerDto.Email
+                Email = registerDto.Email,
+                Name = registerDto.Name
             };
 
             IdentityResult result = await userManager.CreateAsync(user, registerDto.Password);
@@ -45,11 +46,11 @@ namespace AgricultureApp.Infrastructure.Auth
             }
             await userManager.AddToRoleAsync(user, "User");
 
-            // For registration, platform can be passed as a parameter or defaulted
-            return await GenerateAuthResultAsync(user, "default");
+            platform = string.IsNullOrWhiteSpace(platform) ? "default" : platform;
+            return await GenerateAuthResultAsync(user, platform);
         }
 
-        public async Task<AuthResult> LoginAsync(LoginDto loginDto)
+        public async Task<AuthResult> LoginAsync(LoginDto loginDto, string platform)
         {
             ApplicationUser? user = loginDto.EmailOrUsername.Contains('@')
                 ? await userManager.FindByEmailAsync(loginDto.EmailOrUsername)
@@ -64,8 +65,8 @@ namespace AgricultureApp.Infrastructure.Auth
                 };
             }
 
-            // Platform can be passed as a parameter or defaulted
-            return await GenerateAuthResultAsync(user, "default");
+            platform = string.IsNullOrWhiteSpace(platform) ? "default" : platform;
+            return await GenerateAuthResultAsync(user, platform);
         }
 
         public async Task<AuthResult> RefreshTokenAsync(string refreshToken)
@@ -108,22 +109,26 @@ namespace AgricultureApp.Infrastructure.Auth
 
             List<Claim> claims =
             [
-                new(ClaimTypes.NameIdentifier, user.Id),
-                new(ClaimTypes.Name, user.UserName!),
-                new(ClaimTypes.Email, user.Email!),
+                new(JwtRegisteredClaimNames.Sub, user.Id),
+                new(JwtRegisteredClaimNames.UniqueName, user.UserName!),
+                new(JwtRegisteredClaimNames.Email, user.Email!),
             ];
 
             IList<string> roles = await userManager.GetRolesAsync(user);
             foreach (var role in roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role));
+                claims.Add(new Claim("role", role));
             }
 
             SecurityTokenDescriptor tokenDescriptor = new()
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddMinutes(15),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature),
+                Issuer = configuration["Jwt:Issuer"],
+                Audience = configuration["Jwt:Audience"]
             };
 
             SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);

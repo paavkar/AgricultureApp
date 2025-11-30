@@ -1,5 +1,7 @@
 ﻿using AgricultureApp.Application.Auth;
+using AgricultureApp.Application.Farms;
 using AgricultureApp.Infrastructure.Auth;
+using AgricultureApp.Infrastructure.Farms;
 using AgricultureApp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +27,8 @@ namespace AgricultureApp.Infrastructure
                 options.UseSqlServer(connectionString));
 
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IFarmRepository, FarmRepository>();
+            services.AddScoped<IFarmService, FarmService>();
 
             return services;
         }

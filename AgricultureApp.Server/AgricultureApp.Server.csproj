@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -31,9 +31,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AgricultureApp.Application\AgricultureApp.Application.csproj" />
-    <ProjectReference Include="..\agricultureapp.client\agricultureapp.client.esproj">
+    <!--<ProjectReference Include="..\agricultureapp.client\agricultureapp.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
+    </ProjectReference>-->
     <ProjectReference Include="..\AgricultureApp.Infrastructure\AgricultureApp.Infrastructure.csproj" />
   </ItemGroup>
 
