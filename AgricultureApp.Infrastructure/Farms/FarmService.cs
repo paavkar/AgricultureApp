@@ -54,7 +54,7 @@ namespace AgricultureApp.Infrastructure.Farms
                     Farm = farm
                 };
         }
-        public Task<FarmListResult> GetByOwnerAsync(string ownerId) => throw new NotImplementedException();
+        public Task<FarmResult<FarmDto>> GetByOwnerAsync(string ownerId) => throw new NotImplementedException();
 
         public async Task<FarmResult<Farm>> UpdateAsync(UpdateFarmDto farmDto, string userId)
         {
@@ -197,6 +197,69 @@ namespace AgricultureApp.Infrastructure.Farms
                 {
                     Succeeded = true
                 };
+        }
+
+        public async Task<FieldResult> CreateFieldAsync(CreateFieldDto fieldDto, string userId)
+        {
+            FarmDto? farm = await farmRepository.GetFullInfoAsync(fieldDto.OwnerFarmId);
+
+            if (farm is null)
+            {
+                logger.LogError("Failed to create field. Owner farm {OwnerFarmId} not found.", fieldDto.OwnerFarmId);
+                return new FieldResult
+                {
+                    Succeeded = false,
+                    Errors = ["Owner farm not found."]
+                };
+            }
+
+            if (farm.OwnerId != userId && !farm.Managers.Any(m => m.UserId == userId))
+            {
+                logger.LogError("Failed to create field. User {UserId} is not authorized to add fields to owner farm {OwnerFarmId}.",
+                    userId, fieldDto.OwnerFarmId);
+                return new FieldResult
+                {
+                    Succeeded = false,
+                    Errors = ["The user is not authorized to add fields to the farm."]
+                };
+            }
+
+            if (farm.Fields.Any(f => f.Name.Equals(fieldDto.Name, StringComparison.OrdinalIgnoreCase)))
+            {
+                logger.LogError("Failed to create field. Field with name {FieldName} already exists in farm {OwnerFarmId}.",
+                    fieldDto.Name, fieldDto.OwnerFarmId);
+                return new FieldResult
+                {
+                    Succeeded = false,
+                    Errors = ["Field with the same name already exists in the owner farm."]
+                };
+            }
+
+            Field field = fieldDto.ToFieldModel();
+            var rowsAffected = await farmRepository.AddFieldAsync(field);
+
+            if (rowsAffected == 0)
+            {
+                logger.LogError("Failed to create field for farm {FarmId}", field.FarmId);
+                return new FieldResult
+                {
+                    Succeeded = false,
+                    Errors = ["Failed to create field."]
+                };
+            }
+            logger.LogInformation("Successfully created field {FieldName} - {FieldId} for farm {FarmId}",
+                field.Name, field.Id, field.FarmId);
+
+            FieldDto dto = field.ToDto();
+
+            dto.CurrentFarm = farm;
+            dto.OwnerFarm = farm;
+
+            return new FieldResult
+            {
+                Succeeded = true,
+                Field = dto
+            };
         }
     }
 }

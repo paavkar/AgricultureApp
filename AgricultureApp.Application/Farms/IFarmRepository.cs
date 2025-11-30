@@ -12,7 +12,11 @@ namespace AgricultureApp.Application.Farms
         Task<int> UpdateAsync(UpdateFarmDto farmDto, string userId);
         Task<int> DeleteAsync(string farmId, string userId);
 
+        // Farm managers
         Task<int> AddManagerAsync(string farmId, string userId, DateTimeOffset assigned);
         Task<int> DeleteManagerAsync(string farmId, string userId);
+
+        // Farm fields
+        Task<int> AddFieldAsync(Field field);
     }
 }

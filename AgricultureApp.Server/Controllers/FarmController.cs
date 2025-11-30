@@ -174,5 +174,36 @@ namespace AgricultureApp.Server.Controllers
                 ? BadRequest(result)
                 : NoContent();
         }
+
+        [HttpPost("add-field/{farmId}")]
+        public async Task<IActionResult> AddFieldToFarm(string farmId, [FromBody] CreateFieldDto fieldDto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = ["User authentication failed."]
+                    });
+            }
+
+            if (fieldDto.OwnerFarmId != farmId || fieldDto.FarmId != farmId ||
+                fieldDto.FarmId != fieldDto.OwnerFarmId)
+            {
+                return BadRequest(new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["Farm ID must match in the URL and in the body."]
+                });
+            }
+
+            FieldResult result = await farmService.CreateFieldAsync(fieldDto, userId);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : CreatedAtAction(nameof(AddFieldToFarm), result);
+        }
     }
 }

@@ -59,6 +59,8 @@ namespace AgricultureApp.Infrastructure.Farms
                 SELECT * FROM AspNetUsers u
                 INNER JOIN FarmManagers fm ON u.Id = fm.UserId
                 WHERE fm.FarmId = @Id;
+                SELECT * FROM Fields fld WHERE fld.FarmId = @Id;
+                SELECT * FROM Fields fld WHERE fld.OwnerFarmId = @Id;
                 """;
             using SqlConnection connection = GetConnection();
             try
@@ -95,6 +97,12 @@ namespace AgricultureApp.Infrastructure.Farms
                         AssignedAt = m.AssignedAt
                     };
                 });
+
+                IEnumerable<Field> fields = await multi.ReadAsync<Field>();
+                IEnumerable<Field> ownedFields = await multi.ReadAsync<Field>();
+
+                farmDto.Fields = fields;
+                farmDto.OwnedFields = ownedFields;
 
                 return farmDto;
             }
@@ -199,6 +207,24 @@ namespace AgricultureApp.Infrastructure.Farms
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error deleting farm manager: {Method}", nameof(DeleteManagerAsync));
+                return 0;
+            }
+        }
+
+        public async Task<int> AddFieldAsync(Field field)
+        {
+            const string sql = """
+                INSERT INTO Fields (Id, Name, Size, SizeUnit, Status, SoilType, FarmId, OwnerFarmId)
+                VALUES (@Id, @Name, @Size, @SizeUnit, @Status, @SoilType, @FarmId, @OwnerFarmId)
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                return await connection.ExecuteAsync(sql, field);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error inserting field: {Method}", nameof(AddFieldAsync));
                 return 0;
             }
         }

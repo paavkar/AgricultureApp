@@ -6,5 +6,6 @@ namespace AgricultureApp.Application.ResultModels
     {
         public TFarm? Farm { get; set; }
         public UpdateFarmDto? UpdatedFarm { get; set; }
+        public IEnumerable<TFarm>? Farms { get; set; }
     }
 }
