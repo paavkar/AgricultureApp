@@ -10,7 +10,7 @@ namespace AgricultureApp.Infrastructure.Farms
         ILogger<FarmService> logger,
         IFarmRepository farmRepository) : IFarmService
     {
-        public async Task<FarmResult> CreateAsync(CreateFarmDto farmDto, string userId)
+        public async Task<FarmResult<Farm>> CreateAsync(CreateFarmDto farmDto, string userId)
         {
             Farm farm = farmDto.ToFarmModel(farmDto, userId);
             var rownsAffected = await farmRepository.AddAsync(farm);
@@ -18,7 +18,7 @@ namespace AgricultureApp.Infrastructure.Farms
             if (rownsAffected == 0)
             {
                 logger.LogError("Failed to create farm for owner {OwnerId}", userId);
-                return new FarmResult
+                return new FarmResult<Farm>
                 {
                     Succeeded = false,
                     Errors = ["Failed to create farm."]
@@ -27,22 +27,39 @@ namespace AgricultureApp.Infrastructure.Farms
 
             logger.LogInformation("Successfully created farm {FarmName} - {FarmId} for owner {OwnerId}",
                 farm.Name, farm.Id, farm.OwnerId);
-            return new FarmResult
+            return new FarmResult<Farm>
             {
                 Succeeded = true,
                 Farm = farm
             };
         }
-        public Task<FarmResult> GetByIdAsync(string farmId) => throw new NotImplementedException();
+        public Task<FarmResult<Farm>> GetByIdAsync(string farmId) => throw new NotImplementedException();
+
+        public async Task<FarmResult<FarmDto>> GetFullInfoAsync(string farmId)
+        {
+            FarmDto? farm = await farmRepository.GetFullInfoAsync(farmId);
+
+            return farm is null
+                ? new FarmResult<FarmDto>
+                {
+                    Succeeded = false,
+                    Errors = ["Farm not found."]
+                }
+                : new FarmResult<FarmDto>
+                {
+                    Succeeded = true,
+                    Farm = farm
+                };
+        }
         public Task<FarmListResult> GetByOwnerAsync(string ownerId) => throw new NotImplementedException();
 
-        public async Task<FarmResult> UpdateAsync(UpdateFarmDto farmDto, string userId)
+        public async Task<FarmResult<Farm>> UpdateAsync(UpdateFarmDto farmDto, string userId)
         {
             var rowsAffected = await farmRepository.UpdateAsync(farmDto, userId);
             if (rowsAffected == 0)
             {
                 logger.LogError("Failed to update farm {FarmId}.", farmDto.Id);
-                return new FarmResult
+                return new FarmResult<Farm>
                 {
                     Succeeded = false,
                     Errors = ["Failed to update farm."]
@@ -51,7 +68,7 @@ namespace AgricultureApp.Infrastructure.Farms
 
             logger.LogInformation("Successfully updated farm {FarmId}. Update by {UserId}.", farmDto.Id, userId);
 
-            return new FarmResult
+            return new FarmResult<Farm>
             {
                 Succeeded = true,
                 UpdatedFarm = farmDto

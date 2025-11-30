@@ -2,19 +2,25 @@
 
 namespace AgricultureApp.Domain.Farms
 {
-    public class Farm
+    public class Farm : FarmBase
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public string Location { get; set; }
-        public string OwnerId { get; set; }
-
-        public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset? UpdatedAt { get; set; }
-        public string CreatedBy { get; set; }
-        public string? UpdatedBy { get; set; }
-
         public ICollection<FarmManager> Managers { get; set; } = [];
         public ApplicationUser Owner { get; set; }
+
+        public FarmDto ToDto()
+        {
+            return new FarmDto
+            {
+                Id = this.Id,
+                Name = this.Name,
+                Location = this.Location,
+                OwnerId = this.OwnerId,
+                CreatedAt = this.CreatedAt,
+                UpdatedAt = this.UpdatedAt,
+                CreatedBy = this.CreatedBy,
+                UpdatedBy = this.UpdatedBy,
+                Managers = []
+            };
+        }
     }
 }

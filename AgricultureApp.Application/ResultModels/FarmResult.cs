@@ -1,11 +1,10 @@
 ﻿using AgricultureApp.Application.DTOs;
-using AgricultureApp.Domain.Farms;
 
 namespace AgricultureApp.Application.ResultModels
 {
-    public class FarmResult : BaseResult
+    public class FarmResult<TFarm> : BaseResult
     {
-        public Farm? Farm { get; set; }
+        public TFarm? Farm { get; set; }
         public UpdateFarmDto? UpdatedFarm { get; set; }
     }
 }

@@ -1,14 +1,16 @@
 ﻿using AgricultureApp.Application.DTOs;
 using AgricultureApp.Application.ResultModels;
+using AgricultureApp.Domain.Farms;
 
 namespace AgricultureApp.Application.Farms
 {
     public interface IFarmService
     {
-        Task<FarmResult> CreateAsync(CreateFarmDto farmDto, string userId);
-        Task<FarmResult> GetByIdAsync(string farmId);
+        Task<FarmResult<Farm>> CreateAsync(CreateFarmDto farmDto, string userId);
+        Task<FarmResult<Farm>> GetByIdAsync(string farmId);
+        Task<FarmResult<FarmDto>> GetFullInfoAsync(string farmId);
         Task<FarmListResult> GetByOwnerAsync(string ownerId);
-        Task<FarmResult> UpdateAsync(UpdateFarmDto farmDto, string userId);
+        Task<FarmResult<Farm>> UpdateAsync(UpdateFarmDto farmDto, string userId);
         Task<BaseResult> DeleteAsync(string farmId, string userId);
     }
 }
