@@ -228,5 +228,26 @@ namespace AgricultureApp.Infrastructure.Farms
                 return 0;
             }
         }
+
+        public async Task<bool> CheckFieldExists(string fieldName, string farmId)
+        {
+            const string sql = """
+                SELECT COUNT(1)
+                FROM Fields
+                WHERE Name = @Name
+                AND FarmId = @FarmId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                var count = await connection.ExecuteScalarAsync<int>(sql, new { Name = fieldName, FarmId = farmId });
+                return count > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error checking field existence: {Method}", nameof(CheckFieldExists));
+                return false;
+            }
+        }
     }
 }

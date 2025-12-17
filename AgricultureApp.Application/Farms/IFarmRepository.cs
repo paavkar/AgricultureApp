@@ -18,5 +18,6 @@ namespace AgricultureApp.Application.Farms
 
         // Farm fields
         Task<int> AddFieldAsync(Field field);
+        Task<bool> CheckFieldExists(string fieldName, string farmId);
     }
 }

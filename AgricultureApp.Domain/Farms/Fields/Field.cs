@@ -36,10 +36,10 @@
     {
         Sandy = 0,
         Clay,
-        Silt,
-        Peat,
-        Chalk,
-        Loam,
+        Silty,
+        Peaty,
+        Chalky,
+        Loamy,
         Other,
         Generic
     }
