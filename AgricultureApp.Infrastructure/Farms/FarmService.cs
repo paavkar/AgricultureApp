@@ -235,19 +235,6 @@ namespace AgricultureApp.Infrastructure.Farms
                 };
             }
 
-            var fieldExists = await farmRepository.CheckFieldExists(fieldDto.Name, fieldDto.OwnerFarmId);
-
-            if (fieldExists)
-            {
-                logger.LogError("Failed to create field. Field with name {FieldName} already exists in farm {OwnerFarmId}.",
-                    fieldDto.Name, fieldDto.OwnerFarmId);
-                return new FieldResult
-                {
-                    Succeeded = false,
-                    Errors = ["Field with the same name already exists in the owner farm."]
-                };
-            }
-
             Field field = fieldDto.ToFieldModel();
             var rowsAffected = await farmRepository.AddFieldAsync(field);
 
