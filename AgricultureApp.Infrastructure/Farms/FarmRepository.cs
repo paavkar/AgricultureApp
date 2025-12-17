@@ -249,5 +249,70 @@ namespace AgricultureApp.Infrastructure.Farms
                 return false;
             }
         }
+
+        public async Task<bool> UpdateFieldCurrentFarmAsync(string fieldId, string farmId)
+        {
+            const string sql = """
+                UPDATE Fields
+                SET FarmId = @FarmId
+                WHERE Id = @FieldId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                var rowsAffected = await connection.ExecuteAsync(sql, new { FarmId = farmId, FieldId = fieldId });
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error updating field current farm: {Method}", nameof(UpdateFieldCurrentFarmAsync));
+                return false;
+            }
+        }
+
+        public async Task<bool> RevertFieldCurrentFarmAsync(string fieldId)
+        {
+            const string sql = """
+                UPDATE Fields
+                SET FarmId = OwnerFarmId
+                WHERE Id = @FieldId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                var rowsAffected = await connection.ExecuteAsync(sql, new { FieldId = fieldId });
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error updating field current farm: {Method}", nameof(UpdateFieldCurrentFarmAsync));
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateFieldAsync(UpdateFieldDto fieldDto)
+        {
+            const string sql = """
+                UPDATE Fields
+                SET Name = @Name,
+                    Size = @Size,
+                    SizeUnit = @SizeUnit,
+                    Status = @Status,
+                    SoilType = @SoilType
+                WHERE Id = @FieldId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                var rowsAffected = await connection.ExecuteAsync(sql, fieldDto);
+
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error updating field info: {Method}", nameof(UpdateFieldAsync));
+                return false;
+            }
+        }
     }
 }

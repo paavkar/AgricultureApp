@@ -224,7 +224,7 @@ namespace AgricultureApp.Infrastructure.Farms
                 };
             }
 
-            if (farm.Fields.Any(f => f.Name.Equals(fieldDto.Name, StringComparison.OrdinalIgnoreCase)))
+            if (farm.OwnedFields.Any(f => f.Name.Equals(fieldDto.Name, StringComparison.OrdinalIgnoreCase)))
             {
                 logger.LogError("Failed to create field. Field with name {FieldName} already exists in farm {OwnerFarmId}.",
                     fieldDto.Name, fieldDto.OwnerFarmId);
@@ -259,6 +259,176 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 Succeeded = true,
                 Field = dto
+            };
+        }
+
+        public async Task<BaseResult> UpdateFieldCurrentFarmAsync(
+            string fieldId, UpdateFieldFarmDto update, string userId)
+        {
+            FarmDto? farm = await farmRepository.GetFullInfoAsync(update.OwnerFarmId);
+
+            if (farm is null)
+            {
+                logger.LogError("Owner farm {OwnerFarmId} not found.", update.OwnerFarmId);
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["Owner farm not found."]
+                };
+            }
+
+            if (farm.OwnerId != userId && !farm.Managers.Any(m => m.UserId == userId))
+            {
+                logger.LogError("User {UserId} is not authorized to update fields in owner farm {OwnerFarmId}.",
+                    userId, update.OwnerFarmId);
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["The user is not authorized to update fields in the owner farm."]
+                };
+            }
+
+            var updated = await farmRepository.UpdateFieldCurrentFarmAsync(fieldId, update.FarmId);
+
+            if (!updated)
+            {
+                logger.LogError("Failed to update current farm for field {FieldId} to farm {FarmId}.", fieldId, update.FarmId);
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["Failed to update field's current farm."]
+                };
+            }
+
+            logger.LogInformation("Successfully updated current farm for field {FieldId} to farm {FarmId}.", fieldId, update.FarmId);
+
+            return new BaseResult
+            {
+                Succeeded = true
+            };
+        }
+
+        public async Task<BaseResult> RevertFieldCurrentFarmAsync(
+            string fieldId, UpdateFieldFarmDto update, string userId)
+        {
+            FarmDto? ownerFarm = await farmRepository.GetFullInfoAsync(update.OwnerFarmId);
+
+            if (ownerFarm is null)
+            {
+                logger.LogError("Owner farm {OwnerFarmId} not found.", update.OwnerFarmId);
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["Owner farm not found."]
+                };
+            }
+
+            if (ownerFarm.OwnerId != userId && !ownerFarm.Managers.Any(m => m.UserId == userId))
+            {
+                FarmDto? farm = await farmRepository.GetFullInfoAsync(update.FarmId);
+
+                if (farm is null)
+                {
+                    logger.LogError("Managing farm {FarmId} not found.", update.FarmId);
+                    return new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = ["Managing farm not found."]
+                    };
+                }
+
+                if (farm.OwnerId != userId && !farm.Managers.Any(m => m.UserId == userId))
+                {
+                    logger.LogError("User {UserId} is not authorized to revert field management {FieldId}.",
+                    userId, fieldId);
+                    return new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = ["The user is not authorized to revert managing relationship of given field."]
+                    };
+                }
+            }
+
+            var updated = await farmRepository.RevertFieldCurrentFarmAsync(fieldId);
+
+            if (!updated)
+            {
+                logger.LogError("Failed to revert the field's {FieldId} current farm to owner farm.", fieldId);
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["Failed to update field's current farm."]
+                };
+            }
+
+            logger.LogInformation("Successfully reverted the field's {FieldId} current farm to owner farm.", fieldId);
+
+            return new BaseResult
+            {
+                Succeeded = true
+            };
+        }
+
+        public async Task<BaseResult> UpdateFieldAsync(UpdateFieldDto fieldDto, string userId)
+        {
+            FarmDto? farm = await farmRepository.GetFullInfoAsync(fieldDto.OwnerFarmId);
+
+            if (farm is null)
+            {
+                logger.LogError("Owner farm {OwnerFarmId} not found.", fieldDto.OwnerFarmId);
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["Owner farm not found."]
+                };
+            }
+
+            if (farm.OwnerId != userId && !farm.Managers.Any(m => m.UserId == userId))
+            {
+                logger.LogError("User {UserId} is not authorized to update fields in owner farm {OwnerFarmId}.",
+                    userId, fieldDto.OwnerFarmId);
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["The user is not authorized to update fields in the owner farm."]
+                };
+            }
+
+            if (fieldDto.Size < 0)
+            {
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["Size must be more than 0."]
+                };
+            }
+
+            if (farm.OwnedFields.Any(f => f.Name.Equals(fieldDto.Name, StringComparison.OrdinalIgnoreCase)))
+            {
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["Field must have a unique name within a farm."]
+                };
+            }
+
+            var updated = await farmRepository.UpdateFieldAsync(fieldDto);
+
+            if (!updated)
+            {
+                logger.LogError("Failed to update field {FieldId}.", fieldDto.FieldId);
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = ["Failed to update field."]
+                };
+            }
+
+            logger.LogInformation("Successfully updated field {FieldId}. Update by {UserId}.", fieldDto.FieldId, userId);
+
+            return new BaseResult
+            {
+                Succeeded = true
             };
         }
     }
