@@ -4,7 +4,9 @@ using AgricultureApp.Infrastructure.Persistence;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -18,6 +20,28 @@ builder.Logging.ClearProviders();
 builder.Logging
        .AddConsole()
        .AddDebug();
+
+List<CultureInfo> supportedCultures = new[] { "en-GB", "fi-FI" }
+    .Select(c => new CultureInfo(c))
+    .ToList();
+
+builder.Services.AddLocalization(options =>
+{
+    options.ResourcesPath = "";
+});
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture("en-GB");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+
+    options.RequestCultureProviders =
+    [
+        new AcceptLanguageHeaderRequestCultureProvider()
+    ];
+});
+
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -77,6 +101,8 @@ builder.Services.AddCors(options =>
 });
 
 WebApplication app = builder.Build();
+
+app.UseRequestLocalization();
 
 app.UseDefaultFiles();
 app.MapStaticAssets();

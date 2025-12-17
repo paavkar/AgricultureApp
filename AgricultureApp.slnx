@@ -7,6 +7,7 @@
   <Project Path="AgricultureApp.Domain/AgricultureApp.Domain.csproj" />
   <Project Path="AgricultureApp.Infrastructure/AgricultureApp.Infrastructure.csproj" />
   <Project Path="AgricultureApp.Server/AgricultureApp.Server.csproj" />
+  <Project Path="AgricultureApp.SharedKernel/AgricultureApp.SharedKernel.csproj" Id="1aef63ac-99b0-4cd4-a420-9a0f27b04b55" />
   <Project Path="docker-compose.dcproj">
     <Build />
   </Project>

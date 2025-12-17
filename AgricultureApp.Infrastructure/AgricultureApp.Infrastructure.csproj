@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AgricultureApp.Application\AgricultureApp.Application.csproj" />
     <ProjectReference Include="..\AgricultureApp.Domain\AgricultureApp.Domain.csproj" />
+    <ProjectReference Include="..\AgricultureApp.SharedKernel\AgricultureApp.SharedKernel.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +24,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="10.0.1" />
   </ItemGroup>
 
 </Project>

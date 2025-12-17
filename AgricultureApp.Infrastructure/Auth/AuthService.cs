@@ -2,9 +2,11 @@
 using AgricultureApp.Application.DTOs;
 using AgricultureApp.Application.ResultModels;
 using AgricultureApp.Domain.Users;
+using AgricultureApp.SharedKernel.Localization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -15,7 +17,8 @@ namespace AgricultureApp.Infrastructure.Auth
 {
     public class AuthService(HybridCache cache, UserManager<ApplicationUser> userManager,
         IConfiguration configuration,
-        RoleManager<IdentityRole> roleManager) : IAuthService
+        RoleManager<IdentityRole> roleManager,
+        IStringLocalizer<AgricultureAppLoc> localizer) : IAuthService
     {
         private const int RefreshTokenExpiryDays = 7;
 
@@ -61,7 +64,7 @@ namespace AgricultureApp.Infrastructure.Auth
                 return new AuthResult
                 {
                     Succeeded = false,
-                    Errors = ["Invalid login attempt."]
+                    Errors = [localizer["InvalidLogin"]]
                 };
             }
 
@@ -77,7 +80,7 @@ namespace AgricultureApp.Infrastructure.Auth
                 return new AuthResult
                 {
                     Succeeded = false,
-                    Errors = ["Invalid or expired refresh token."]
+                    Errors = [localizer["InvalidRefresh"]]
                 };
             }
 
@@ -87,7 +90,7 @@ namespace AgricultureApp.Infrastructure.Auth
                 return new AuthResult
                 {
                     Succeeded = false,
-                    Errors = ["User not found."]
+                    Errors = [localizer["UserNotFound"]]
                 };
             }
 
