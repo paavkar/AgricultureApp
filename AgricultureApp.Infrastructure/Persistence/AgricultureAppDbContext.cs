@@ -9,6 +9,8 @@ namespace AgricultureApp.Infrastructure.Persistence
     {
         public DbSet<Farm> Farms { get; set; }
         public DbSet<FarmManager> FarmManagers { get; set; }
+        public DbSet<Field> Fields { get; set; }
+        public DbSet<FieldCultivation> FieldCultivations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -35,6 +37,29 @@ namespace AgricultureApp.Infrastructure.Persistence
                 .HasForeignKey(fm => fm.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<Field>()
+                .HasOne(f => f.CurrentFarm)
+                .WithMany(farm => farm.Fields)
+                .HasForeignKey(f => f.FarmId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Field>()
+                .HasOne(f => f.OwnerFarm)
+                .WithMany(farm => farm.OwnedFields)
+                .HasForeignKey(f => f.OwnerFarmId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<FieldCultivation>()
+                .HasOne(fc => fc.Field)
+                .WithMany(f => f.Cultivations)
+                .HasForeignKey(fc => fc.FieldId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<FieldCultivation>()
+                .HasOne(fc => fc.CultivatedFarm)
+                .WithMany()
+                .HasForeignKey(fc => fc.FarmId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -59,6 +59,8 @@ namespace AgricultureApp.Infrastructure.Farms
                 SELECT * FROM AspNetUsers u
                 INNER JOIN FarmManagers fm ON u.Id = fm.UserId
                 WHERE fm.FarmId = @Id;
+                SELECT * FROM Fields fld WHERE fld.FarmId = @Id;
+                SELECT * FROM Fields fld WHERE fld.OwnerFarmId = @Id;
                 """;
             using SqlConnection connection = GetConnection();
             try
@@ -95,6 +97,12 @@ namespace AgricultureApp.Infrastructure.Farms
                         AssignedAt = m.AssignedAt
                     };
                 });
+
+                IEnumerable<Field> fields = await multi.ReadAsync<Field>();
+                IEnumerable<Field> ownedFields = await multi.ReadAsync<Field>();
+
+                farmDto.Fields = fields;
+                farmDto.OwnedFields = ownedFields;
 
                 return farmDto;
             }
@@ -200,6 +208,110 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 logger.LogError(ex, "Error deleting farm manager: {Method}", nameof(DeleteManagerAsync));
                 return 0;
+            }
+        }
+
+        public async Task<int> AddFieldAsync(Field field)
+        {
+            const string sql = """
+                INSERT INTO Fields (Id, Name, Size, SizeUnit, Status, SoilType, FarmId, OwnerFarmId)
+                VALUES (@Id, @Name, @Size, @SizeUnit, @Status, @SoilType, @FarmId, @OwnerFarmId)
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                return await connection.ExecuteAsync(sql, field);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error inserting field: {Method}", nameof(AddFieldAsync));
+                return 0;
+            }
+        }
+
+        public async Task<bool> CheckFieldExists(string fieldName, string farmId)
+        {
+            const string sql = """
+                SELECT COUNT(1)
+                FROM Fields
+                WHERE Name = @Name
+                AND FarmId = @FarmId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                var count = await connection.ExecuteScalarAsync<int>(sql, new { Name = fieldName, FarmId = farmId });
+                return count > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error checking field existence: {Method}", nameof(CheckFieldExists));
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateFieldCurrentFarmAsync(string fieldId, string farmId)
+        {
+            const string sql = """
+                UPDATE Fields
+                SET FarmId = @FarmId
+                WHERE Id = @FieldId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                var rowsAffected = await connection.ExecuteAsync(sql, new { FarmId = farmId, FieldId = fieldId });
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error updating field current farm: {Method}", nameof(UpdateFieldCurrentFarmAsync));
+                return false;
+            }
+        }
+
+        public async Task<bool> RevertFieldCurrentFarmAsync(string fieldId)
+        {
+            const string sql = """
+                UPDATE Fields
+                SET FarmId = OwnerFarmId
+                WHERE Id = @FieldId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                var rowsAffected = await connection.ExecuteAsync(sql, new { FieldId = fieldId });
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error updating field current farm: {Method}", nameof(UpdateFieldCurrentFarmAsync));
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateFieldAsync(UpdateFieldDto fieldDto)
+        {
+            const string sql = """
+                UPDATE Fields
+                SET Name = @Name,
+                    Size = @Size,
+                    SizeUnit = @SizeUnit,
+                    Status = @Status,
+                    SoilType = @SoilType
+                WHERE Id = @FieldId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                var rowsAffected = await connection.ExecuteAsync(sql, fieldDto);
+
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error updating field info: {Method}", nameof(UpdateFieldAsync));
+                return false;
             }
         }
     }
