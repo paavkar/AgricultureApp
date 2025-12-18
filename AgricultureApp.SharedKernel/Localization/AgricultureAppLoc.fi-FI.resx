@@ -121,7 +121,7 @@
     <value>Viljelevää maatilaa ei löytynyt.</value>
   </data>
   <data name="CultivatingFarmNotAuthorizedFC" xml:space="preserve">
-    <value>Käyttäjää ei ole sallittu lisäämään viljelyjä pellolle tai tarkastelemaan niitä.</value>
+    <value>Käyttäjää ei ole sallittu suorittamaan toimintoa peltoihin liittyen tällä maatilalla.</value>
   </data>
   <data name="CultivationFailed" xml:space="preserve">
     <value>Pellon viljelyn lisääminen epäonnistui.</value>
@@ -150,7 +150,28 @@
   <data name="UserNotFound" xml:space="preserve">
     <value>Käyttäjää ei löytynyt.</value>
   </data>
-  <data name="CultivatingFieldNotFound" xml:space="preserve">
+  <data name="CultivatedFieldNotFound" xml:space="preserve">
     <value>Maatila ei omista peltoa kylväjän roolissa.</value>
+  </data>
+  <data name="FieldHarvestUpdateFailed" xml:space="preserve">
+    <value>Pellon sadonkorjuun päivittäminen epäonnistui.</value>
+  </data>
+  <data name="FieldCultivationStatusUpdateFailed" xml:space="preserve">
+    <value>Pellon viljelystatuksen päivittäminen epäonnistui.</value>
+  </data>
+  <data name="CultivationIdNotMatchingURL" xml:space="preserve">
+    <value>Annetun viljelyn ID:n täytyy olla sama URL:n ID:n kanssa.</value>
+  </data>
+  <data name="FieldCultivationDeleteFailed" xml:space="preserve">
+    <value>Pellon viljelyn poistaminen epäonnistui.</value>
+  </data>
+  <data name="CultivationNotFound" xml:space="preserve">
+    <value>Pellon viljelyä ei löytynyt annetulla ID:llä.</value>
+  </data>
+  <data name="HarvestDateBeforePlantingDate" xml:space="preserve">
+    <value>Sadonkorjuun päivämäärä ei voi olla sama tai aikaisemmin, kuin viljelyn päivämäärä.</value>
+  </data>
+  <data name="ActualYieldNegative" xml:space="preserve">
+    <value>Sadonkorjuun tuotto ei voi olla negatiivinen.</value>
   </data>
 </root>

@@ -121,7 +121,7 @@
     <value>Cultivating farm not found.</value>
   </data>
   <data name="CultivatingFarmNotAuthorizedFC" xml:space="preserve">
-    <value>The user is not authorized to add or view cultivations to the field on the farm.</value>
+    <value>The user is not authorized to perform this action on cultivations on the farm.</value>
   </data>
   <data name="CultivationFailed" xml:space="preserve">
     <value>Failed to add field cultivation.</value>
@@ -150,7 +150,28 @@
   <data name="UserNotFound" xml:space="preserve">
     <value>User not found.</value>
   </data>
-  <data name="CultivatingFieldNotFound" xml:space="preserve">
+  <data name="CultivatedFieldNotFound" xml:space="preserve">
     <value>The farm is not currently cultivating the given field.</value>
+  </data>
+  <data name="FieldHarvestUpdateFailed" xml:space="preserve">
+    <value>Update for field harvest failed.</value>
+  </data>
+  <data name="FieldCultivationStatusUpdateFailed" xml:space="preserve">
+    <value>Updating the cultivation status of the field failed.</value>
+  </data>
+  <data name="CultivationIdNotMatchingURL" xml:space="preserve">
+    <value>The given cultivation ID must match the on in the URL.</value>
+  </data>
+  <data name="FieldCultivationDeleteFailed" xml:space="preserve">
+    <value>Deleting the field cultivation failed.</value>
+  </data>
+  <data name="CultivationNotFound" xml:space="preserve">
+    <value>No field cultivation found with given ID.</value>
+  </data>
+  <data name="HarvestDateBeforePlantingDate" xml:space="preserve">
+    <value>Harvest date cannot be the same or before the planting date.</value>
+  </data>
+  <data name="ActualYieldNegative" xml:space="preserve">
+    <value>Yield cannot be negative.</value>
   </data>
 </root>

@@ -27,5 +27,9 @@ namespace AgricultureApp.Application.Farms
         // Field cultivations
         Task<int> AddFieldCultivationAsync(FieldCultivation cultivation);
         Task<IEnumerable<FieldCultivationDto>> GetFieldCultivationsAsync(string fieldId);
+        Task<FieldCultivationDto?> GetFieldCultivationByIdAsync(string cultivationId);
+        Task<bool> UpdateFieldHarvestedAsync(FieldHarvestDto harvestDto);
+        Task<bool> UpdateFieldCultivationStatusAsync(string cultivationId, CultivationStatus status);
+        Task<bool> DeleteFieldCultivationAsync(string cultivationId);
     }
 }

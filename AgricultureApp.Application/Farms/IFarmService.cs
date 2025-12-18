@@ -27,5 +27,9 @@ namespace AgricultureApp.Application.Farms
         // Field cultivations
         Task<FieldCultivationResult> AddFieldCultivationAsync(CreateFieldCultivationDto cultivationDto, string userId);
         Task<FieldCultivationResult> GetFieldCultivationsAsync(string fieldId, string farmId, string userId);
+        Task<BaseResult> SetFieldHarvestedAsync(FieldHarvestDto harvestDto, string userId);
+        Task<BaseResult> UpdateFieldCultivationStatusAsync(UpdateFieldCultivationStatusDto update, string userId);
+        Task<BaseResult> DeleteFieldCultivationAsync(DeleteFieldCultivationDto deleteItems, string userId);
+
     }
 }

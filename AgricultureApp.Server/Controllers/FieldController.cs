@@ -208,5 +208,101 @@ namespace AgricultureApp.Server.Controllers
                 ? BadRequest(result)
                 : Ok(result);
         }
+
+        [HttpPatch("set-harvested/{cultivationId}")]
+        public async Task<IActionResult> SetFieldHarvested(string cultivationId, [FromBody] FieldHarvestDto harvestDto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = [localizer["UserAuthenticationFailed"]]
+                    });
+            }
+
+            if (harvestDto.FieldCultivationId != cultivationId)
+            {
+                return BadRequest(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = [localizer["CultivationIdNotMatchingURL"]]
+                    });
+            }
+
+            BaseResult result = await farmService.SetFieldHarvestedAsync(harvestDto, userId);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : Ok(result);
+        }
+
+        [HttpPatch("update-cultivation-status/{cultivationId}")]
+        public async Task<IActionResult> UpdateFieldCultivationStatus(string cultivationId, [FromBody] UpdateFieldCultivationStatusDto update)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = [localizer["UserAuthenticationFailed"]]
+                    });
+            }
+
+            if (update.FieldCultivationId != cultivationId)
+            {
+                return BadRequest(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = [localizer["CultivationIdNotMatchingURL"]]
+                    });
+            }
+
+            BaseResult result = await farmService.UpdateFieldCultivationStatusAsync(update, userId);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : Ok(result);
+        }
+
+        [HttpDelete("delete-cultivation/{cultivationId}")]
+        public async Task<IActionResult> DeleteFieldCultivation(string cultivationId, [FromBody] DeleteFieldCultivationDto deleteItems)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = [localizer["UserAuthenticationFailed"]]
+                    });
+            }
+
+            if (deleteItems.FieldCultivationId != cultivationId)
+            {
+                return BadRequest(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = [localizer["CultivationIdNotMatchingURL"]]
+                    });
+            }
+
+            BaseResult result = await farmService.DeleteFieldCultivationAsync(deleteItems, userId);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : NoContent();
+        }
     }
 }
