@@ -22,5 +22,6 @@ namespace AgricultureApp.Application.Farms
         Task<BaseResult> UpdateFieldCurrentFarmAsync(string fieldId, UpdateFieldFarmDto update, string userId);
         Task<BaseResult> RevertFieldCurrentFarmAsync(string fieldId, UpdateFieldFarmDto update, string userId);
         Task<BaseResult> UpdateFieldAsync(UpdateFieldDto fieldDto, string userId);
+        Task<BaseResult> UpdateFieldStatusAsync(UpdateFieldStatusDto fieldStatusDto, string userId);
     }
 }

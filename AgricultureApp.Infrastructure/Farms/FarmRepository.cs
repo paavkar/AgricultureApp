@@ -314,5 +314,25 @@ namespace AgricultureApp.Infrastructure.Farms
                 return false;
             }
         }
+
+        public async Task<bool> UpdateFieldStatusAsync(string fieldId, FieldStatus status)
+        {
+            const string sql = """
+                UPDATE Fields
+                SET Status = @Status
+                WHERE Id = @FieldId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                var rowsAffected = await connection.ExecuteAsync(sql, new { Status = status, FieldId = fieldId });
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error updating field status: {Method}", nameof(UpdateFieldStatusAsync));
+                return false;
+            }
+        }
     }
 }

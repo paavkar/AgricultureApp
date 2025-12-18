@@ -1,9 +1,11 @@
 ﻿using AgricultureApp.Application.DTOs;
 using AgricultureApp.Application.Farms;
 using AgricultureApp.Application.ResultModels;
+using AgricultureApp.SharedKernel.Localization;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System.Security.Claims;
 
 namespace AgricultureApp.Server.Controllers
@@ -12,7 +14,8 @@ namespace AgricultureApp.Server.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class FieldController(IFarmService farmService) : ControllerBase
+    public class FieldController(IFarmService farmService,
+        IStringLocalizer<AgricultureAppLoc> localizer) : ControllerBase
     {
         [HttpPost("add/{farmId}")]
         public async Task<IActionResult> AddFieldToFarm(string farmId, [FromBody] CreateFieldDto fieldDto)
@@ -24,7 +27,7 @@ namespace AgricultureApp.Server.Controllers
                     new BaseResult
                     {
                         Succeeded = false,
-                        Errors = ["User authentication failed."]
+                        Errors = [localizer["UserAuthenticationFailed"]]
                     });
             }
 
@@ -56,7 +59,7 @@ namespace AgricultureApp.Server.Controllers
                     new BaseResult
                     {
                         Succeeded = false,
-                        Errors = ["User authentication failed."]
+                        Errors = [localizer["UserAuthenticationFailed"]]
                     });
             }
 
@@ -78,7 +81,7 @@ namespace AgricultureApp.Server.Controllers
                     new BaseResult
                     {
                         Succeeded = false,
-                        Errors = ["User authentication failed."]
+                        Errors = [localizer["UserAuthenticationFailed"]]
                     });
             }
 
@@ -100,7 +103,7 @@ namespace AgricultureApp.Server.Controllers
                     new BaseResult
                     {
                         Succeeded = false,
-                        Errors = ["User authentication failed."]
+                        Errors = [localizer["UserAuthenticationFailed"]]
                     });
             }
 
@@ -110,11 +113,43 @@ namespace AgricultureApp.Server.Controllers
                     new BaseResult
                     {
                         Succeeded = false,
-                        Errors = ["Field ID doesn't match the one in the URL."]
+                        Errors = [localizer["FieldIdNotMatchingURL"]]
                     });
             }
 
             BaseResult result = await farmService.UpdateFieldAsync(update, userId);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : Ok(result);
+        }
+
+        [HttpPatch("update-status/{fieldId}")]
+        public async Task<IActionResult> UpdateFieldStatus(string fieldId, [FromBody] UpdateFieldStatusDto fieldStatusDto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = [localizer["UserAuthenticationFailed"]]
+                    });
+            }
+
+            if (fieldStatusDto.FieldId != fieldId)
+            {
+                return BadRequest(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = [localizer["FieldIdNotMatchingURL"]]
+                    });
+            }
+
+            BaseResult result = await farmService.UpdateFieldStatusAsync(fieldStatusDto, userId);
 
             return !result.Succeeded
                 ? BadRequest(result)

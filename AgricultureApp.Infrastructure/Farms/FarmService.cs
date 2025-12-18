@@ -3,7 +3,9 @@ using AgricultureApp.Application.Farms;
 using AgricultureApp.Application.ResultModels;
 using AgricultureApp.Domain.Farms;
 using AgricultureApp.Domain.Users;
+using AgricultureApp.SharedKernel.Localization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
 namespace AgricultureApp.Infrastructure.Farms
@@ -11,7 +13,8 @@ namespace AgricultureApp.Infrastructure.Farms
     public class FarmService(
         ILogger<FarmService> logger,
         IFarmRepository farmRepository,
-        UserManager<ApplicationUser> userManager) : IFarmService
+        UserManager<ApplicationUser> userManager,
+        IStringLocalizer<AgricultureAppLoc> localizer) : IFarmService
     {
         public async Task<FarmResult<Farm>> CreateAsync(CreateFarmDto farmDto, string userId)
         {
@@ -426,6 +429,50 @@ namespace AgricultureApp.Infrastructure.Farms
 
             logger.LogInformation("Successfully updated field {FieldId}. Update by {UserId}.", fieldDto.FieldId, userId);
 
+            return new BaseResult
+            {
+                Succeeded = true
+            };
+        }
+
+        public async Task<BaseResult> UpdateFieldStatusAsync(UpdateFieldStatusDto update, string userId)
+        {
+            FarmDto? farm = await farmRepository.GetFullInfoAsync(update.FarmId);
+
+            if (farm is null)
+            {
+                logger.LogError("Farm {FarmId} not found.", update.FarmId);
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["CultFarmNotFound"]]
+                };
+            }
+
+            if (farm.OwnerId != userId && !farm.Managers.Any(m => m.UserId == userId))
+            {
+                logger.LogError("User {UserId} is not authorized to update fields in farm {FarmId}.",
+                    userId, update.FarmId);
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["ManagingFarmNotAuthorized"]]
+                };
+            }
+
+            var result = await farmRepository.UpdateFieldStatusAsync(update.FieldId, update.Status);
+
+            if (!result)
+            {
+                logger.LogError("Failed to update status for field {FieldId}.", update.FieldId);
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["FieldStatusUpdateFailed"]]
+                };
+            }
+
+            logger.LogInformation("Successfully updated status for field {FieldId} to {Status}.", update.FieldId, update.Status);
             return new BaseResult
             {
                 Succeeded = true

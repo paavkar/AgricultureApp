@@ -117,14 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CultFarmNotFound" xml:space="preserve">
+    <value>Viljelevää maatilaa ei löytynyt.</value>
+  </data>
+  <data name="FieldIdNotMatchingURL" xml:space="preserve">
+    <value>Pellon ID ei vastaa URL:ssa olevaa ID:tä.</value>
+  </data>
+  <data name="FieldStatusUpdateFailed" xml:space="preserve">
+    <value>Pellon tilan päivitys epäonnistui.</value>
+  </data>
   <data name="InvalidLogin" xml:space="preserve">
     <value>Virheellinen kirjautumisyritys.</value>
   </data>
   <data name="InvalidRefresh" xml:space="preserve">
     <value>Virheellinen tai vanhentunut päivitystunnus.</value>
   </data>
+  <data name="ManagingFarmNotAuthorized" xml:space="preserve">
+    <value>The user is not authorized to update fields in the managing farm.</value>
+  </data>
   <data name="RefreshRevoked" xml:space="preserve">
     <value>Päivitystunnus evätty.</value>
+  </data>
+  <data name="UserAuthenticationFailed" xml:space="preserve">
+    <value>Käyttäjän autentikointi epäonnistui.</value>
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>Käyttäjää ei löytynyt.</value>
