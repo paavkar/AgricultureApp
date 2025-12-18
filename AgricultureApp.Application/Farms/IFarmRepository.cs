@@ -23,5 +23,9 @@ namespace AgricultureApp.Application.Farms
         Task<bool> RevertFieldCurrentFarmAsync(string fieldId);
         Task<bool> UpdateFieldAsync(UpdateFieldDto fieldDto);
         Task<bool> UpdateFieldStatusAsync(string fieldId, FieldStatus status);
+
+        // Field cultivations
+        Task<int> AddFieldCultivationAsync(FieldCultivation cultivation);
+        Task<IEnumerable<FieldCultivationDto>> GetFieldCultivationsAsync(string fieldId);
     }
 }

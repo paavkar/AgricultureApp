@@ -456,7 +456,7 @@ namespace AgricultureApp.Infrastructure.Farms
                 return new BaseResult
                 {
                     Succeeded = false,
-                    Errors = [localizer["ManagingFarmNotAuthorized"]]
+                    Errors = [localizer["CultivatingFarmNotAuthorizedF"]]
                 };
             }
 
@@ -476,6 +476,85 @@ namespace AgricultureApp.Infrastructure.Farms
             return new BaseResult
             {
                 Succeeded = true
+            };
+        }
+
+        public async Task<FieldCultivationResult> AddFieldCultivationAsync(
+            CreateFieldCultivationDto cultivationDto, string userId)
+        {
+            FarmDto? farm = await farmRepository.GetFullInfoAsync(cultivationDto.FarmId);
+
+            if (farm is null)
+            {
+                return new FieldCultivationResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["CultFarmNotFound"]]
+                };
+            }
+
+            if (farm.OwnerId != userId && !farm.Managers.Any(m => m.UserId == userId))
+            {
+                return new FieldCultivationResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["CultivatingFarmNotAuthorizedFC"]]
+                };
+            }
+
+            if (farm.Fields.All(f => f.Id != cultivationDto.FieldId))
+            {
+                return new FieldCultivationResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["CultivatingFieldNotFound"]]
+                };
+            }
+
+            FieldCultivation fieldCultivation = cultivationDto.ToFieldCultivationModel();
+            var rowsAffected = await farmRepository.AddFieldCultivationAsync(fieldCultivation);
+
+            return rowsAffected == 0
+                ? new FieldCultivationResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["CultivationFailed"]]
+                }
+                : new FieldCultivationResult
+                {
+                    Succeeded = true,
+                    FieldCultivation = fieldCultivation.ToDto()
+                };
+        }
+
+        public async Task<FieldCultivationResult> GetFieldCultivationsAsync(string fieldId, string farmId, string userId)
+        {
+            FarmDto? farm = await farmRepository.GetFullInfoAsync(farmId);
+
+            if (farm is null)
+            {
+                return new FieldCultivationResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["CultFarmNotFound"]]
+                };
+            }
+
+            if (farm.OwnerId != userId && !farm.Managers.Any(m => m.UserId == userId))
+            {
+                return new FieldCultivationResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["CultivatingFarmNotAuthorized"]]
+                };
+            }
+
+            IEnumerable<FieldCultivationDto> cultivations = await farmRepository.GetFieldCultivationsAsync(fieldId);
+
+            return new FieldCultivationResult
+            {
+                Succeeded = true,
+                FieldCultivations = cultivations
             };
         }
     }

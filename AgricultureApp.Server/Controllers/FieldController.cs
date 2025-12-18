@@ -155,5 +155,58 @@ namespace AgricultureApp.Server.Controllers
                 ? BadRequest(result)
                 : Ok(result);
         }
+
+        [HttpPost("add-cultivation/{fieldId}")]
+        public async Task<IActionResult> AddFieldCultivation(string fieldId, [FromBody] CreateFieldCultivationDto cultivationDto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = [localizer["UserAuthenticationFailed"]]
+                    });
+            }
+
+            if (cultivationDto.FieldId != fieldId)
+            {
+                return BadRequest(new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["FieldIdNotMatchingURL"]]
+                });
+            }
+
+            FieldCultivationResult result = await farmService.AddFieldCultivationAsync(cultivationDto, userId);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : CreatedAtAction(nameof(AddFieldCultivation), result);
+        }
+
+        [HttpGet("cultivations/{fieldId}")]
+        public async Task<IActionResult> GetFieldCultivations(string fieldId, [FromBody] string farmId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = [localizer["UserAuthenticationFailed"]]
+                    });
+            }
+
+            FieldCultivationResult result = await farmService.GetFieldCultivationsAsync(fieldId, farmId, userId);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : Ok(result);
+        }
     }
 }

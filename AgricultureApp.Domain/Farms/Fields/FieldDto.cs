@@ -2,7 +2,7 @@
 {
     public class FieldDto : FieldBase
     {
-        public IEnumerable<FieldCultivation> Cultivations { get; set; } = [];
+        public IEnumerable<FieldCultivationDto> Cultivations { get; set; } = [];
         public FarmDto CurrentFarm { get; set; }
         public FarmDto OwnerFarm { get; set; }
     }

@@ -334,5 +334,56 @@ namespace AgricultureApp.Infrastructure.Farms
                 return false;
             }
         }
+
+        public async Task<int> AddFieldCultivationAsync(FieldCultivation cultivation)
+        {
+            const string sql = """
+                INSERT INTO FieldCultivations (Id, Crop, ExpectedYield, YieldUnit, Status, PlantingDate, FieldId, FarmId)
+                VALUES (@Id, @Crop, @ExpectedYield, @YieldUnit, @Status, @PlantingDate, @FieldId, @FarmId)
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                return await connection.ExecuteAsync(sql, cultivation);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error inserting field cultivation: {Method}", nameof(AddFieldCultivationAsync));
+                return 0;
+            }
+        }
+
+        public async Task<IEnumerable<FieldCultivationDto>> GetFieldCultivationsAsync(string fieldId)
+        {
+            const string sql = """
+                SELECT fc.*, f.*, fm.*
+                FROM FieldCultivations fc
+                INNER JOIN Fields f ON f.Id = fc.FieldId
+                INNER JOIN Farms fm ON fm.Id = fc.FarmId
+                WHERE fc.FieldId = @FieldId;
+                """;
+
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                IEnumerable<FieldCultivationDto> cultivations = await connection.QueryAsync<FieldCultivationDto, FieldDto, FarmDto, FieldCultivationDto>(
+                    sql,
+                    (cultivation, field, farm) =>
+                    {
+                        cultivation.Field = field;
+                        cultivation.CultivatedFarm = farm;
+                        return cultivation;
+                    },
+                    new { FieldId = fieldId }
+                );
+
+                return cultivations;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error retrieving full farm info: {Method}", nameof(GetFullInfoAsync));
+                return null;
+            }
+        }
     }
 }
