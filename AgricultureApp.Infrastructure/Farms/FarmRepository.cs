@@ -334,5 +334,143 @@ namespace AgricultureApp.Infrastructure.Farms
                 return false;
             }
         }
+
+        public async Task<int> AddFieldCultivationAsync(FieldCultivation cultivation)
+        {
+            const string sql = """
+                INSERT INTO FieldCultivations (Id, Crop, ExpectedYield, YieldUnit, Status, PlantingDate, FieldId, FarmId)
+                VALUES (@Id, @Crop, @ExpectedYield, @YieldUnit, @Status, @PlantingDate, @FieldId, @FarmId)
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                return await connection.ExecuteAsync(sql, cultivation);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error inserting field cultivation: {Method}", nameof(AddFieldCultivationAsync));
+                return 0;
+            }
+        }
+
+        public async Task<IEnumerable<FieldCultivationDto>> GetFieldCultivationsAsync(string fieldId)
+        {
+            const string sql = """
+                SELECT fc.*, f.*, fm.*
+                FROM FieldCultivations fc
+                INNER JOIN Fields f ON f.Id = fc.FieldId
+                INNER JOIN Farms fm ON fm.Id = fc.FarmId
+                WHERE fc.FieldId = @FieldId;
+                """;
+
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                IEnumerable<FieldCultivationDto> cultivations = await connection.QueryAsync<FieldCultivationDto, FieldDto, FarmDto, FieldCultivationDto>(
+                    sql,
+                    (cultivation, field, farm) =>
+                    {
+                        cultivation.Field = field;
+                        cultivation.CultivatedFarm = farm;
+                        return cultivation;
+                    },
+                    new { FieldId = fieldId }
+                );
+
+                return cultivations;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error retrieving full farm info: {Method}", nameof(GetFullInfoAsync));
+                return null;
+            }
+        }
+
+        public async Task<FieldCultivationDto?> GetFieldCultivationByIdAsync(string cultivationId)
+        {
+            const string sql = """
+                SELECT * FROM FieldCultivations
+                WHERE Id = @Id
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                FieldCultivationDto? cultivation = await connection.QueryFirstOrDefaultAsync<FieldCultivationDto>(sql, new { Id = cultivationId });
+
+                return cultivation;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error retrieving field cultivation by ID: {Method}", nameof(GetFieldCultivationByIdAsync));
+                return null;
+            }
+        }
+
+        public async Task<bool> UpdateFieldHarvestedAsync(FieldHarvestDto harvestDto)
+        {
+            const string sql = """
+                UPDATE FieldCultivations
+                SET ActualYield = @ActualYield,
+                    YieldUnit = @YieldUnit,
+                    Status = @Status,
+                    HarvestDate = @HarvestDate
+                WHERE Id = @FieldCultivationId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                var rowsAffected = await connection.ExecuteAsync(sql, harvestDto);
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error updating field harvested info: {Method}", nameof(UpdateFieldHarvestedAsync));
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateFieldCultivationStatusAsync(string cultivationId, CultivationStatus status)
+        {
+            const string sql = """
+                UPDATE FieldCultivations
+                SET Status = @Status
+                WHERE Id = @CultivationId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                var rowsAffected = await connection.ExecuteAsync(sql, new
+                {
+                    Status = status,
+                    CultivationId = cultivationId
+                });
+
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error updating field cultivation status: {Method}", nameof(UpdateFieldCultivationStatusAsync));
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteFieldCultivationAsync(string cultivationId)
+        {
+            const string sql = """
+                DELETE FROM FieldCultivations
+                WHERE Id = @CultivationId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                var rowsAffected = await connection.ExecuteAsync(sql, new { CultivationId = cultivationId });
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error deleting field cultivation: {Method}", nameof(DeleteFieldCultivationAsync));
+                return false;
+            }
+        }
     }
 }
