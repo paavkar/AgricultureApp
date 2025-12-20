@@ -48,6 +48,28 @@ namespace AgricultureApp.Server.Controllers
                 : CreatedAtAction(nameof(AddFieldToFarm), result);
         }
 
+        [HttpGet("get/{fieldId}")]
+        public async Task<IActionResult> GetFieldById(string fieldId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = [localizer["UserAuthenticationFailed"]]
+                    });
+            }
+
+            FieldResult result = await farmService.GetFieldByIdAsync(fieldId, userId);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : Ok(result);
+        }
+
         [HttpPatch("update-farm/{fieldId}")]
         public async Task<IActionResult> UpdateFieldCurrentFarm(string fieldId, [FromBody] UpdateFieldFarmDto update)
         {

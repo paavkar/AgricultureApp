@@ -174,4 +174,16 @@
   <data name="ActualYieldNegative" xml:space="preserve">
     <value>Sadonkorjuun tuotto ei voi olla negatiivinen.</value>
   </data>
+  <data name="UnauthorizedSignalRJoin" xml:space="preserve">
+    <value>Unauthorized user tried to join a farm connection.</value>
+  </data>
+  <data name="FieldNotFound" xml:space="preserve">
+    <value>Peltoa ei löytynyt.</value>
+  </data>
+  <data name="OwnerFarmNotFound" xml:space="preserve">
+    <value>Pellon omistavaa maatilaa ei löytynyt.</value>
+  </data>
+  <data name="UserNotAuthorizedField" xml:space="preserve">
+    <value>Käyttäjää ei ole sallittu päästä käsiksi pellon tietoihin.</value>
+  </data>
 </root>

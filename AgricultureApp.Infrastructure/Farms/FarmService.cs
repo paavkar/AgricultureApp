@@ -1,5 +1,6 @@
 ﻿using AgricultureApp.Application.DTOs;
 using AgricultureApp.Application.Farms;
+using AgricultureApp.Application.Notifications;
 using AgricultureApp.Application.ResultModels;
 using AgricultureApp.Domain.Farms;
 using AgricultureApp.Domain.Users;
@@ -14,7 +15,8 @@ namespace AgricultureApp.Infrastructure.Farms
         ILogger<FarmService> logger,
         IFarmRepository farmRepository,
         UserManager<ApplicationUser> userManager,
-        IStringLocalizer<AgricultureAppLoc> localizer) : IFarmService
+        IStringLocalizer<AgricultureAppLoc> localizer,
+        IFarmNotificationService notificationService) : IFarmService
     {
         public async Task<FarmResult<Farm>> CreateAsync(CreateFarmDto farmDto, string userId)
         {
@@ -147,23 +149,27 @@ namespace AgricultureApp.Infrastructure.Farms
             DateTimeOffset assigned = DateTimeOffset.UtcNow;
             var rowsAffected = await farmRepository.AddManagerAsync(farmId, user.Id, assigned);
 
-            return rowsAffected == 0
-                ? new ManagerResult
+            if (rowsAffected == 0)
+            {
+                return new ManagerResult
                 {
                     Succeeded = false,
                     Errors = ["Failed to add manager to farm."]
-                }
-                : new ManagerResult
-                {
-                    Succeeded = true,
-                    FarmManager = new FarmManagerDto
-                    {
-                        UserId = user.Id,
-                        Name = user.Name,
-                        Email = user.Email!,
-                        AssignedAt = assigned
-                    }
                 };
+            }
+
+            await notificationService.NotifyUserAddedToFarmAsync(userId, farmId);
+            return new ManagerResult
+            {
+                Succeeded = true,
+                FarmManager = new FarmManagerDto
+                {
+                    UserId = user.Id,
+                    Name = user.Name,
+                    Email = user.Email!,
+                    AssignedAt = assigned
+                }
+            };
         }
 
         public async Task<BaseResult> DeleteManagerAsync(string farmId, string userId, string managerId)
@@ -190,16 +196,20 @@ namespace AgricultureApp.Infrastructure.Farms
 
             var result = await farmRepository.DeleteManagerAsync(farmId, managerId);
 
-            return result == 0
-                ? new BaseResult
+            if (result == 0)
+            {
+                return new BaseResult
                 {
                     Succeeded = false,
                     Errors = ["Failed to remove manager with given ID from farm."]
-                }
-                : new BaseResult
-                {
-                    Succeeded = true
                 };
+            }
+
+            await notificationService.NotifyUserRemovedFromFarmAsync(userId, farmId);
+            return new BaseResult
+            {
+                Succeeded = true
+            };
         }
 
         public async Task<FieldResult> CreateFieldAsync(CreateFieldDto fieldDto, string userId)
@@ -258,10 +268,71 @@ namespace AgricultureApp.Infrastructure.Farms
             dto.CurrentFarm = farm;
             dto.OwnerFarm = farm;
 
+            await notificationService.NotifyFieldAddedAsync(farm.Id, dto);
+
             return new FieldResult
             {
                 Succeeded = true,
                 Field = dto
+            };
+        }
+
+        public async Task<FieldResult> GetFieldByIdAsync(string fieldId, string userId)
+        {
+            FieldDto? field = await farmRepository.GetFieldByIdAsync(fieldId);
+
+            if (field is null)
+            {
+                logger.LogError("Field {FieldId} not found.", fieldId);
+                return new FieldResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["FieldNotFound"]]
+                };
+            }
+
+            FarmDto? ownerFarm = await farmRepository.GetFullInfoAsync(field.OwnerFarm.Id);
+
+            if (ownerFarm is null)
+            {
+                logger.LogError("Owner farm {OwnerFarmId} for field {FieldId} not found.", field.OwnerFarm.Id, fieldId);
+                return new FieldResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["OwnerFarmNotFound"]]
+                };
+            }
+
+            if (ownerFarm.OwnerId != userId && !ownerFarm.Managers.Any(m => m.UserId == userId))
+            {
+                FarmDto? currentFarm = await farmRepository.GetFullInfoAsync(field.CurrentFarm.Id);
+
+                if (currentFarm is null)
+                {
+                    logger.LogError("Current farm {CurrentFarmId} for field {FieldId} not found.", field.CurrentFarm.Id, fieldId);
+                    return new FieldResult
+                    {
+                        Succeeded = false,
+                        Errors = [localizer["CultFarmNotFound"]]
+                    };
+                }
+
+                if (currentFarm.OwnerId != userId && !currentFarm.Managers.Any(m => m.UserId == userId))
+                {
+                    logger.LogError("User {UserId} is not authorized to access field {FieldId}.",
+                        userId, fieldId);
+                    return new FieldResult
+                    {
+                        Succeeded = false,
+                        Errors = [localizer["UserNotAuthorizedField"]]
+                    };
+                }
+            }
+
+            return new FieldResult
+            {
+                Succeeded = true,
+                Field = field
             };
         }
 

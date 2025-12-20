@@ -174,4 +174,16 @@
   <data name="ActualYieldNegative" xml:space="preserve">
     <value>Yield cannot be negative.</value>
   </data>
+  <data name="UnauthorizedSignalRJoin" xml:space="preserve">
+    <value>Unauthorized user tried to join a farm connection.</value>
+  </data>
+  <data name="FieldNotFound" xml:space="preserve">
+    <value>Field not found.</value>
+  </data>
+  <data name="OwnerFarmNotFound" xml:space="preserve">
+    <value>Owner farm not found.</value>
+  </data>
+  <data name="UserNotAuthorizedField" xml:space="preserve">
+    <value>User is not authorized to access field info.</value>
+  </data>
 </root>

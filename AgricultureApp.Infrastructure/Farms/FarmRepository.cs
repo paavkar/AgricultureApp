@@ -211,6 +211,32 @@ namespace AgricultureApp.Infrastructure.Farms
             }
         }
 
+        public async Task<bool> IsUserFarmManagerAsync(string farmId, string userId)
+        {
+            const string sql = """
+                SELECT COUNT(1)
+                FROM FarmManagers
+                WHERE FarmId = @FarmId
+                AND UserId = @UserId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                var count = await connection.ExecuteScalarAsync<int>(sql,
+                    new
+                    {
+                        FarmId = farmId,
+                        UserId = userId
+                    });
+                return count > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error checking farm manager: {Method}", nameof(IsUserFarmManagerAsync));
+                return false;
+            }
+        }
+
         public async Task<int> AddFieldAsync(Field field)
         {
             const string sql = """
@@ -226,6 +252,56 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 logger.LogError(ex, "Error inserting field: {Method}", nameof(AddFieldAsync));
                 return 0;
+            }
+        }
+
+        public async Task<FieldDto?> GetFieldByIdAsync(string fieldId)
+        {
+            const string sql = """
+                SELECT f.*, cf.*, owf.*, fc.*, fm.*
+                FROM Fields f
+                LEFT JOIN Farms cf ON f.FarmId = cf.Id
+                LEFT JOIN Farms owf ON f.OwnerFarmId = owf.Id
+                LEFT JOIN FieldCultivations fc ON f.Id = fc.FieldId
+                LEFT JOIN Farms fm ON fc.FarmId = fm.Id
+                WHERE f.Id = @FieldId
+                """;
+
+            Dictionary<string, FieldDto> fieldDictionary = [];
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                await connection.QueryAsync<FieldDto, FarmDto, FarmDto, FieldCultivationDto, FarmDto, FieldDto>(
+                    sql,
+                    (field, cultivatingFarm, ownerFarm, fieldCultivation, cultivatedFarm) =>
+                    {
+                        if (!fieldDictionary.TryGetValue(field.Id, out FieldDto? currentField))
+                        {
+                            currentField = field;
+                            currentField.CurrentFarm = cultivatingFarm;
+                            currentField.OwnerFarm = ownerFarm;
+                            currentField.Cultivations = [];
+                            fieldDictionary.Add(currentField.Id, currentField);
+                        }
+
+                        if (fieldCultivation != null)
+                        {
+                            fieldCultivation.CultivatedFarm = cultivatedFarm;
+                            currentField.Cultivations.Add(fieldCultivation);
+                        }
+
+                        return currentField;
+                    },
+                    new { FieldId = fieldId },
+                    splitOn: "Id,Id,Id,Id"
+                );
+
+                return fieldDictionary.FirstOrDefault().Value;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error retrieving field info: {Method}", nameof(GetFieldByIdAsync));
+                return null;
             }
         }
 

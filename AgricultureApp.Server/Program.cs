@@ -1,10 +1,15 @@
+using AgricultureApp.Application.Notifications;
 using AgricultureApp.Domain.Users;
 using AgricultureApp.Infrastructure;
 using AgricultureApp.Infrastructure.Persistence;
+using AgricultureApp.Server.Hubs;
+using AgricultureApp.Server.Notifications;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
@@ -47,6 +52,7 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddSignalR(options => options.EnableDetailedErrors = true);
+builder.Services.AddScoped<IFarmHubContext, FarmHubContextWrapper>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -65,9 +71,26 @@ builder.Services.AddAuthentication(options =>
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                StringValues accessToken = context.Request.Query["access_token"];
+
+                PathString path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    path.StartsWithSegments("/farmhub"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddSingleton<IUserIdProvider, SubUserProvider>();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
@@ -123,5 +146,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
+
+app.MapHub<FarmHub>("/farmhub");
 
 app.Run();

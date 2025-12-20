@@ -15,9 +15,11 @@ namespace AgricultureApp.Application.Farms
         // Farm managers
         Task<int> AddManagerAsync(string farmId, string userId, DateTimeOffset assigned);
         Task<int> DeleteManagerAsync(string farmId, string userId);
+        Task<bool> IsUserFarmManagerAsync(string farmId, string userId);
 
         // Farm fields
         Task<int> AddFieldAsync(Field field);
+        Task<FieldDto?> GetFieldByIdAsync(string fieldId);
         Task<bool> CheckFieldExists(string fieldName, string farmId);
         Task<bool> UpdateFieldCurrentFarmAsync(string fieldId, string farmId);
         Task<bool> RevertFieldCurrentFarmAsync(string fieldId);
