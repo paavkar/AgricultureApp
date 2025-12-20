@@ -374,6 +374,8 @@ namespace AgricultureApp.Infrastructure.Farms
                 };
             }
 
+            await notificationService.NotifyFieldCultChangeAsync(update.OwnerFarmId, update);
+            await notificationService.NotifyFieldCultChangeAsync(update.FarmId, update);
             logger.LogInformation("Successfully updated current farm for field {FieldId} to farm {FarmId}.", fieldId, update.FarmId);
 
             return new BaseResult
@@ -435,6 +437,8 @@ namespace AgricultureApp.Infrastructure.Farms
                 };
             }
 
+            await notificationService.NotifyFieldCultChangeAsync(update.OwnerFarmId, update);
+            await notificationService.NotifyFieldCultChangeAsync(update.FarmId, update);
             logger.LogInformation("Successfully reverted the field's {FieldId} current farm to owner farm.", fieldId);
 
             return new BaseResult
@@ -498,6 +502,7 @@ namespace AgricultureApp.Infrastructure.Farms
                 };
             }
 
+            await notificationService.NotifyFieldUpdatedAsync(farm.Id, fieldDto);
             logger.LogInformation("Successfully updated field {FieldId}. Update by {UserId}.", fieldDto.FieldId, userId);
 
             return new BaseResult
@@ -543,6 +548,7 @@ namespace AgricultureApp.Infrastructure.Farms
                 };
             }
 
+            await notificationService.NotifyFieldStatusChangedAsync(update.FarmId, update);
             logger.LogInformation("Successfully updated status for field {FieldId} to {Status}.", update.FieldId, update.Status);
             return new BaseResult
             {
@@ -585,17 +591,21 @@ namespace AgricultureApp.Infrastructure.Farms
             FieldCultivation fieldCultivation = cultivationDto.ToFieldCultivationModel();
             var rowsAffected = await farmRepository.AddFieldCultivationAsync(fieldCultivation);
 
-            return rowsAffected == 0
-                ? new FieldCultivationResult
+            if (rowsAffected == 0)
+            {
+                return new FieldCultivationResult
                 {
                     Succeeded = false,
                     Errors = [localizer["CultivationFailed"]]
-                }
-                : new FieldCultivationResult
-                {
-                    Succeeded = true,
-                    FieldCultivation = fieldCultivation.ToDto()
                 };
+            }
+
+            await notificationService.NotifyFieldCultivationAddedAsync(farm.Id, fieldCultivation.ToDto());
+            return new FieldCultivationResult
+            {
+                Succeeded = true,
+                FieldCultivation = fieldCultivation.ToDto()
+            };
         }
 
         public async Task<FieldCultivationResult> GetFieldCultivationsAsync(string fieldId, string farmId, string userId)
@@ -691,16 +701,20 @@ namespace AgricultureApp.Infrastructure.Farms
 
             var result = await farmRepository.UpdateFieldHarvestedAsync(harvestDto);
 
-            return !result
-                ? new BaseResult
+            if (!result)
+            {
+                return new BaseResult
                 {
                     Succeeded = false,
                     Errors = [localizer["FieldHarvestUpdateFailed"]]
-                }
-                : new BaseResult
-                {
-                    Succeeded = true
                 };
+            }
+
+            await notificationService.NotifyFieldHarvestedAsync(harvestDto.FarmId, harvestDto);
+            return new BaseResult
+            {
+                Succeeded = true
+            };
         }
 
         public async Task<BaseResult> UpdateFieldCultivationStatusAsync(UpdateFieldCultivationStatusDto update, string userId)
@@ -736,16 +750,20 @@ namespace AgricultureApp.Infrastructure.Farms
 
             var result = await farmRepository.UpdateFieldCultivationStatusAsync(update.FieldCultivationId, update.Status);
 
-            return !result
-                ? new BaseResult
+            if (!result)
+            {
+                return new BaseResult
                 {
                     Succeeded = false,
                     Errors = [localizer["FieldCultivationStatusUpdateFailed"]]
-                }
-                : new BaseResult
-                {
-                    Succeeded = true
                 };
+            }
+
+            await notificationService.NotifyFieldCultivationStatusUpdatedAsync(update.FarmId, update);
+            return new BaseResult
+            {
+                Succeeded = true
+            };
         }
 
         public async Task<BaseResult> DeleteFieldCultivationAsync(DeleteFieldCultivationDto deleteItems, string userId)
@@ -781,16 +799,20 @@ namespace AgricultureApp.Infrastructure.Farms
 
             var result = await farmRepository.DeleteFieldCultivationAsync(deleteItems.FieldCultivationId);
 
-            return !result
-                ? new BaseResult
+            if (!result)
+            {
+                return new BaseResult
                 {
                     Succeeded = false,
                     Errors = [localizer["FieldCultivationDeleteFailed"]]
-                }
-                : new BaseResult
-                {
-                    Succeeded = true
                 };
+            }
+
+            await notificationService.NotifyFieldCultivationDeletedAsync(deleteItems.FarmId, deleteItems.FieldCultivationId);
+            return new BaseResult
+            {
+                Succeeded = true
+            };
         }
     }
 }

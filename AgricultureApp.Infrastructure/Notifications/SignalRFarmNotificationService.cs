@@ -1,4 +1,5 @@
-﻿using AgricultureApp.Application.Notifications;
+﻿using AgricultureApp.Application.DTOs;
+using AgricultureApp.Application.Notifications;
 using AgricultureApp.Domain.Farms;
 using Microsoft.Extensions.Logging;
 
@@ -44,11 +45,35 @@ namespace AgricultureApp.Infrastructure.Notifications
             }
         }
 
-        public async Task NotifyFieldUpdatedAsync(string farmId, FieldDto field, CancellationToken cancellationToken = default)
+        public async Task NotifyFieldUpdatedAsync(string farmId, UpdateFieldDto arg, CancellationToken cancellationToken = default)
         {
             try
             {
-                await hubContext.SendToGroupAsync(farmId, "FieldUpdated", field, cancellationToken);
+                await hubContext.SendToGroupAsync(farmId, "FieldUpdated", arg, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to notify farm {FarmId} about added field.", farmId);
+            }
+        }
+
+        public async Task NotifyFieldCultChangeAsync(string farmId, UpdateFieldFarmDto arg, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                await hubContext.SendToGroupAsync(farmId, "FieldCultivatorChanged", arg, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to notify farm {FarmId} about added field.", farmId);
+            }
+        }
+
+        public async Task NotifyFieldStatusChangedAsync(string farmId, UpdateFieldStatusDto arg, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                await hubContext.SendToGroupAsync(farmId, "FieldStatusChanged", arg, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -68,11 +93,11 @@ namespace AgricultureApp.Infrastructure.Notifications
             }
         }
 
-        public async Task NotifyFieldCultivationUpdatedAsync(string farmId, FieldCultivationDto cultivation, CancellationToken cancellationToken = default)
+        public async Task NotifyFieldHarvestedAsync(string farmId, FieldHarvestDto arg, CancellationToken cancellationToken = default)
         {
             try
             {
-                await hubContext.SendToGroupAsync(farmId, "FieldCultivationUpdated", cultivation, cancellationToken);
+                await hubContext.SendToGroupAsync(farmId, "FieldHarvested", arg, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -80,11 +105,23 @@ namespace AgricultureApp.Infrastructure.Notifications
             }
         }
 
-        public async Task NotifyFieldCultivationDeletedAsync(string farmId, FieldCultivationDto cultivation, CancellationToken cancellationToken = default)
+        public async Task NotifyFieldCultivationStatusUpdatedAsync(string farmId, UpdateFieldCultivationStatusDto arg, CancellationToken cancellationToken = default)
         {
             try
             {
-                await hubContext.SendToGroupAsync(farmId, "FieldCultivationDeleted", cultivation, cancellationToken);
+                await hubContext.SendToGroupAsync(farmId, "FieldCultivationUpdated", arg, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to notify farm {FarmId} about added field.", farmId);
+            }
+        }
+
+        public async Task NotifyFieldCultivationDeletedAsync(string farmId, string cultivationId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                await hubContext.SendToGroupAsync(farmId, "FieldCultivationDeleted", cultivationId, cancellationToken);
             }
             catch (Exception ex)
             {
