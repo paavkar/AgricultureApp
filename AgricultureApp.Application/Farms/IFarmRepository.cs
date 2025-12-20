@@ -8,7 +8,8 @@ namespace AgricultureApp.Application.Farms
         Task<int> AddAsync(Farm farm);
         Task<Farm?> GetByIdAsync(string farmId);
         Task<FarmDto?> GetFullInfoAsync(string farmId);
-        Task<IEnumerable<Farm>?> GetByOwnerAsync(string ownerId);
+        Task<IEnumerable<FarmDto>?> GetByOwnerAsync(string ownerId);
+        Task<IEnumerable<FarmDto>?> GetByManagerAsync(string managerId);
         Task<int> UpdateAsync(UpdateFarmDto farmDto, string userId);
         Task<int> DeleteAsync(string farmId, string userId);
 

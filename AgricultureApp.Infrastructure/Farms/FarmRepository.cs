@@ -86,7 +86,8 @@ namespace AgricultureApp.Infrastructure.Farms
                     Name = owner?.Name!,
                     Email = owner?.Email!
                 };
-                farmDto.Managers = managers.Select(m =>
+
+                farmDto.Managers = [.. managers.Select(m =>
                 {
                     ApplicationUser? user = managerUsers.FirstOrDefault(u => u.Id == m.UserId);
                     return new FarmManagerDto
@@ -96,13 +97,13 @@ namespace AgricultureApp.Infrastructure.Farms
                         Email = user?.Email!,
                         AssignedAt = m.AssignedAt
                     };
-                });
+                })];
 
-                IEnumerable<Field> fields = await multi.ReadAsync<Field>();
-                IEnumerable<Field> ownedFields = await multi.ReadAsync<Field>();
+                IEnumerable<FieldDto> fields = await multi.ReadAsync<FieldDto>();
+                IEnumerable<FieldDto> ownedFields = await multi.ReadAsync<FieldDto>();
 
-                farmDto.Fields = fields;
-                farmDto.OwnedFields = ownedFields;
+                farmDto.Fields = [.. fields];
+                farmDto.OwnedFields = [.. ownedFields];
 
                 return farmDto;
             }
@@ -113,7 +114,96 @@ namespace AgricultureApp.Infrastructure.Farms
             }
         }
 
-        public Task<IEnumerable<Farm>?> GetByOwnerAsync(string ownerId) => throw new NotImplementedException();
+        public async Task<IEnumerable<FarmDto>?> GetByOwnerAsync(string ownerId)
+        {
+            const string sql = """
+                SELECT f.*, fm.*, u.*, mu.*, fd.*, ofd.*
+                FROM Farms f
+                LEFT JOIN FarmManagers fm ON f.Id = fm.FarmId
+                LEFT JOIN AspNetUsers u ON f.OwnerId = u.Id
+                LEFT JOIN AspNetUsers mu ON fm.UserId = mu.Id
+                LEFT JOIN Fields fd ON f.Id = fd.FarmId
+                LEFT JOIN Fields ofd ON f.Id = ofd.OwnerFarmId
+                WHERE f.OwnerId = @OwnerId
+                """;
+            return await GetFarmsAsync(sql, new { OwnerId = ownerId }, nameof(GetByOwnerAsync));
+        }
+
+        public async Task<IEnumerable<FarmDto>?> GetByManagerAsync(string managerId)
+        {
+            const string sql = """
+                SELECT f.*, fm.*, u.*, mu.*, fd.*, ofd.*
+                FROM Farms f
+                LEFT JOIN FarmManagers fm ON f.Id = fm.FarmId
+                LEFT JOIN AspNetUsers u ON f.OwnerId = u.Id
+                LEFT JOIN AspNetUsers mu ON fm.UserId = mu.Id
+                LEFT JOIN Fields fd ON f.Id = fd.FarmId
+                LEFT JOIN Fields ofd ON f.Id = ofd.OwnerFarmId
+                WHERE fm.UserId = @ManagerId
+                """;
+            return await GetFarmsAsync(sql, new { ManagerId = managerId }, nameof(GetByManagerAsync));
+        }
+
+        public async Task<IEnumerable<FarmDto>?> GetFarmsAsync(string sql, object args, string methodName)
+        {
+            Dictionary<string, FarmDto> farmDictionary = [];
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                IEnumerable<FarmDto> farms = await connection.QueryAsync<FarmDto, FarmManager, ApplicationUser, ApplicationUser, FieldDto, FieldDto, FarmDto>(
+                    sql,
+                    (farm, manager, owner, managerUser, cultivatedField, ownedField) =>
+                    {
+                        if (!farmDictionary.TryGetValue(farm.Id, out FarmDto? currentFarm))
+                        {
+                            currentFarm = farm;
+                            currentFarm.Managers = [];
+                            currentFarm.Fields = [];
+                            currentFarm.OwnedFields = [];
+                            currentFarm.Owner = new FarmPerson
+                            {
+                                UserId = owner.Id,
+                                Name = owner.Name,
+                                Email = owner.Email
+                            };
+                            farmDictionary.Add(currentFarm.Id, currentFarm);
+                        }
+
+                        if (manager != null && managerUser != null && !currentFarm.Managers.Any(m => m.UserId == manager.UserId))
+                        {
+                            currentFarm.Managers.Add(new FarmManagerDto
+                            {
+                                UserId = manager.UserId,
+                                Name = managerUser.Name,
+                                Email = managerUser.Email,
+                                AssignedAt = manager.AssignedAt
+                            });
+                        }
+
+                        if (cultivatedField != null && !currentFarm.Fields.Any(f => f.Id == cultivatedField.Id))
+                        {
+                            currentFarm.Fields.Add(cultivatedField);
+                        }
+
+                        if (ownedField != null && !currentFarm.OwnedFields.Any(f => f.Id == ownedField.Id))
+                        {
+                            currentFarm.OwnedFields.Add(ownedField);
+                        }
+
+                        return currentFarm;
+                    },
+                    args,
+                    splitOn: "FarmId,Id,Id,Id,Id"
+                );
+
+                return farms.Distinct();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error retrieving farms: {Method}", methodName);
+                return [];
+            }
+        }
 
         public async Task<int> UpdateAsync(UpdateFarmDto farmDto, string userId)
         {

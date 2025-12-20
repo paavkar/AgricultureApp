@@ -7,9 +7,9 @@ namespace AgricultureApp.Application.Farms
     public interface IFarmService
     {
         Task<FarmResult<Farm>> CreateAsync(CreateFarmDto farmDto, string userId);
-        Task<FarmResult<Farm>> GetByIdAsync(string farmId);
         Task<FarmResult<FarmDto>> GetFullInfoAsync(string farmId);
         Task<FarmResult<FarmDto>> GetByOwnerAsync(string ownerId);
+        Task<FarmResult<FarmDto>> GetByManagerAsync(string managerId);
         Task<FarmResult<Farm>> UpdateAsync(UpdateFarmDto farmDto, string userId);
         Task<BaseResult> DeleteAsync(string farmId, string userId);
 

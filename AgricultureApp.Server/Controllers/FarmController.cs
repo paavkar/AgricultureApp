@@ -59,6 +59,50 @@ namespace AgricultureApp.Server.Controllers
                 : Ok(result);
         }
 
+        [HttpGet("get-owned")]
+        public async Task<IActionResult> GetOwnedFarms()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = ["User authentication failed."]
+                    });
+            }
+
+            FarmResult<FarmDto> result = await farmService.GetByOwnerAsync(userId);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : Ok(result);
+        }
+
+        [HttpGet("get-managed")]
+        public async Task<IActionResult> GetManagedFarms()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized(
+                    new BaseResult
+                    {
+                        Succeeded = false,
+                        Errors = ["User authentication failed."]
+                    });
+            }
+
+            FarmResult<FarmDto> result = await farmService.GetByManagerAsync(userId);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : Ok(result);
+        }
+
         [HttpPatch("update/{farmId}")]
         public async Task<IActionResult> UpdateFarm(string farmId, [FromBody] UpdateFarmDto farmDto)
         {

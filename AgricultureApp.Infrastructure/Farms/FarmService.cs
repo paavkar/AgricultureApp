@@ -41,7 +41,6 @@ namespace AgricultureApp.Infrastructure.Farms
                 Farm = farm
             };
         }
-        public Task<FarmResult<Farm>> GetByIdAsync(string farmId) => throw new NotImplementedException();
 
         public async Task<FarmResult<FarmDto>> GetFullInfoAsync(string farmId)
         {
@@ -59,7 +58,28 @@ namespace AgricultureApp.Infrastructure.Farms
                     Farm = farm
                 };
         }
-        public Task<FarmResult<FarmDto>> GetByOwnerAsync(string ownerId) => throw new NotImplementedException();
+
+        public async Task<FarmResult<FarmDto>> GetByOwnerAsync(string ownerId)
+        {
+            IEnumerable<FarmDto>? farms = await farmRepository.GetByOwnerAsync(ownerId);
+
+            return new FarmResult<FarmDto>
+            {
+                Succeeded = true,
+                Farms = farms
+            };
+        }
+
+        public async Task<FarmResult<FarmDto>> GetByManagerAsync(string managerId)
+        {
+            IEnumerable<FarmDto>? farms = await farmRepository.GetByManagerAsync(managerId);
+
+            return new FarmResult<FarmDto>
+            {
+                Succeeded = true,
+                Farms = farms
+            };
+        }
 
         public async Task<FarmResult<Farm>> UpdateAsync(UpdateFarmDto farmDto, string userId)
         {
