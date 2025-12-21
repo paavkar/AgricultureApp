@@ -23,6 +23,7 @@ namespace AgricultureApp.Application.Farms
         Task<int> AddFieldAsync(Field field);
         Task<FieldDto?> GetFieldByIdAsync(string fieldId);
         Task<LlmField?> GetFieldByNameAsync(string fieldName, string farmId);
+        Task<IEnumerable<LlmField>?> GetFieldsByFarmAsync(string farmId);
         Task<bool> CheckFieldExists(string fieldName, string farmId);
         Task<bool> UpdateFieldCurrentFarmAsync(string fieldId, string farmId);
         Task<bool> RevertFieldCurrentFarmAsync(string fieldId);

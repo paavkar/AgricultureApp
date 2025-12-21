@@ -103,7 +103,7 @@ namespace AgricultureApp.Infrastructure.LLM
                     Logger.LogError(ex, "Failed to send streaming token for chat {ChatId}.", chatId);
                 }
             }
-            Console.WriteLine(assistantResponse.ToString());
+
             chatHistory.AddAssistantMessage(assistantResponse.ToString());
             await Cache.SetAsync(chatId, chatHistory, new HybridCacheEntryOptions
             {

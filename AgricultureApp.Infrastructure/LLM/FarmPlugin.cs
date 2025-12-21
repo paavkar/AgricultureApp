@@ -15,5 +15,14 @@ namespace AgricultureApp.Infrastructure.LLM
 
             return field;
         }
+
+        [KernelFunction("get_fields_information_by_farm")]
+        [Description("Get a list of field details (cultivations, etc.) currently cultivated by the farm.")]
+        public async Task<IEnumerable<LlmField>?> GetFields(string farmId)
+        {
+            IEnumerable<LlmField>? fields = await farmRepository.GetFieldsByFarmAsync(farmId);
+
+            return fields;
+        }
     }
 }
