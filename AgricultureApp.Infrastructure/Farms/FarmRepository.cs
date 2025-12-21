@@ -1,5 +1,6 @@
 ﻿using AgricultureApp.Application.DTOs;
 using AgricultureApp.Application.Farms;
+using AgricultureApp.Application.LLM;
 using AgricultureApp.Domain.Farms;
 using AgricultureApp.Domain.Users;
 using Dapper;
@@ -383,6 +384,60 @@ namespace AgricultureApp.Infrastructure.Farms
                         return currentField;
                     },
                     new { FieldId = fieldId },
+                    splitOn: "Id,Id,Id,Id"
+                );
+
+                return fieldDictionary.FirstOrDefault().Value;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error retrieving field info: {Method}", nameof(GetFieldByIdAsync));
+                return null;
+            }
+        }
+
+        public async Task<LlmField?> GetFieldByNameAsync(string fieldName, string farmId)
+        {
+            const string sql = """
+                SELECT f.*, cf.*, owf.*, fc.*, fm.*
+                FROM Fields f
+                LEFT JOIN Farms cf ON f.FarmId = cf.Id
+                LEFT JOIN Farms owf ON f.OwnerFarmId = owf.Id
+                LEFT JOIN FieldCultivations fc ON f.Id = fc.FieldId
+                LEFT JOIN Farms fm ON fc.FarmId = fm.Id
+                WHERE cf.Id = @FarmId
+                AND f.Name = @FieldName
+                """;
+            Dictionary<string, LlmField> fieldDictionary = [];
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                await connection.QueryAsync<FieldDto, FarmDto, FarmDto, FieldCultivationDto, FarmDto, LlmField>(
+                    sql,
+                    (field, cultivatingFarm, ownerFarm, fieldCultivation, cultivatedFarm) =>
+                    {
+                        if (!fieldDictionary.TryGetValue(field.Id, out LlmField? currentField))
+                        {
+                            currentField = LlmField.FromDto(field);
+                            currentField.Status = field.Status.ToString();
+                            currentField.SoilType = field.SoilType.ToString();
+                            currentField.CurrentFarm = cultivatingFarm;
+                            currentField.OwnerFarm = ownerFarm;
+                            currentField.Cultivations = [];
+                            fieldDictionary.Add(currentField.Id, currentField);
+                        }
+
+                        if (fieldCultivation != null)
+                        {
+                            fieldCultivation.CultivatedFarm = cultivatedFarm;
+                            LlmCultivation cult = LlmCultivation.FromDto(fieldCultivation);
+                            cult.Status = fieldCultivation.Status.ToString();
+                            currentField.Cultivations.Add(cult);
+                        }
+
+                        return currentField;
+                    },
+                    new { FarmId = farmId, FieldName = fieldName },
                     splitOn: "Id,Id,Id,Id"
                 );
 

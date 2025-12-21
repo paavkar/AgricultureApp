@@ -186,4 +186,10 @@
   <data name="UserNotAuthorizedField" xml:space="preserve">
     <value>User is not authorized to access field info.</value>
   </data>
+  <data name="FirstAssistantMessage" xml:space="preserve">
+    <value>Hello there. How may I help you today?</value>
+  </data>
+  <data name="FarmId" xml:space="preserve">
+    <value>Farm ID: {0}.</value>
+  </data>
 </root>

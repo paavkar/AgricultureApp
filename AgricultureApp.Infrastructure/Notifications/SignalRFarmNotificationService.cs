@@ -2,6 +2,7 @@
 using AgricultureApp.Application.Notifications;
 using AgricultureApp.Domain.Farms;
 using Microsoft.Extensions.Logging;
+using Microsoft.SemanticKernel;
 
 namespace AgricultureApp.Infrastructure.Notifications
 {
@@ -126,6 +127,43 @@ namespace AgricultureApp.Infrastructure.Notifications
             catch (Exception ex)
             {
                 logger.LogError(ex, "Failed to notify farm {FarmId} about added field.", farmId);
+            }
+        }
+
+        public async Task NotifyLlmStreamingResponseAsync(string chatId, StreamingChatMessageContent token, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                await hubContext.SendToGroupAsync(chatId, "LlmStreamingResponse", token, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to notify chat {ChatId} about LLM streaming response.", chatId);
+            }
+        }
+
+        public async Task NotifyLlmStreamingFinishedAsync(string chatId, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                Console.WriteLine("STREAMING FINISHED");
+                await hubContext.SendToGroupAsync(chatId, "LlmStreamingFinished", arg: null, cancellationToken: cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to notify chat {ChatId} about LLM streaming response.", chatId);
+            }
+        }
+
+        public async Task NotifyLlmErrorAsync(string chatId, string message, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                await hubContext.SendToGroupAsync(chatId, "LlmStreamingError", arg: message, cancellationToken: cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to notify chat {ChatId} about LLM streaming response.", chatId);
             }
         }
     }
