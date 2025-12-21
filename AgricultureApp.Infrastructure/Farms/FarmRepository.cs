@@ -254,6 +254,27 @@ namespace AgricultureApp.Infrastructure.Farms
             }
         }
 
+        public async Task<bool> IsUserOwnerAsync(string farmId, string userId)
+        {
+            const string sql = """
+                SELECT COUNT(1)
+                FROM Farms
+                WHERE Id = @Id
+                AND OwnerId = @OwnerId
+                """;
+            using SqlConnection connection = GetConnection();
+            try
+            {
+                var count = await connection.ExecuteScalarAsync<int>(sql, new { Id = farmId, OwnerId = userId });
+                return count > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error checking farm owner: {Method}", nameof(IsUserOwnerAsync));
+                return false;
+            }
+        }
+
         public async Task<int> AddManagerAsync(string farmId, string userId, DateTimeOffset assigned)
         {
             const string sql = """
@@ -450,7 +471,7 @@ namespace AgricultureApp.Infrastructure.Farms
             }
         }
 
-        public async Task<IEnumerable<LlmField>> GetFieldsByFarmAsync(string farmId)
+        public async Task<IEnumerable<LlmField>?> GetFieldsByFarmAsync(string farmId)
         {
             const string sql = """
                 SELECT f.*, cf.*, owf.*, fc.*, fm.*

@@ -126,18 +126,9 @@ namespace AgricultureApp.Infrastructure.Farms
 
         public async Task<ManagerResult> AddManagerAsync(string userId, string farmId, string email)
         {
-            Farm? farm = await farmRepository.GetByIdAsync(farmId);
+            var isOwner = await farmRepository.IsUserOwnerAsync(farmId, userId);
 
-            if (farm is null)
-            {
-                return new ManagerResult
-                {
-                    Succeeded = false,
-                    Errors = ["Farm not found."]
-                };
-            }
-
-            if (farm.OwnerId != userId)
+            if (!isOwner)
             {
                 return new ManagerResult
                 {
@@ -157,7 +148,7 @@ namespace AgricultureApp.Infrastructure.Farms
                 };
             }
 
-            if (farm.OwnerId == user.Id)
+            if (isOwner)
             {
                 return new ManagerResult
                 {
@@ -194,18 +185,9 @@ namespace AgricultureApp.Infrastructure.Farms
 
         public async Task<BaseResult> DeleteManagerAsync(string farmId, string userId, string managerId)
         {
-            Farm? farm = await farmRepository.GetByIdAsync(farmId);
+            var isOwner = await farmRepository.IsUserOwnerAsync(farmId, userId);
 
-            if (farm is null)
-            {
-                return new BaseResult
-                {
-                    Succeeded = false,
-                    Errors = ["Farm not found."]
-                };
-            }
-
-            if (farm.OwnerId != userId)
+            if (!isOwner)
             {
                 return new BaseResult
                 {
@@ -311,33 +293,15 @@ namespace AgricultureApp.Infrastructure.Farms
                 };
             }
 
-            FarmDto? ownerFarm = await farmRepository.GetFullInfoAsync(field.OwnerFarm.Id);
+            var isOwner = await farmRepository.IsUserOwnerAsync(field.OwnerFarm.Id, userId);
+            var isManager = await farmRepository.IsUserFarmManagerAsync(field.OwnerFarm.Id, userId);
 
-            if (ownerFarm is null)
+            if (!isOwner && !isManager)
             {
-                logger.LogError("Owner farm {OwnerFarmId} for field {FieldId} not found.", field.OwnerFarm.Id, fieldId);
-                return new FieldResult
-                {
-                    Succeeded = false,
-                    Errors = [localizer["OwnerFarmNotFound"]]
-                };
-            }
+                var isCurrentOwner = await farmRepository.IsUserOwnerAsync(field.CurrentFarm.Id, userId);
+                var isCurrentManager = await farmRepository.IsUserFarmManagerAsync(field.CurrentFarm.Id, userId);
 
-            if (ownerFarm.OwnerId != userId && !ownerFarm.Managers.Any(m => m.UserId == userId))
-            {
-                FarmDto? currentFarm = await farmRepository.GetFullInfoAsync(field.CurrentFarm.Id);
-
-                if (currentFarm is null)
-                {
-                    logger.LogError("Current farm {CurrentFarmId} for field {FieldId} not found.", field.CurrentFarm.Id, fieldId);
-                    return new FieldResult
-                    {
-                        Succeeded = false,
-                        Errors = [localizer["CultFarmNotFound"]]
-                    };
-                }
-
-                if (currentFarm.OwnerId != userId && !currentFarm.Managers.Any(m => m.UserId == userId))
+                if (!isCurrentOwner && !isCurrentManager)
                 {
                     logger.LogError("User {UserId} is not authorized to access field {FieldId}.",
                         userId, fieldId);
@@ -359,19 +323,10 @@ namespace AgricultureApp.Infrastructure.Farms
         public async Task<BaseResult> UpdateFieldCurrentFarmAsync(
             string fieldId, UpdateFieldFarmDto update, string userId)
         {
-            FarmDto? farm = await farmRepository.GetFullInfoAsync(update.OwnerFarmId);
+            var isOwner = await farmRepository.IsUserOwnerAsync(update.OwnerFarmId, userId);
+            var isManager = await farmRepository.IsUserFarmManagerAsync(update.OwnerFarmId, userId);
 
-            if (farm is null)
-            {
-                logger.LogError("Owner farm {OwnerFarmId} not found.", update.OwnerFarmId);
-                return new BaseResult
-                {
-                    Succeeded = false,
-                    Errors = ["Owner farm not found."]
-                };
-            }
-
-            if (farm.OwnerId != userId && !farm.Managers.Any(m => m.UserId == userId))
+            if (!isOwner && !isManager)
             {
                 logger.LogError("User {UserId} is not authorized to update fields in owner farm {OwnerFarmId}.",
                     userId, update.OwnerFarmId);
@@ -407,33 +362,15 @@ namespace AgricultureApp.Infrastructure.Farms
         public async Task<BaseResult> RevertFieldCurrentFarmAsync(
             string fieldId, UpdateFieldFarmDto update, string userId)
         {
-            FarmDto? ownerFarm = await farmRepository.GetFullInfoAsync(update.OwnerFarmId);
+            var isOwner = await farmRepository.IsUserOwnerAsync(update.OwnerFarmId, userId);
+            var isManager = await farmRepository.IsUserFarmManagerAsync(update.OwnerFarmId, userId);
 
-            if (ownerFarm is null)
+            if (!isOwner && !isManager)
             {
-                logger.LogError("Owner farm {OwnerFarmId} not found.", update.OwnerFarmId);
-                return new BaseResult
-                {
-                    Succeeded = false,
-                    Errors = ["Owner farm not found."]
-                };
-            }
+                var isCurrentOwner = await farmRepository.IsUserOwnerAsync(update.FarmId, userId);
+                var isCurrentManager = await farmRepository.IsUserFarmManagerAsync(update.FarmId, userId);
 
-            if (ownerFarm.OwnerId != userId && !ownerFarm.Managers.Any(m => m.UserId == userId))
-            {
-                FarmDto? farm = await farmRepository.GetFullInfoAsync(update.FarmId);
-
-                if (farm is null)
-                {
-                    logger.LogError("Managing farm {FarmId} not found.", update.FarmId);
-                    return new BaseResult
-                    {
-                        Succeeded = false,
-                        Errors = ["Managing farm not found."]
-                    };
-                }
-
-                if (farm.OwnerId != userId && !farm.Managers.Any(m => m.UserId == userId))
+                if (!isCurrentOwner && !isCurrentManager)
                 {
                     logger.LogError("User {UserId} is not authorized to revert field management {FieldId}.",
                     userId, fieldId);
@@ -533,19 +470,10 @@ namespace AgricultureApp.Infrastructure.Farms
 
         public async Task<BaseResult> UpdateFieldStatusAsync(UpdateFieldStatusDto update, string userId)
         {
-            FarmDto? farm = await farmRepository.GetFullInfoAsync(update.FarmId);
+            var isOwner = await farmRepository.IsUserOwnerAsync(update.FarmId, userId);
+            var isManager = await farmRepository.IsUserFarmManagerAsync(update.FarmId, userId);
 
-            if (farm is null)
-            {
-                logger.LogError("Farm {FarmId} not found.", update.FarmId);
-                return new BaseResult
-                {
-                    Succeeded = false,
-                    Errors = [localizer["CultFarmNotFound"]]
-                };
-            }
-
-            if (farm.OwnerId != userId && !farm.Managers.Any(m => m.UserId == userId))
+            if (!isOwner && !isManager)
             {
                 logger.LogError("User {UserId} is not authorized to update fields in farm {FarmId}.",
                     userId, update.FarmId);
@@ -630,18 +558,10 @@ namespace AgricultureApp.Infrastructure.Farms
 
         public async Task<FieldCultivationResult> GetFieldCultivationsAsync(string fieldId, string farmId, string userId)
         {
-            FarmDto? farm = await farmRepository.GetFullInfoAsync(farmId);
+            var isOwner = await farmRepository.IsUserOwnerAsync(farmId, userId);
+            var isManager = await farmRepository.IsUserFarmManagerAsync(farmId, userId);
 
-            if (farm is null)
-            {
-                return new FieldCultivationResult
-                {
-                    Succeeded = false,
-                    Errors = [localizer["CultFarmNotFound"]]
-                };
-            }
-
-            if (farm.OwnerId != userId && !farm.Managers.Any(m => m.UserId == userId))
+            if (!isOwner && !isManager)
             {
                 return new FieldCultivationResult
                 {

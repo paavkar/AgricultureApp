@@ -13,6 +13,7 @@ namespace AgricultureApp.Application.Farms
         Task<IEnumerable<FarmDto>?> GetByManagerAsync(string managerId);
         Task<int> UpdateAsync(UpdateFarmDto farmDto, string userId);
         Task<int> DeleteAsync(string farmId, string userId);
+        Task<bool> IsUserOwnerAsync(string farmId, string userId);
 
         // Farm managers
         Task<int> AddManagerAsync(string farmId, string userId, DateTimeOffset assigned);
