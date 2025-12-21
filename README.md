@@ -33,6 +33,12 @@ protected by the `Authorize` tag in the API to use the .NET middleware for JWT.
 The Web API has localization built in to it. This works via `Microsoft.AspNetCore.Localization` package and `Accept-Language` header in the HTTP request. Localization
 is in progress with English (en-GB) and Finnish (fi-FI).
 
+LLM integration is currently done locally with Ollama via Semantic Kernel.
+Users can interact with an LLM to ask about farms currently cultivated fields or
+a specific field it is cultivating. Information fetching is done with function
+calling to enrich the LLM context. Chat history is saved with HybridCache for
+one (1) hour at a time from latest message.
+
 ## User Secrets / App settings
 
 These are the needed key-value pairs to be set:
@@ -42,6 +48,10 @@ These are the needed key-value pairs to be set:
   "Jwt:Key": "<256_BIT_VALUE>",
   "Jwt:Issuer": "Agriculture App",
   "Jwt:Audience": "Agriculture App",
-  "ConnectionStrings:DefaultConnection": "<YOUR_SQL_SERVER_CONNECTION>"
+  "ConnectionStrings:DefaultConnection": "<YOUR_SQL_SERVER_CONNECTION>",
+  "LLM": {
+    "ModelId": "<YOUR_LLM_ID>,
+    "Endpoint": "<LLM_ENDPOINT>"
+  }
 }
 ```
