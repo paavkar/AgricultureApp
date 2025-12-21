@@ -1,8 +1,10 @@
 ﻿using AgricultureApp.Application.Auth;
 using AgricultureApp.Application.Farms;
+using AgricultureApp.Application.LLM;
 using AgricultureApp.Application.Notifications;
 using AgricultureApp.Infrastructure.Auth;
 using AgricultureApp.Infrastructure.Farms;
+using AgricultureApp.Infrastructure.LLM;
 using AgricultureApp.Infrastructure.Notifications;
 using AgricultureApp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +34,7 @@ namespace AgricultureApp.Infrastructure
             services.AddScoped<IFarmRepository, FarmRepository>();
             services.AddScoped<IFarmService, FarmService>();
             services.AddScoped<IFarmNotificationService, SignalRFarmNotificationService>();
+            services.AddScoped<ILlmService, OllamaLlmService>();
 
             return services;
         }

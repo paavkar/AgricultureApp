@@ -186,4 +186,10 @@
   <data name="UserNotAuthorizedField" xml:space="preserve">
     <value>Käyttäjää ei ole sallittu päästä käsiksi pellon tietoihin.</value>
   </data>
+  <data name="FirstAssistantMessage" xml:space="preserve">
+    <value>Terve siellä. Kuinka voin auttaa sinua tänään?</value>
+  </data>
+  <data name="FarmId" xml:space="preserve">
+    <value>Maatilan ID: {0}.</value>
+  </data>
 </root>

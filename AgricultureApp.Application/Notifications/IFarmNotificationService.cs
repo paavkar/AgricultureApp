@@ -1,5 +1,6 @@
 ﻿using AgricultureApp.Application.DTOs;
 using AgricultureApp.Domain.Farms;
+using Microsoft.SemanticKernel;
 
 namespace AgricultureApp.Application.Notifications
 {
@@ -15,5 +16,10 @@ namespace AgricultureApp.Application.Notifications
         Task NotifyFieldHarvestedAsync(string farmId, FieldHarvestDto arg, CancellationToken cancellationToken = default);
         Task NotifyFieldCultivationStatusUpdatedAsync(string farmId, UpdateFieldCultivationStatusDto arg, CancellationToken cancellationToken = default);
         Task NotifyFieldCultivationDeletedAsync(string farmId, string cultivationId, CancellationToken cancellationToken = default);
+
+        // LLM messages
+        Task NotifyLlmStreamingResponseAsync(string chatId, StreamingChatMessageContent token, CancellationToken cancellationToken = default);
+        Task NotifyLlmStreamingFinishedAsync(string chatId, CancellationToken cancellationToken = default);
+        Task NotifyLlmErrorAsync(string chatId, string message, CancellationToken cancellationToken = default);
     }
 }

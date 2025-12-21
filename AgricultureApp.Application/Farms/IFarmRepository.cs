@@ -1,4 +1,5 @@
 ﻿using AgricultureApp.Application.DTOs;
+using AgricultureApp.Application.LLM;
 using AgricultureApp.Domain.Farms;
 
 namespace AgricultureApp.Application.Farms
@@ -21,6 +22,8 @@ namespace AgricultureApp.Application.Farms
         // Farm fields
         Task<int> AddFieldAsync(Field field);
         Task<FieldDto?> GetFieldByIdAsync(string fieldId);
+        Task<LlmField?> GetFieldByNameAsync(string fieldName, string farmId);
+        Task<IEnumerable<LlmField>?> GetFieldsByFarmAsync(string farmId);
         Task<bool> CheckFieldExists(string fieldName, string farmId);
         Task<bool> UpdateFieldCurrentFarmAsync(string fieldId, string farmId);
         Task<bool> RevertFieldCurrentFarmAsync(string fieldId);
