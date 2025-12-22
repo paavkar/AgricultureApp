@@ -184,12 +184,75 @@
     <value>Owner farm not found.</value>
   </data>
   <data name="UserNotAuthorizedField" xml:space="preserve">
-    <value>User is not authorized to access field info.</value>
+    <value>User is not authorized to perform this action related to fields.</value>
   </data>
   <data name="FirstAssistantMessage" xml:space="preserve">
     <value>Hello there. How may I help you today?</value>
   </data>
   <data name="FarmId" xml:space="preserve">
     <value>Farm ID: {0}.</value>
+  </data>
+  <data name="ActionForbidden" xml:space="preserve">
+    <value>You are not authorized to perform this action.</value>
+  </data>
+  <data name="FarmIdNotMatchingURL" xml:space="preserve">
+    <value>Farm ID doesn't match the one in the URL.</value>
+  </data>
+  <data name="EmailMustBeProvided" xml:space="preserve">
+    <value>Email of the manager must be provided to be able to add a manager.</value>
+  </data>
+  <data name="ManagerIdMustBeProvided" xml:space="preserve">
+    <value>Id belonging to a farm manager must be provided.</value>
+  </data>
+  <data name="FarmIdNotMatchingField" xml:space="preserve">
+    <value>Farm ID and the field owner ID must match.</value>
+  </data>
+  <data name="FarmNotFound" xml:space="preserve">
+    <value>Farm not found with given ID.</value>
+  </data>
+  <data name="FailedToCreateFarm" xml:space="preserve">
+    <value>Failed to add farm to the database.</value>
+  </data>
+  <data name="DatabaseErrorFarmsFetch" xml:space="preserve">
+    <value>A database error occurred when trying to retrieve items.</value>
+  </data>
+  <data name="UpdateFarmFailed" xml:space="preserve">
+    <value>Failed to update farm.</value>
+  </data>
+  <data name="DeleteFarmFailed" xml:space="preserve">
+    <value>Failed to delete farm.</value>
+  </data>
+  <data name="OnlyFarmOwnerPermittedManagers" xml:space="preserve">
+    <value>Only the farm owner can manage managers.</value>
+  </data>
+  <data name="UserNotFoundEmail" xml:space="preserve">
+    <value>User was not found with given email.</value>
+  </data>
+  <data name="FarmOwnerNotManager" xml:space="preserve">
+    <value>The owner cannot be added as a manager.</value>
+  </data>
+  <data name="AddManagerFailed" xml:space="preserve">
+    <value>Failed to add manager to farm.</value>
+  </data>
+  <data name="DeleteManagerFailed" xml:space="preserve">
+    <value>Failed to remove manager with given ID from farm.</value>
+  </data>
+  <data name="FieldAlreadyExists" xml:space="preserve">
+    <value>Field with the same name already exists in the owner farm.</value>
+  </data>
+  <data name="CreateFieldFailed" xml:space="preserve">
+    <value>Field creation failed.</value>
+  </data>
+  <data name="UpdateFieldFarm" xml:space="preserve">
+    <value>Failed to update field's current farm.</value>
+  </data>
+  <data name="FieldSizeValidation" xml:space="preserve">
+    <value>Field's size must be more than 0.</value>
+  </data>
+  <data name="UniqueFieldValidation" xml:space="preserve">
+    <value>Field must have a unique name within farm's owned fields.</value>
+  </data>
+  <data name="UpdateFieldFailed" xml:space="preserve">
+    <value>Failed to update field.</value>
   </data>
 </root>

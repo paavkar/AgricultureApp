@@ -184,12 +184,75 @@
     <value>Pellon omistavaa maatilaa ei löytynyt.</value>
   </data>
   <data name="UserNotAuthorizedField" xml:space="preserve">
-    <value>Käyttäjää ei ole sallittu päästä käsiksi pellon tietoihin.</value>
+    <value>Käyttäjää ei ole sallittu tekemään tätä toimintoa liittyen peltoihin.</value>
   </data>
   <data name="FirstAssistantMessage" xml:space="preserve">
     <value>Terve siellä. Kuinka voin auttaa sinua tänään?</value>
   </data>
   <data name="FarmId" xml:space="preserve">
     <value>Maatilan ID: {0}.</value>
+  </data>
+  <data name="ActionForbidden" xml:space="preserve">
+    <value>Sinua ei ole sallittu tekemään tätä toimintoa.</value>
+  </data>
+  <data name="FarmIdNotMatchingURL" xml:space="preserve">
+    <value>Maatilan ID ei vastaa URL:ssa olevaa ID:tä.</value>
+  </data>
+  <data name="EmailMustBeProvided" xml:space="preserve">
+    <value>Hallinnoijan sähköposti on annettava lisätäksesi maatilan hallinnoijaksi.</value>
+  </data>
+  <data name="ManagerIdMustBeProvided" xml:space="preserve">
+    <value>Maatilan hallinnoijan id on annettava.</value>
+  </data>
+  <data name="FarmIdNotMatchingField" xml:space="preserve">
+    <value>Maatilan ja pellon omistajan ID on oltava samat.</value>
+  </data>
+  <data name="FarmNotFound" xml:space="preserve">
+    <value>Maatilaa ei löytynyt annetulla ID:llä.</value>
+  </data>
+  <data name="FailedToCreateFarm" xml:space="preserve">
+    <value>Maatilan lisääminen tietokantaan epäonnistui.</value>
+  </data>
+  <data name="DatabaseErrorFarmsFetch" xml:space="preserve">
+    <value>Tietokantavirhe esiintyi yrittäessä hakea maatiloja.</value>
+  </data>
+  <data name="UpdateFarmFailed" xml:space="preserve">
+    <value>Maatilan päivitys epäonnistui.</value>
+  </data>
+  <data name="DeleteFarmFailed" xml:space="preserve">
+    <value>Maatilan poistaminen epäonnistui.</value>
+  </data>
+  <data name="OnlyFarmOwnerPermittedManagers" xml:space="preserve">
+    <value>Vain maatilan omistaja voi hallinnoida maatilan hallinnoijia.</value>
+  </data>
+  <data name="UserNotFoundEmail" xml:space="preserve">
+    <value>Annetulla sähköpostilla ei löytynyt käyttäjää.</value>
+  </data>
+  <data name="FarmOwnerNotManager" xml:space="preserve">
+    <value>Maatilan omistajaa ei voi lisätä saman maatilan hallinnoijaksi.</value>
+  </data>
+  <data name="AddManagerFailed" xml:space="preserve">
+    <value>Hallinnoijan lisääminen maatilalle epäonnistui.</value>
+  </data>
+  <data name="DeleteManagerFailed" xml:space="preserve">
+    <value>Maatilan hallinnoijan poistaminen epäonnistui.</value>
+  </data>
+  <data name="FieldAlreadyExists" xml:space="preserve">
+    <value>Maatila omistaa jo pellon tällä nimellä.</value>
+  </data>
+  <data name="CreateFieldFailed" xml:space="preserve">
+    <value>Pellon lisääminen epäonnistui.</value>
+  </data>
+  <data name="UpdateFieldFarm" xml:space="preserve">
+    <value>Pellon viljelevän maatilan päivittäminen epäonnistui.</value>
+  </data>
+  <data name="FieldSizeValidation" xml:space="preserve">
+    <value>Pellon koon tulee olla enemmän kuin 0.</value>
+  </data>
+  <data name="UniqueFieldValidation" xml:space="preserve">
+    <value>Pellolla tulee olla uniikki nimi maatilan omistamien peltojen kesken.</value>
+  </data>
+  <data name="UpdateFieldFailed" xml:space="preserve">
+    <value>Pellon päivitys epäonnistui.</value>
   </data>
 </root>

@@ -2,9 +2,11 @@
 using AgricultureApp.Application.Farms;
 using AgricultureApp.Application.ResultModels;
 using AgricultureApp.Domain.Farms;
+using AgricultureApp.SharedKernel.Localization;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System.Security.Claims;
 
 namespace AgricultureApp.Server.Controllers
@@ -13,7 +15,9 @@ namespace AgricultureApp.Server.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
-    public class FarmController(IFarmService farmService) : ControllerBase
+    public class FarmController(
+        IFarmService farmService,
+        IStringLocalizer<AgricultureAppLoc> localizer) : ControllerBase
     {
         [HttpPost("create")]
         public async Task<IActionResult> CreateFarm([FromBody] CreateFarmDto farmDto)
@@ -25,7 +29,7 @@ namespace AgricultureApp.Server.Controllers
                     new BaseResult
                     {
                         Succeeded = false,
-                        Errors = ["User authentication failed."]
+                        Errors = [localizer["UserAuthenticationFailed"]]
                     });
             }
 
@@ -39,24 +43,31 @@ namespace AgricultureApp.Server.Controllers
         public async Task<IActionResult> GetFullFarmInfo(string farmId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
             if (string.IsNullOrWhiteSpace(userId))
             {
                 return Unauthorized(
                     new BaseResult
                     {
                         Succeeded = false,
-                        Errors = ["User authentication failed."]
+                        Errors = [localizer["UserAuthenticationFailed"]]
                     });
             }
+
             IEnumerable<string> userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value);
             FarmResult<FarmDto> result = await farmService.GetFullInfoAsync(farmId);
 
-            return !result.Succeeded
-                ? BadRequest(result)
-                : !userRoles.Contains("Admin") && result.Farm!.OwnerId != userId
+            if (!result.Succeeded)
+            {
+                return result.StatusCode == 404
+                    ? NotFound(result)
+                    : !userRoles.Contains("Admin") && result.Farm!.OwnerId != userId
                     && result.Farm.Managers.All(m => m.UserId != userId)
-                ? Forbid()
-                : Ok(result);
+                    ? Forbid()
+                    : BadRequest(result);
+            }
+
+            return Ok(result);
         }
 
         [HttpGet("get-owned")]
@@ -70,7 +81,7 @@ namespace AgricultureApp.Server.Controllers
                     new BaseResult
                     {
                         Succeeded = false,
-                        Errors = ["User authentication failed."]
+                        Errors = [localizer["UserAuthenticationFailed"]]
                     });
             }
 
@@ -92,7 +103,7 @@ namespace AgricultureApp.Server.Controllers
                     new BaseResult
                     {
                         Succeeded = false,
-                        Errors = ["User authentication failed."]
+                        Errors = [localizer["UserAuthenticationFailed"]]
                     });
             }
 
@@ -113,7 +124,7 @@ namespace AgricultureApp.Server.Controllers
                     new BaseResult
                     {
                         Succeeded = false,
-                        Errors = ["User authentication failed."]
+                        Errors = [localizer["UserAuthenticationFailed"]]
                     });
             }
 
@@ -128,7 +139,7 @@ namespace AgricultureApp.Server.Controllers
                     new BaseResult
                     {
                         Succeeded = false,
-                        Errors = ["Farm ID in the URL does not match the ID in the body."]
+                        Errors = [localizer["FarmIdNotMatchingURL"]]
                     });
             }
 
@@ -148,7 +159,7 @@ namespace AgricultureApp.Server.Controllers
                     new BaseResult
                     {
                         Succeeded = false,
-                        Errors = ["User authentication failed."]
+                        Errors = [localizer["UserAuthenticationFailed"]]
                     });
             }
 
@@ -169,7 +180,7 @@ namespace AgricultureApp.Server.Controllers
                     new BaseResult
                     {
                         Succeeded = false,
-                        Errors = ["User authentication failed."]
+                        Errors = [localizer["UserAuthenticationFailed"]]
                     });
             }
 
@@ -178,15 +189,23 @@ namespace AgricultureApp.Server.Controllers
                 return BadRequest(new BaseResult
                 {
                     Succeeded = false,
-                    Errors = ["Email must be provided to be able to add manager."]
+                    Errors = [localizer["EmailMustBeProvided"]]
                 });
             }
 
             ManagerResult result = await farmService.AddManagerAsync(userId, farmId, email);
 
-            return !result.Succeeded
-                ? BadRequest(result)
-                : Ok(result);
+            if (!result.Succeeded)
+            {
+                return result.StatusCode switch
+                {
+                    404 => NotFound(result),
+                    403 => Forbid(),
+                    _ => BadRequest(result),
+                };
+            }
+
+            return Ok(result);
         }
 
         [HttpDelete("remove-manager/{farmId}")]
@@ -199,7 +218,7 @@ namespace AgricultureApp.Server.Controllers
                     new BaseResult
                     {
                         Succeeded = false,
-                        Errors = ["User authentication failed."]
+                        Errors = [localizer["UserAuthenticationFailed"]]
                     });
             }
 
@@ -208,15 +227,23 @@ namespace AgricultureApp.Server.Controllers
                 return BadRequest(new BaseResult
                 {
                     Succeeded = false,
-                    Errors = ["ID belonging to a manager must be provided."]
+                    Errors = [localizer["ManagerIdMustBeProvided"]]
                 });
             }
 
             BaseResult result = await farmService.DeleteManagerAsync(farmId, userId, managerId);
 
-            return !result.Succeeded
-                ? BadRequest(result)
-                : NoContent();
+            if (!result.Succeeded)
+            {
+                return result.StatusCode switch
+                {
+                    404 => NotFound(result),
+                    403 => Forbid(),
+                    _ => BadRequest(result),
+                };
+            }
+
+            return NoContent();
         }
     }
 }

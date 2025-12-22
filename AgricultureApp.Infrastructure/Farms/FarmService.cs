@@ -29,7 +29,7 @@ namespace AgricultureApp.Infrastructure.Farms
                 return new FarmResult<Farm>
                 {
                     Succeeded = false,
-                    Errors = ["Failed to create farm."]
+                    Errors = [localizer["FailedToCreateFarm"]]
                 };
             }
 
@@ -49,8 +49,9 @@ namespace AgricultureApp.Infrastructure.Farms
             return farm is null
                 ? new FarmResult<FarmDto>
                 {
+                    StatusCode = 404,
                     Succeeded = false,
-                    Errors = ["Farm not found."]
+                    Errors = [localizer["FarmNotFound"]]
                 }
                 : new FarmResult<FarmDto>
                 {
@@ -63,34 +64,47 @@ namespace AgricultureApp.Infrastructure.Farms
         {
             IEnumerable<FarmDto>? farms = await farmRepository.GetByOwnerAsync(ownerId);
 
-            return new FarmResult<FarmDto>
-            {
-                Succeeded = true,
-                Farms = farms
-            };
+            return farms is null
+                ? new FarmResult<FarmDto>
+                {
+                    Succeeded = false,
+                    Errors = [localizer["DatabaseErrorFarmsFetch"]]
+                }
+                : new FarmResult<FarmDto>
+                {
+                    Succeeded = true,
+                    Farms = farms
+                };
         }
 
         public async Task<FarmResult<FarmDto>> GetByManagerAsync(string managerId)
         {
             IEnumerable<FarmDto>? farms = await farmRepository.GetByManagerAsync(managerId);
 
-            return new FarmResult<FarmDto>
-            {
-                Succeeded = true,
-                Farms = farms
-            };
+            return farms is null
+                ? new FarmResult<FarmDto>
+                {
+                    Succeeded = false,
+                    Errors = [localizer["DatabaseErrorFarmsFetch"]]
+                }
+                : new FarmResult<FarmDto>
+                {
+                    Succeeded = true,
+                    Farms = farms
+                };
         }
 
         public async Task<FarmResult<Farm>> UpdateAsync(UpdateFarmDto farmDto, string userId)
         {
             var rowsAffected = await farmRepository.UpdateAsync(farmDto, userId);
+
             if (rowsAffected == 0)
             {
                 logger.LogError("Failed to update farm {FarmId}.", farmDto.Id);
                 return new FarmResult<Farm>
                 {
                     Succeeded = false,
-                    Errors = ["Failed to update farm."]
+                    Errors = [localizer["UpdateFarmFailed"]]
                 };
             }
 
@@ -112,7 +126,7 @@ namespace AgricultureApp.Infrastructure.Farms
                 return new BaseResult
                 {
                     Succeeded = false,
-                    Errors = ["Failed to delete farm."]
+                    Errors = [localizer["DeleteFarmFailed"]]
                 };
             }
 
@@ -132,8 +146,9 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new ManagerResult
                 {
+                    StatusCode = 403,
                     Succeeded = false,
-                    Errors = ["Only the farm owner can manage managers."]
+                    Errors = [localizer["OnlyFarmOwnerPermittedManagers"]]
                 };
             }
 
@@ -143,8 +158,9 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new ManagerResult
                 {
+                    StatusCode = 404,
                     Succeeded = false,
-                    Errors = ["User not found with given email."]
+                    Errors = [localizer["UserNotFoundEmail"]]
                 };
             }
 
@@ -152,8 +168,9 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new ManagerResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
-                    Errors = ["The owner cannot be added as a manager."]
+                    Errors = [localizer["FarmOwnerNotManager"]]
                 };
             }
 
@@ -164,8 +181,9 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new ManagerResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
-                    Errors = ["Failed to add manager to farm."]
+                    Errors = [localizer["AddManagerFailed"]]
                 };
             }
 
@@ -191,8 +209,9 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 403,
                     Succeeded = false,
-                    Errors = ["Only the farm owner can manage managers."]
+                    Errors = [localizer["OnlyFarmOwnerPermittedManagers"]]
                 };
             }
 
@@ -202,8 +221,9 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
-                    Errors = ["Failed to remove manager with given ID from farm."]
+                    Errors = [localizer["DeleteManagerFailed"]]
                 };
             }
 
@@ -223,8 +243,9 @@ namespace AgricultureApp.Infrastructure.Farms
                 logger.LogError("Failed to create field. Owner farm {OwnerFarmId} not found.", fieldDto.OwnerFarmId);
                 return new FieldResult
                 {
+                    StatusCode = 404,
                     Succeeded = false,
-                    Errors = ["Owner farm not found."]
+                    Errors = [localizer["OwnerFarmNotFound"]]
                 };
             }
 
@@ -234,8 +255,9 @@ namespace AgricultureApp.Infrastructure.Farms
                     userId, fieldDto.OwnerFarmId);
                 return new FieldResult
                 {
+                    StatusCode = 403,
                     Succeeded = false,
-                    Errors = ["The user is not authorized to add fields to the farm."]
+                    Errors = [localizer["UserNotAuthorizedField"]]
                 };
             }
 
@@ -245,8 +267,9 @@ namespace AgricultureApp.Infrastructure.Farms
                     fieldDto.Name, fieldDto.OwnerFarmId);
                 return new FieldResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
-                    Errors = ["Field with the same name already exists in the owner farm."]
+                    Errors = [localizer["FieldAlreadyExists"]]
                 };
             }
 
@@ -258,8 +281,9 @@ namespace AgricultureApp.Infrastructure.Farms
                 logger.LogError("Failed to create field for farm {FarmId}", field.FarmId);
                 return new FieldResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
-                    Errors = ["Failed to create field."]
+                    Errors = [localizer["CreateFieldFailed"]]
                 };
             }
             logger.LogInformation("Successfully created field {FieldName} - {FieldId} for farm {FarmId}",
@@ -288,6 +312,7 @@ namespace AgricultureApp.Infrastructure.Farms
                 logger.LogError("Field {FieldId} not found.", fieldId);
                 return new FieldResult
                 {
+                    StatusCode = 404,
                     Succeeded = false,
                     Errors = [localizer["FieldNotFound"]]
                 };
@@ -307,6 +332,7 @@ namespace AgricultureApp.Infrastructure.Farms
                         userId, fieldId);
                     return new FieldResult
                     {
+                        StatusCode = 403,
                         Succeeded = false,
                         Errors = [localizer["UserNotAuthorizedField"]]
                     };
@@ -332,8 +358,9 @@ namespace AgricultureApp.Infrastructure.Farms
                     userId, update.OwnerFarmId);
                 return new BaseResult
                 {
+                    StatusCode = 403,
                     Succeeded = false,
-                    Errors = ["The user is not authorized to update fields in the owner farm."]
+                    Errors = [localizer["UserNotAuthorizedField"]]
                 };
             }
 
@@ -344,8 +371,9 @@ namespace AgricultureApp.Infrastructure.Farms
                 logger.LogError("Failed to update current farm for field {FieldId} to farm {FarmId}.", fieldId, update.FarmId);
                 return new BaseResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
-                    Errors = ["Failed to update field's current farm."]
+                    Errors = [localizer["UpdateFieldFarm"]]
                 };
             }
 
@@ -376,8 +404,9 @@ namespace AgricultureApp.Infrastructure.Farms
                     userId, fieldId);
                     return new BaseResult
                     {
+                        StatusCode = 403,
                         Succeeded = false,
-                        Errors = ["The user is not authorized to revert managing relationship of given field."]
+                        Errors = [localizer["UserNotAuthorizedField"]]
                     };
                 }
             }
@@ -389,8 +418,9 @@ namespace AgricultureApp.Infrastructure.Farms
                 logger.LogError("Failed to revert the field's {FieldId} current farm to owner farm.", fieldId);
                 return new BaseResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
-                    Errors = ["Failed to update field's current farm."]
+                    Errors = [localizer["UpdateFieldFarm"]]
                 };
             }
 
@@ -413,8 +443,9 @@ namespace AgricultureApp.Infrastructure.Farms
                 logger.LogError("Owner farm {OwnerFarmId} not found.", fieldDto.OwnerFarmId);
                 return new BaseResult
                 {
+                    StatusCode = 404,
                     Succeeded = false,
-                    Errors = ["Owner farm not found."]
+                    Errors = [localizer["OwnerFarmNotFound"]]
                 };
             }
 
@@ -424,8 +455,9 @@ namespace AgricultureApp.Infrastructure.Farms
                     userId, fieldDto.OwnerFarmId);
                 return new BaseResult
                 {
+                    StatusCode = 403,
                     Succeeded = false,
-                    Errors = ["The user is not authorized to update fields in the owner farm."]
+                    Errors = [localizer["UserNotAuthorizedField"]]
                 };
             }
 
@@ -433,8 +465,9 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
-                    Errors = ["Size must be more than 0."]
+                    Errors = [localizer["FieldSizeValidation"]]
                 };
             }
 
@@ -442,8 +475,9 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
-                    Errors = ["Field must have a unique name within a farm."]
+                    Errors = [localizer["UniqueFieldValidation"]]
                 };
             }
 
@@ -454,8 +488,9 @@ namespace AgricultureApp.Infrastructure.Farms
                 logger.LogError("Failed to update field {FieldId}.", fieldDto.FieldId);
                 return new BaseResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
-                    Errors = ["Failed to update field."]
+                    Errors = [localizer["UpdateFieldFailed"]]
                 };
             }
 
@@ -479,6 +514,7 @@ namespace AgricultureApp.Infrastructure.Farms
                     userId, update.FarmId);
                 return new BaseResult
                 {
+                    StatusCode = 403,
                     Succeeded = false,
                     Errors = [localizer["CultivatingFarmNotAuthorizedF"]]
                 };
@@ -491,6 +527,7 @@ namespace AgricultureApp.Infrastructure.Farms
                 logger.LogError("Failed to update status for field {FieldId}.", update.FieldId);
                 return new BaseResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
                     Errors = [localizer["FieldStatusUpdateFailed"]]
                 };
@@ -513,6 +550,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new FieldCultivationResult
                 {
+                    StatusCode = 404,
                     Succeeded = false,
                     Errors = [localizer["CultFarmNotFound"]]
                 };
@@ -522,6 +560,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new FieldCultivationResult
                 {
+                    StatusCode = 403,
                     Succeeded = false,
                     Errors = [localizer["CultivatingFarmNotAuthorizedFC"]]
                 };
@@ -531,6 +570,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new FieldCultivationResult
                 {
+                    StatusCode = 404,
                     Succeeded = false,
                     Errors = [localizer["CultivatedFieldNotFound"]]
                 };
@@ -543,6 +583,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new FieldCultivationResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
                     Errors = [localizer["CultivationFailed"]]
                 };
@@ -565,6 +606,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new FieldCultivationResult
                 {
+                    StatusCode = 403,
                     Succeeded = false,
                     Errors = [localizer["CultivatingFarmNotAuthorized"]]
                 };
@@ -587,6 +629,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 404,
                     Succeeded = false,
                     Errors = [localizer["CultFarmNotFound"]]
                 };
@@ -596,6 +639,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 403,
                     Succeeded = false,
                     Errors = [localizer["CultivatingFarmNotAuthorizedFC"]]
                 };
@@ -605,6 +649,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 404,
                     Succeeded = false,
                     Errors = [localizer["CultivatedFieldNotFound"]]
                 };
@@ -616,6 +661,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 404,
                     Succeeded = false,
                     Errors = [localizer["CultivationNotFound"]]
                 };
@@ -625,6 +671,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
                     Errors = [localizer["HarvestDateBeforePlantingDate"]]
                 };
@@ -634,6 +681,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
                     Errors = [localizer["ActualYieldNegative"]]
                 };
@@ -645,6 +693,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
                     Errors = [localizer["FieldHarvestUpdateFailed"]]
                 };
@@ -665,6 +714,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 404,
                     Succeeded = false,
                     Errors = [localizer["CultFarmNotFound"]]
                 };
@@ -674,6 +724,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 403,
                     Succeeded = false,
                     Errors = [localizer["CultivatingFarmNotAuthorizedFC"]]
                 };
@@ -683,6 +734,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 404,
                     Succeeded = false,
                     Errors = [localizer["CultivatedFieldNotFound"]]
                 };
@@ -694,6 +746,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
                     Errors = [localizer["FieldCultivationStatusUpdateFailed"]]
                 };
@@ -714,6 +767,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 404,
                     Succeeded = false,
                     Errors = [localizer["CultFarmNotFound"]]
                 };
@@ -723,6 +777,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 403,
                     Succeeded = false,
                     Errors = [localizer["CultivatingFarmNotAuthorizedFC"]]
                 };
@@ -732,6 +787,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 404,
                     Succeeded = false,
                     Errors = [localizer["CultivatedFieldNotFound"]]
                 };
@@ -743,6 +799,7 @@ namespace AgricultureApp.Infrastructure.Farms
             {
                 return new BaseResult
                 {
+                    StatusCode = 400,
                     Succeeded = false,
                     Errors = [localizer["FieldCultivationDeleteFailed"]]
                 };

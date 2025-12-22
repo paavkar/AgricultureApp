@@ -202,7 +202,7 @@ namespace AgricultureApp.Infrastructure.Farms
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error retrieving farms: {Method}", methodName);
-                return [];
+                return null;
             }
         }
 

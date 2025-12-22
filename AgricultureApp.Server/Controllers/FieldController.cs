@@ -37,15 +37,23 @@ namespace AgricultureApp.Server.Controllers
                 return BadRequest(new BaseResult
                 {
                     Succeeded = false,
-                    Errors = ["Farm ID must match in the URL and in the body."]
+                    Errors = [localizer["FarmIdNotMatchingField"]]
                 });
             }
 
             FieldResult result = await farmService.CreateFieldAsync(fieldDto, userId);
 
-            return !result.Succeeded
-                ? BadRequest(result)
-                : CreatedAtAction(nameof(AddFieldToFarm), result);
+            if (!result.Succeeded)
+            {
+                return result.StatusCode switch
+                {
+                    404 => NotFound(result),
+                    403 => Forbid(),
+                    _ => BadRequest(result),
+                };
+            }
+
+            return CreatedAtAction(nameof(AddFieldToFarm), result);
         }
 
         [HttpGet("get/{fieldId}")]
@@ -65,9 +73,17 @@ namespace AgricultureApp.Server.Controllers
 
             FieldResult result = await farmService.GetFieldByIdAsync(fieldId, userId);
 
-            return !result.Succeeded
-                ? BadRequest(result)
-                : Ok(result);
+            if (!result.Succeeded)
+            {
+                return result.StatusCode switch
+                {
+                    404 => NotFound(result),
+                    403 => Forbid(),
+                    _ => BadRequest(result),
+                };
+            }
+
+            return Ok(result);
         }
 
         [HttpPatch("update-farm/{fieldId}")]
@@ -87,9 +103,17 @@ namespace AgricultureApp.Server.Controllers
 
             BaseResult result = await farmService.UpdateFieldCurrentFarmAsync(fieldId, update, userId);
 
-            return !result.Succeeded
-                ? BadRequest(result)
-                : Ok(result);
+            if (!result.Succeeded)
+            {
+                return result.StatusCode switch
+                {
+                    404 => NotFound(result),
+                    403 => Forbid(),
+                    _ => BadRequest(result),
+                };
+            }
+
+            return Ok(result);
         }
 
         [HttpPatch("revert-management/{fieldId}")]
@@ -109,9 +133,17 @@ namespace AgricultureApp.Server.Controllers
 
             BaseResult result = await farmService.RevertFieldCurrentFarmAsync(fieldId, update, userId);
 
-            return !result.Succeeded
-                ? BadRequest(result)
-                : Ok(result);
+            if (!result.Succeeded)
+            {
+                return result.StatusCode switch
+                {
+                    404 => NotFound(result),
+                    403 => Forbid(),
+                    _ => BadRequest(result),
+                };
+            }
+
+            return Ok(result);
         }
 
         [HttpPatch("update/{fieldId}")]
@@ -141,9 +173,17 @@ namespace AgricultureApp.Server.Controllers
 
             BaseResult result = await farmService.UpdateFieldAsync(update, userId);
 
-            return !result.Succeeded
-                ? BadRequest(result)
-                : Ok(result);
+            if (!result.Succeeded)
+            {
+                return result.StatusCode switch
+                {
+                    404 => NotFound(result),
+                    403 => Forbid(),
+                    _ => BadRequest(result),
+                };
+            }
+
+            return Ok(result);
         }
 
         [HttpPatch("update-status/{fieldId}")]
@@ -173,9 +213,17 @@ namespace AgricultureApp.Server.Controllers
 
             BaseResult result = await farmService.UpdateFieldStatusAsync(fieldStatusDto, userId);
 
-            return !result.Succeeded
-                ? BadRequest(result)
-                : Ok(result);
+            if (!result.Succeeded)
+            {
+                return result.StatusCode switch
+                {
+                    404 => NotFound(result),
+                    403 => Forbid(),
+                    _ => BadRequest(result),
+                };
+            }
+
+            return Ok(result);
         }
 
         [HttpPost("add-cultivation/{fieldId}")]
@@ -204,9 +252,17 @@ namespace AgricultureApp.Server.Controllers
 
             FieldCultivationResult result = await farmService.AddFieldCultivationAsync(cultivationDto, userId);
 
-            return !result.Succeeded
-                ? BadRequest(result)
-                : CreatedAtAction(nameof(AddFieldCultivation), result);
+            if (!result.Succeeded)
+            {
+                return result.StatusCode switch
+                {
+                    404 => NotFound(result),
+                    403 => Forbid(),
+                    _ => BadRequest(result),
+                };
+            }
+
+            return CreatedAtAction(nameof(AddFieldCultivation), result);
         }
 
         [HttpGet("cultivations/{fieldId}")]
@@ -226,9 +282,17 @@ namespace AgricultureApp.Server.Controllers
 
             FieldCultivationResult result = await farmService.GetFieldCultivationsAsync(fieldId, farmId, userId);
 
-            return !result.Succeeded
-                ? BadRequest(result)
-                : Ok(result);
+            if (!result.Succeeded)
+            {
+                return result.StatusCode switch
+                {
+                    404 => NotFound(result),
+                    403 => Forbid(),
+                    _ => BadRequest(result),
+                };
+            }
+
+            return Ok(result);
         }
 
         [HttpPatch("set-harvested/{cultivationId}")]
@@ -258,9 +322,17 @@ namespace AgricultureApp.Server.Controllers
 
             BaseResult result = await farmService.SetFieldHarvestedAsync(harvestDto, userId);
 
-            return !result.Succeeded
-                ? BadRequest(result)
-                : Ok(result);
+            if (!result.Succeeded)
+            {
+                return result.StatusCode switch
+                {
+                    404 => NotFound(result),
+                    403 => Forbid(),
+                    _ => BadRequest(result),
+                };
+            }
+
+            return Ok(result);
         }
 
         [HttpPatch("update-cultivation-status/{cultivationId}")]
@@ -290,9 +362,17 @@ namespace AgricultureApp.Server.Controllers
 
             BaseResult result = await farmService.UpdateFieldCultivationStatusAsync(update, userId);
 
-            return !result.Succeeded
-                ? BadRequest(result)
-                : Ok(result);
+            if (!result.Succeeded)
+            {
+                return result.StatusCode switch
+                {
+                    404 => NotFound(result),
+                    403 => Forbid(),
+                    _ => BadRequest(result),
+                };
+            }
+
+            return Ok(result);
         }
 
         [HttpDelete("delete-cultivation/{cultivationId}")]
@@ -322,9 +402,17 @@ namespace AgricultureApp.Server.Controllers
 
             BaseResult result = await farmService.DeleteFieldCultivationAsync(deleteItems, userId);
 
-            return !result.Succeeded
-                ? BadRequest(result)
-                : NoContent();
+            if (!result.Succeeded)
+            {
+                return result.StatusCode switch
+                {
+                    404 => NotFound(result),
+                    403 => Forbid(),
+                    _ => BadRequest(result),
+                };
+            }
+
+            return NoContent();
         }
     }
 }

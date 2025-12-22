@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
@@ -148,5 +149,12 @@ app.MapControllers();
 app.MapFallbackToFile("/index.html");
 
 app.MapHub<FarmHub>("/farmhub");
+
+if (app.Environment.IsDevelopment())
+{
+    using IServiceScope scope = app.Services.CreateScope();
+    AgricultureAppDbContext db = scope.ServiceProvider.GetRequiredService<AgricultureAppDbContext>();
+    db.Database.Migrate();
+}
 
 app.Run();
