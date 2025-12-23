@@ -55,3 +55,71 @@ These are the needed key-value pairs to be set:
   }
 }
 ```
+
+## Diagrams
+
+### LLM Usage
+
+#### Chat creation
+
+```mermaid
+sequenceDiagram
+    autonumber
+
+    participant U as User
+    participant API as API Controller<br/>CreateChat()
+    participant LLM as LlmService
+    participant Cache as Cache
+
+    U->>API: POST /create-chat
+    API->>LLM: CreateChatHistoryAsync()
+
+    LLM->>LLM: Generate new chatId (Guid v7)
+
+    LLM->>LLM: Create ChatHistory<br/>+ SystemPrompt<br/>+ FirstAssistantMessage
+
+    LLM->>Cache: SetAsync(chatId, history,<br/>expiration: 1 hour)
+    Cache-->>LLM: OK
+
+    LLM-->>API: chatId
+    API-->>U: 200 OK<br/>{ ChatId: chatId }
+```
+
+#### Response generation
+
+```mermaid
+sequenceDiagram
+    autonumber
+
+    participant U as User
+    participant API as API Controller<br/>SendMessage()
+    participant BG as Background Task
+    participant LLM as LlmService
+    participant Cache as Cache
+    participant Chat as ChatCompletionService
+    participant Sig as NotificationService
+
+    U->>API: POST /send-message/{chatId}<br/>MessageDto
+    API->>BG: Start background task (Task.Run)
+    API-->>U: 202 Accepted
+
+    BG->>LLM: GenerateStreamingResponseAsync(chatId, message, farmId)
+
+    LLM->>Cache: GetOrCreateAsync(chatId)
+    Cache-->>LLM: ChatHistory (existing or new)
+
+    LLM->>LLM: Add user message to history
+
+    LLM->>Chat: GetStreamingChatMessageContentsAsync(chatHistory)
+    loop For each streamed token
+        Chat-->>LLM: StreamingChatMessageContent token
+        LLM->>LLM: Append token to assistantResponse
+        LLM->>Sig: NotifyLlmStreamingResponseAsync(chatId, token)
+    end
+
+    LLM->>LLM: Add assistant message to history
+
+    LLM->>Cache: SetAsync(chatId, updated ChatHistory)
+
+    LLM->>Sig: NotifyLlmStreamingFinishedAsync(chatId)
+```
