@@ -1,6 +1,7 @@
 ﻿using AgricultureApp.Application.Auth;
 using AgricultureApp.Application.DTOs;
 using AgricultureApp.Application.ResultModels;
+using AgricultureApp.Infrastructure.Auth;
 using AgricultureApp.SharedKernel.Localization;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,27 @@ namespace AgricultureApp.Server.Controllers
             var platform = Request.Headers["X-Client-Platform"].ToString();
 
             AuthResult result = await authService.RegisterAsync(registerDto, platform);
-            return !result.Succeeded ? BadRequest(result) : Ok(result);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result);
+            }
+
+            if (platform.Equals("web", StringComparison.OrdinalIgnoreCase))
+            {
+                CookieOptions cookieOptions = new()
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax,
+                    MaxAge = TimeSpan.FromDays(7),
+                    Path = "/"
+                };
+                Response.Cookies.Append("refresh_token", result.RefreshToken!, cookieOptions);
+                result.RefreshToken = null; // Do not return refresh token in response body for web clients
+            }
+
+            return Ok(result);
         }
 
         [HttpPost("login")]
@@ -29,23 +50,100 @@ namespace AgricultureApp.Server.Controllers
             var platform = Request.Headers["X-Client-Platform"].ToString();
 
             AuthResult result = await authService.LoginAsync(loginDto, platform);
-            return !result.Succeeded ? Unauthorized(result) : Ok(result);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result);
+            }
+
+            if (platform.Equals("web", StringComparison.OrdinalIgnoreCase))
+            {
+                CookieOptions cookieOptions = new()
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax,
+                    MaxAge = TimeSpan.FromDays(7),
+                    Path = "/"
+                };
+                Response.Cookies.Append("refresh_token", result.RefreshToken!, cookieOptions);
+                result.RefreshToken = null; // Do not return refresh token in response body for web clients
+            }
+
+            return Ok(result);
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] string refreshToken)
+        public async Task<IActionResult> Refresh([FromBody] JwtRefreshRequest? request)
         {
+            var refreshToken = request?.RefreshToken ?? "";
+            var platform = Request.Headers["X-Client-Platform"].ToString();
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                refreshToken = Request.Cookies["refresh_token"];
+            }
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                return BadRequest(new BaseResult { Succeeded = false, Errors = [localizer["RefreshTokenMissing"]] });
+            }
+
             AuthResult result = await authService.RefreshTokenAsync(refreshToken);
-            return !result.Succeeded ? BadRequest(result) : Ok(result);
+            if (!result.Succeeded)
+            {
+                Response.Cookies.Delete("refresh_token", new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax,
+                    Path = "/"
+                });
+                return BadRequest(result);
+            }
+
+            if (platform.Equals("web", StringComparison.OrdinalIgnoreCase))
+            {
+                CookieOptions cookieOptions = new()
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax,
+                    MaxAge = TimeSpan.FromDays(7),
+                    Path = "/"
+                };
+                Response.Cookies.Append("refresh_token", result.RefreshToken!, cookieOptions);
+                result.RefreshToken = null; // Do not return refresh token in response body for web clients
+            }
+
+            return Ok(result);
         }
 
         [HttpPost("revoke")]
-        public async Task<IActionResult> Revoke([FromBody] string refreshToken)
+        public async Task<IActionResult> Revoke([FromBody] JwtRefreshRequest? request)
         {
+            var refreshToken = request?.RefreshToken ?? "";
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                refreshToken = Request.Cookies["refresh_token"];
+            }
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                return BadRequest(new BaseResult { Succeeded = false, Errors = [localizer["RefreshTokenMissing"]] });
+            }
             var success = await authService.RevokeRefreshTokenAsync(refreshToken);
-            return !success
-                ? BadRequest(new { Message = localizer["InvalidRefresh"] })
-                : Ok(new { Message = localizer["RefreshRevoked"] });
+
+            if (!success)
+            {
+                return BadRequest(new BaseResult { Succeeded = false, Errors = [localizer["InvalidRefresh"]] });
+            }
+
+            Response.Cookies.Delete("refresh_token", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax,
+                Path = "/"
+            });
+
+            return Ok(new BaseResult { Succeeded = true, Message = localizer["RefreshRevoked"] });
         }
     }
 }

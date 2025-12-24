@@ -38,7 +38,7 @@ namespace AgricultureApp.Infrastructure.Auth
                 return new AuthResult
                 {
                     Succeeded = false,
-                    Errors = result.Errors.Select(e => e.Description)
+                    Errors = result.Errors.Select(e => $"{localizer[e.Code, registerDto.UserName]}")
                 };
             }
 

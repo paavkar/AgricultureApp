@@ -255,4 +255,22 @@
   <data name="UpdateFieldFailed" xml:space="preserve">
     <value>Failed to update field.</value>
   </data>
+  <data name="RefreshTokenMissing" xml:space="preserve">
+    <value>Refresh token must be provided.</value>
+  </data>
+  <data name="PasswordTooShort" xml:space="preserve">
+    <value>Passwords must be at least 6 characters.</value>
+  </data>
+  <data name="PasswordRequiresNonAlphanumeric" xml:space="preserve">
+    <value>Passwords must have at least one non alphanumeric character.</value>
+  </data>
+  <data name="PasswordRequiresDigit" xml:space="preserve">
+    <value>Passwords must have at least one digit ('0'-'9').</value>
+  </data>
+  <data name="PasswordRequiresUpper" xml:space="preserve">
+    <value>Passwords must have at least one uppercase ('A'-'Z').</value>
+  </data>
+  <data name="DuplicateUserName" xml:space="preserve">
+    <value>Username {0} is already taken.</value>
+  </data>
 </root>

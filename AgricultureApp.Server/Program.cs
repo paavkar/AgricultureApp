@@ -27,9 +27,7 @@ builder.Logging
        .AddConsole()
        .AddDebug();
 
-List<CultureInfo> supportedCultures = new[] { "en-GB", "fi-FI" }
-    .Select(c => new CultureInfo(c))
-    .ToList();
+List<CultureInfo> supportedCultures = [.. new[] { "en-GB", "fi-FI" }.Select(c => new CultureInfo(c))];
 
 builder.Services.AddLocalization(options =>
 {
@@ -47,7 +45,6 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
         new AcceptLanguageHeaderRequestCultureProvider()
     ];
 });
-
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -135,6 +132,10 @@ app.MapStaticAssets();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "v1");
+    });
 }
 
 app.UseCors("AllowLocalhost");
