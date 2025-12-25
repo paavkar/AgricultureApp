@@ -166,7 +166,6 @@ namespace AgricultureApp.Server.Controllers
                     Path = "/"
                 };
                 Response.Cookies.Delete("refresh_token", cookieOptions);
-                Response.Cookies.Delete("access_token", cookieOptions);
                 return BadRequest(result);
             }
 
@@ -181,10 +180,7 @@ namespace AgricultureApp.Server.Controllers
                     Path = "/"
                 };
                 Response.Cookies.Append("refresh_token", result.RefreshToken!, cookieOptions);
-                cookieOptions.MaxAge = TimeSpan.FromHours(1);
-                Response.Cookies.Append("access_token", result.AccessToken!, cookieOptions);
                 result.RefreshToken = null; // Do not return refresh token in response body for web clients
-                result.AccessToken = null; // Do not return access token in response body for web clients
             }
 
             return Ok(result);
@@ -217,7 +213,6 @@ namespace AgricultureApp.Server.Controllers
                 Path = "/"
             };
             Response.Cookies.Delete("refresh_token", cookieOptions);
-            Response.Cookies.Delete("access_token", cookieOptions);
 
             return Ok(new BaseResult { Succeeded = true, Message = localizer["RefreshRevoked"] });
         }
