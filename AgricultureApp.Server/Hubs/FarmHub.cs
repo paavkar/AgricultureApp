@@ -6,7 +6,8 @@ using System.Security.Claims;
 namespace AgricultureApp.Server.Hubs
 {
     [Authorize]
-    public class FarmHub(IFarmRepository farmRepository,
+    public class FarmHub(
+        IFarmRepository farmRepository,
         ILogger<FarmHub> logger) : Hub
     {
         public async Task JoinFarm(string farmId)
@@ -28,9 +29,14 @@ namespace AgricultureApp.Server.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, farmId);
         }
 
-        public async Task LeaveFarm(string farmId)
+        public async Task LeaveGroup(string groupName)
         {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, farmId);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+        }
+
+        public async Task JoinGroup(string groupName)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
         }
     }
 }
