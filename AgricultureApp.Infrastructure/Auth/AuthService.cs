@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -18,7 +19,8 @@ namespace AgricultureApp.Infrastructure.Auth
     public class AuthService(HybridCache cache, UserManager<ApplicationUser> userManager,
         IConfiguration configuration,
         RoleManager<IdentityRole> roleManager,
-        IStringLocalizer<AgricultureAppLoc> localizer) : IAuthService
+        IStringLocalizer<AgricultureAppLoc> localizer,
+        IOptions<IdentityOptions> identityOptions) : IAuthService
     {
         private const int RefreshTokenExpiryDays = 7;
 
@@ -38,7 +40,14 @@ namespace AgricultureApp.Infrastructure.Auth
                 return new AuthResult
                 {
                     Succeeded = false,
-                    Errors = result.Errors.Select(e => $"{localizer[e.Code, registerDto.UserName]}")
+                    Errors = result.Errors.Select(e =>
+                    e.Code switch
+                    {
+                        "DuplicateEmail" => localizer[e.Code, registerDto.Email].ToString(),
+                        "DuplicateUserName" => localizer[e.Code, registerDto.UserName].ToString(),
+                        "PasswordTooShort" => localizer[e.Code, identityOptions.Value.Password.RequiredLength].ToString(),
+                        _ => localizer[e.Code].ToString()
+                    })
                 };
             }
 

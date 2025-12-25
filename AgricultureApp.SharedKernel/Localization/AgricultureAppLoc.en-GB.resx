@@ -259,7 +259,7 @@
     <value>Refresh token must be provided.</value>
   </data>
   <data name="PasswordTooShort" xml:space="preserve">
-    <value>Passwords must be at least 6 characters.</value>
+    <value>Passwords must be at least {0} characters.</value>
   </data>
   <data name="PasswordRequiresNonAlphanumeric" xml:space="preserve">
     <value>Passwords must have at least one non alphanumeric character.</value>
@@ -271,6 +271,9 @@
     <value>Passwords must have at least one uppercase ('A'-'Z').</value>
   </data>
   <data name="DuplicateUserName" xml:space="preserve">
-    <value>Username {0} is already taken.</value>
+    <value>Username '{0}' is already taken.</value>
+  </data>
+  <data name="DuplicateEmail" xml:space="preserve">
+    <value>Email '{0}' is already taken.</value>
   </data>
 </root>

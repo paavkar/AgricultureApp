@@ -259,18 +259,21 @@
     <value>Päivitystunnus täytyy olla pyynnössä.</value>
   </data>
   <data name="PasswordTooShort" xml:space="preserve">
-    <value>Salasanan tulee olla vähintään 6 merkkiä pitkä.</value>
+    <value>Salasanan tulee olla vähintään {0} merkkiä pitkä.</value>
   </data>
   <data name="PasswordRequiresNonAlphanumeric" xml:space="preserve">
     <value>Salasanassa täytyy olla vähintään yksi erikoismerkki.</value>
   </data>
   <data name="PasswordRequiresDigit" xml:space="preserve">
-    <value>Salasanassa täytyy olla ainakin yksi numero ('0'-'9')</value>
+    <value>Salasanassa täytyy olla ainakin yksi numero ('0'-'9').</value>
   </data>
   <data name="PasswordRequiresUpper" xml:space="preserve">
     <value>Salasanassa täytyy olla ainakin yksi iso kirjain ('A'-'Z').</value>
   </data>
   <data name="DuplicateUserName" xml:space="preserve">
-    <value>Käyttäjänimi {0} ei ole vapaana.</value>
+    <value>Käyttäjänimi '{0}' ei ole vapaana.</value>
+  </data>
+  <data name="DuplicateEmail" xml:space="preserve">
+    <value>Sähköpostiosoite '{0}' ei ole vapaana.</value>
   </data>
 </root>
