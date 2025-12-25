@@ -276,4 +276,16 @@
   <data name="DuplicateEmail" xml:space="preserve">
     <value>Sähköpostiosoite '{0}' ei ole vapaana.</value>
   </data>
+  <data name="Invalid2FACode" xml:space="preserve">
+    <value>Annettu 2FA-koodi on väärä.</value>
+  </data>
+  <data name="2FAKeyGenerationFailed" xml:space="preserve">
+    <value>2FA-koodin luominen epäonnistui.</value>
+  </data>
+  <data name="2FANotEnabled" xml:space="preserve">
+    <value>2FA ei ole konfiguroitu.</value>
+  </data>
+  <data name="SetTwoFactorFailed" xml:space="preserve">
+    <value>2FA-asetuksen muuttaminen epäonnistui.</value>
+  </data>
 </root>

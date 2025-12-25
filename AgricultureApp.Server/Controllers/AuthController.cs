@@ -4,8 +4,10 @@ using AgricultureApp.Application.ResultModels;
 using AgricultureApp.Infrastructure.Auth;
 using AgricultureApp.SharedKernel.Localization;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using System.Security.Claims;
 
 namespace AgricultureApp.Server.Controllers
 {
@@ -38,10 +40,7 @@ namespace AgricultureApp.Server.Controllers
                     Path = "/"
                 };
                 Response.Cookies.Append("refresh_token", result.RefreshToken!, cookieOptions);
-                cookieOptions.MaxAge = TimeSpan.FromHours(1);
-                Response.Cookies.Append("access_token", result.AccessToken!, cookieOptions);
                 result.RefreshToken = null; // Do not return refresh token in response body for web clients
-                result.AccessToken = null; // Do not return access token in response body for web clients
             }
 
             return Ok(result);
@@ -51,8 +50,36 @@ namespace AgricultureApp.Server.Controllers
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
             var platform = Request.Headers["X-Client-Platform"].ToString();
-
             AuthResult result = await authService.LoginAsync(loginDto, platform);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result);
+            }
+
+            if (platform.Equals("web", StringComparison.OrdinalIgnoreCase) && !result.TwoFactorRequired)
+            {
+                CookieOptions cookieOptions = new()
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax,
+                    MaxAge = TimeSpan.FromDays(7),
+                    Path = "/"
+                };
+                Response.Cookies.Append("refresh_token", result.RefreshToken!, cookieOptions);
+                result.RefreshToken = null; // Do not return refresh token in response body for web clients
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost("verify-2fa")]
+        public async Task<IActionResult> VerifyTwoFactor([FromBody] TwoFactorDto twoFactorDto)
+        {
+            var platform = Request.Headers["X-Client-Platform"].ToString();
+            AuthResult result = await authService.VerifyTwoFactorAsync(twoFactorDto, platform);
+
             if (!result.Succeeded)
             {
                 return BadRequest(result);
@@ -69,13 +96,49 @@ namespace AgricultureApp.Server.Controllers
                     Path = "/"
                 };
                 Response.Cookies.Append("refresh_token", result.RefreshToken!, cookieOptions);
-                cookieOptions.MaxAge = TimeSpan.FromHours(1);
-                Response.Cookies.Append("access_token", result.AccessToken!, cookieOptions);
                 result.RefreshToken = null; // Do not return refresh token in response body for web clients
-                result.AccessToken = null; // Do not return access token in response body for web clients
             }
 
             return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("setup-2fa")]
+        public async Task<IActionResult> SetupTwoFactor()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            AuthResult result = await authService.SetupTwoFactorAsync(userId);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("enable-2fa")]
+        public async Task<IActionResult> EnableTwoFactor([FromBody] VerifyTwoFactorDto model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            Console.WriteLine(model.Code);
+
+            AuthResult result = await authService.EnableTwoFactorAsync(userId, model);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : Ok(result);
+        }
+
+        [Authorize]
+        [HttpPost("disable-2fa")]
+        public async Task<IActionResult> DisableTwoFactor()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+
+            AuthResult result = await authService.DisableTwoFactorAsync(userId);
+
+            return !result.Succeeded
+                ? BadRequest(result)
+                : Ok(result);
         }
 
         [HttpPost("refresh")]

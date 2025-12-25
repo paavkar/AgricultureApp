@@ -16,7 +16,9 @@ using System.Text;
 
 namespace AgricultureApp.Infrastructure.Auth
 {
-    public class AuthService(HybridCache cache, UserManager<ApplicationUser> userManager,
+    public class AuthService(
+        HybridCache cache,
+        UserManager<ApplicationUser> userManager,
         IConfiguration configuration,
         RoleManager<IdentityRole> roleManager,
         IStringLocalizer<AgricultureAppLoc> localizer,
@@ -77,8 +79,163 @@ namespace AgricultureApp.Infrastructure.Auth
                 };
             }
 
+            if (user.TwoFactorEnabled)
+            {
+                return new AuthResult
+                {
+                    Succeeded = true,
+                    TwoFactorRequired = true
+                };
+            }
+
             platform = string.IsNullOrWhiteSpace(platform) ? "default" : platform;
             return await GenerateAuthResultAsync(user, platform);
+        }
+
+        public async Task<AuthResult> VerifyTwoFactorAsync(TwoFactorDto twoFactorDto, string platform)
+        {
+            ApplicationUser? user = twoFactorDto.EmailOrUsername.Contains('@')
+                ? await userManager.FindByEmailAsync(twoFactorDto.EmailOrUsername)
+                : await userManager.FindByNameAsync(twoFactorDto.EmailOrUsername);
+
+            if (user is null)
+            {
+                return new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["UserNotFound"]]
+                };
+            }
+
+            var isValid = await userManager.VerifyTwoFactorTokenAsync(
+                user,
+                TokenOptions.DefaultAuthenticatorProvider,
+                twoFactorDto.Code);
+
+            return !isValid
+                ? new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["Invalid2FACode"]]
+                }
+                : await GenerateAuthResultAsync(user, platform);
+        }
+
+        public async Task<AuthResult> SetupTwoFactorAsync(string userId)
+        {
+            ApplicationUser? user = await userManager.FindByIdAsync(userId);
+
+            if (user is null)
+            {
+                return new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["UserNotFound"]]
+                };
+            }
+
+            var key = await userManager.GetAuthenticatorKeyAsync(user);
+            if (key is null)
+            {
+                IdentityResult updated = await userManager.ResetAuthenticatorKeyAsync(user);
+                if (!updated.Succeeded)
+                {
+                    return new AuthResult
+                    {
+                        Succeeded = false,
+                        Errors = [localizer["2FAKeyGenerationFailed"]]
+                    };
+                }
+                key = await userManager.GetAuthenticatorKeyAsync(user);
+            }
+
+            return new AuthResult
+            {
+                Succeeded = true,
+                TwoFactorKey = key
+            };
+        }
+
+        public async Task<AuthResult> EnableTwoFactorAsync(string userId, VerifyTwoFactorDto model)
+        {
+            ApplicationUser? user = await userManager.FindByIdAsync(userId);
+
+            if (user is null)
+            {
+                return new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["UserNotFound"]]
+                };
+            }
+
+            var isValid = await userManager.VerifyTwoFactorTokenAsync(
+                user,
+                TokenOptions.DefaultAuthenticatorProvider,
+                model.Code);
+
+            if (!isValid)
+            {
+                return new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["Invalid2FACode"]]
+                };
+            }
+
+            IdentityResult result = await userManager.SetTwoFactorEnabledAsync(user, true);
+
+            return !result.Succeeded
+                ? new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["SetTwoFactorFailed"]]
+                }
+                : new AuthResult
+                {
+                    Succeeded = true
+                };
+        }
+
+        public async Task<AuthResult> DisableTwoFactorAsync(string userId)
+        {
+            ApplicationUser? user = await userManager.FindByIdAsync(userId);
+
+            if (user is null)
+            {
+                return new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["UserNotFound"]]
+                };
+            }
+
+            if (!user.TwoFactorEnabled)
+            {
+                return new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["2FANotEnabled"]]
+                };
+            }
+
+            IdentityResult disableResult = await userManager.SetTwoFactorEnabledAsync(user, false);
+
+            if (!disableResult.Succeeded)
+            {
+                return new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [localizer["SetTwoFactorFailed"]]
+                };
+            }
+
+            await userManager.ResetAuthenticatorKeyAsync(user);
+
+            return new AuthResult
+            {
+                Succeeded = true
+            };
         }
 
         public async Task<AuthResult> RefreshTokenAsync(string refreshToken)
