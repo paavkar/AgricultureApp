@@ -277,15 +277,15 @@
     <value>Email '{0}' is already taken.</value>
   </data>
   <data name="Invalid2FACode" xml:space="preserve">
-    <value>The 2FA code supplied is invalid.</value>
+    <value>The two factor authentication code supplied is invalid.</value>
   </data>
   <data name="2FAKeyGenerationFailed" xml:space="preserve">
-    <value>Generating the two factor key failed.</value>
+    <value>Generating the two factor authentication key failed.</value>
   </data>
   <data name="2FANotEnabled" xml:space="preserve">
     <value>Two factor authentication is not enabled.</value>
   </data>
   <data name="SetTwoFactorFailed" xml:space="preserve">
-    <value>Changing the 2FA flag failed.</value>
+    <value>Changing the two factor authentication flag failed.</value>
   </data>
 </root>

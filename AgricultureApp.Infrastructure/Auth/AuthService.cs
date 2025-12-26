@@ -9,10 +9,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Encodings.Web;
 
 namespace AgricultureApp.Infrastructure.Auth
 {
@@ -149,10 +151,19 @@ namespace AgricultureApp.Infrastructure.Auth
                 key = await userManager.GetAuthenticatorKeyAsync(user);
             }
 
+            var issuer = configuration["Jwt:Issuer"];
+            var authenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
+            var otpauthUri = string.Format(
+                CultureInfo.InvariantCulture,
+                authenticatorUriFormat,
+                UrlEncoder.Default.Encode(issuer),
+                UrlEncoder.Default.Encode(user.Email),
+                key);
+
             return new AuthResult
             {
                 Succeeded = true,
-                TwoFactorKey = key
+                TwoFactorUri = otpauthUri
             };
         }
 
