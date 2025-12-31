@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Border xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:controls="clr-namespace:AgricultureApp.MauiClient.Pages.Controls"
+        xmlns:models="clr-namespace:AgricultureApp.MauiClient.Models"
+        xmlns:fonts="clr-namespace:Fonts"
+        xmlns:pageModels="clr-namespace:AgricultureApp.MauiClient.PageModels"
+        xmlns:resources="clr-namespace:AgricultureApp.MauiClient.Resources.Strings"
+        xmlns:shimmer="clr-namespace:Syncfusion.Maui.Toolkit.Shimmer;assembly=Syncfusion.Maui.Toolkit"
+        x:Class="AgricultureApp.MauiClient.Pages.Controls.FarmCardView"
+        SemanticProperties.Description="{Binding AccessibilityDescription}"
+        Style="{StaticResource CardStyle}"
+        MinimumHeightRequest="250"
+        x:DataType="models:Farm">
+    <shimmer:SfShimmer
+        BackgroundColor="Transparent"
+        IsActive="{Binding IsBusy, Source={RelativeSource AncestorType={x:Type pageModels:MainPageModel}},
+                    x:DataType=pageModels:IFarmPageModel}">
+        <shimmer:SfShimmer.CustomView>
+            <VerticalStackLayout Spacing="15">
+                <BoxView
+                    CornerRadius="48"
+                    WidthRequest="24"
+                    HeightRequest="24"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Start"
+                    Style="{StaticResource ShimmerCustomViewStyle}"/>
+                <BoxView 
+                    HeightRequest="24"
+                    Style="{StaticResource ShimmerCustomViewStyle}"/>
+                <BoxView 
+                    HeightRequest="48"
+                    Style="{StaticResource ShimmerCustomViewStyle}"/>
+                <BoxView 
+                    HeightRequest="24"
+                    Margin="0, 12"
+                    Style="{StaticResource ShimmerCustomViewStyle}"/>
+            </VerticalStackLayout>
+        </shimmer:SfShimmer.CustomView>
+        <shimmer:SfShimmer.Content>
+            <VerticalStackLayout Spacing="15">
+                <Label Text="{Binding Name}"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                            Dark={StaticResource Gray400}}"
+                       FontSize="14"
+                       TextTransform="Uppercase"/>
+
+                <Label Text="{Binding Location}"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                            Dark={StaticResource Gray400}}"
+                       FontSize="14"
+                       TextTransform="Uppercase"/>
+
+                <Label Text="{Binding ManagersCount}"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                            Dark={StaticResource Gray400}}"
+                       FontSize="14"
+                       TextTransform="Uppercase"/>
+
+                <Label Text="{Binding FieldsCount}"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                            Dark={StaticResource Gray400}}"
+                       FontSize="14"
+                       TextTransform="Uppercase"/>
+
+                <Label Text="{Binding OwnedFieldsCount}"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                            Dark={StaticResource Gray400}}"
+                       FontSize="14"
+                       TextTransform="Uppercase"/>
+            </VerticalStackLayout>
+        </shimmer:SfShimmer.Content>
+    </shimmer:SfShimmer>
+</Border>

@@ -45,9 +45,22 @@ namespace AgricultureApp.MauiClient
                 {
                     client.BaseAddress = new Uri(Constants.ApiBaseUrl);
                 })
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    HttpClientHandler handler = new();
+#if DEBUG
+                    handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                    {
+                        return cert != null && cert.Issuer.Equals("CN=localhost")
+                            ? true
+                            : errors == System.Net.Security.SslPolicyErrors.None;
+                    };
+#endif
+                    return handler;
+                })
                 .AddHttpMessageHandler<JwtAuthHandler>();
 
-            builder.Services.AddSingleton<FarmRepository>();
+            builder.Services.AddScoped<FarmRepository>();
 
             builder.Services.AddSingleton<ModalErrorHandler>();
             builder.Services.AddSingleton<MainPageModel>();
@@ -56,6 +69,7 @@ namespace AgricultureApp.MauiClient
             builder.Services.AddSingleton<VerifyTwoFactorPageModel>();
 
             Routing.RegisterRoute(nameof(VerifyTwoFactorPage), typeof(VerifyTwoFactorPage));
+            builder.Services.AddTransientWithShellRoute<FarmDetailPage, FarmDetailPageModel>("farm");
 
             return builder.Build();
         }

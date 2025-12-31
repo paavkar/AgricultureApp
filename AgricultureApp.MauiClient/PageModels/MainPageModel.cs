@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AgricultureApp.MauiClient.PageModels
 {
-    public partial class MainPageModel : ObservableObject
+    public partial class MainPageModel : ObservableObject, IFarmPageModel
     {
         private bool _isNavigatedTo;
         private bool _dataLoaded;

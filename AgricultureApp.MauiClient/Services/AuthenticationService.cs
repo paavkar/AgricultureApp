@@ -14,7 +14,16 @@ namespace AgricultureApp.MauiClient.Services
 
         public AuthenticationService(ILogger<AuthenticationService> logger)
         {
-            _http = new HttpClient();
+            HttpClientHandler handler = new();
+#if DEBUG
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+            {
+                return cert != null && cert.Issuer.Equals("CN=localhost")
+                    ? true
+                    : errors == System.Net.Security.SslPolicyErrors.None;
+            };
+#endif
+            _http = new HttpClient(handler);
             _logger = logger;
         }
 
@@ -90,7 +99,7 @@ namespace AgricultureApp.MauiClient.Services
             }
             catch (Exception ex)
             {
-                _logger.LogInformation(ex.Message);
+                _logger.LogError(ex, "Error in login method: {Method}", nameof(LoginAsync));
                 return new AuthResult { Succeeded = false, Errors = [ex.Message] };
             }
         }

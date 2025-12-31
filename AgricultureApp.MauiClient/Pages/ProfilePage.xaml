@@ -5,7 +5,7 @@
              xmlns:resources="clr-namespace:AgricultureApp.MauiClient.Resources.Strings"
              x:Class="AgricultureApp.MauiClient.Pages.ProfilePage"
              x:DataType="pageModels:ProfilePageModel"
-             Title="ProfilePage">
+             Title="{x:Static resources:AppResources.ProfilePage}">
     <VerticalStackLayout>
         <Label 
             Text="Welcome to .NET MAUI!"

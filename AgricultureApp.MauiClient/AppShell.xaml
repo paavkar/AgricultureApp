@@ -4,19 +4,20 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:sf="clr-namespace:Syncfusion.Maui.Toolkit.SegmentedControl;assembly=Syncfusion.Maui.Toolkit"
+    xmlns:resources="clr-namespace:AgricultureApp.MauiClient.Resources.Strings"
     xmlns:pages="clr-namespace:AgricultureApp.MauiClient.Pages"
     Shell.FlyoutBehavior="Flyout"
     Title="AgricultureApp">
 
     <ShellContent
         x:Name="HomeShellContent"
-        Title="Home"
+        Title="{x:Static resources:AppResources.Home}"
         ContentTemplate="{DataTemplate pages:MainPage}"
         Route="MainPage" />
 
     <ShellContent
         x:Name="ProfileShellContent"
-        Title="Profile"
+        Title="{x:Static resources:AppResources.ProfilePage}"
         ContentTemplate="{DataTemplate pages:ProfilePage}"
         Route="ProfilePage" />
 

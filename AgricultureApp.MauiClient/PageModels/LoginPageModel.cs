@@ -63,6 +63,18 @@ namespace AgricultureApp.MauiClient.PageModels
             }
             else
             {
+#if WINDOWS
+                var displayInfo = DeviceDisplay.MainDisplayInfo;
+                var density = displayInfo.Density;
+
+                var width = displayInfo.Width / density;
+                var height = displayInfo.Height / density;
+
+                window.Width = width * 0.6;
+                window.Height = height * 0.6;
+                window.MinimumWidth = width * 0.5;
+                window.MinimumHeight = height * 0.5;
+#endif
                 window.Page = new AppShell();
             }
 

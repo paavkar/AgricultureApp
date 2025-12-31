@@ -61,6 +61,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cultivated fields: {0}.
+        /// </summary>
+        public static string CultFieldsCount {
+            get {
+                return ResourceManager.GetString("CultFieldsCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
         public static string Email {
@@ -84,6 +93,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         public static string EnterTwoFactorCode {
             get {
                 return ResourceManager.GetString("EnterTwoFactorCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Home.
+        /// </summary>
+        public static string Home {
+            get {
+                return ResourceManager.GetString("Home", resourceCulture);
             }
         }
         
@@ -115,6 +133,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Managers: {0}.
+        /// </summary>
+        public static string ManagerCount {
+            get {
+                return ResourceManager.GetString("ManagerCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Owned farms.
         /// </summary>
         public static string OwnedFarms {
@@ -124,11 +151,29 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Owned fields: {0}.
+        /// </summary>
+        public static string OwnedFieldsCount {
+            get {
+                return ResourceManager.GetString("OwnedFieldsCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
         public static string Password {
             get {
                 return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile.
+        /// </summary>
+        public static string ProfilePage {
+            get {
+                return ResourceManager.GetString("ProfilePage", resourceCulture);
             }
         }
         

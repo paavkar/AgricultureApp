@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CultFieldsCount" xml:space="preserve">
+    <value>Kylvettäviä peltoja: {0}</value>
+  </data>
   <data name="Email" xml:space="preserve">
     <value>Sähköposti</value>
   </data>
@@ -125,6 +128,9 @@
   </data>
   <data name="EnterTwoFactorCode" xml:space="preserve">
     <value>Anna kaksivaiheisen tunnistuksen koodi tunnistussovelluksesta.</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Kotisivu</value>
   </data>
   <data name="Login" xml:space="preserve">
     <value>Kirjaudu sisään</value>
@@ -135,11 +141,20 @@
   <data name="ManagedFarms" xml:space="preserve">
     <value>Hallinnoidut maatilat</value>
   </data>
+  <data name="ManagerCount" xml:space="preserve">
+    <value>Hallinnoijia: {0}</value>
+  </data>
   <data name="OwnedFarms" xml:space="preserve">
     <value>Omistetut maatilat</value>
   </data>
+  <data name="OwnedFieldsCount" xml:space="preserve">
+    <value>Omistettuja peltoja: {0}</value>
+  </data>
   <data name="Password" xml:space="preserve">
     <value>Salasana</value>
+  </data>
+  <data name="ProfilePage" xml:space="preserve">
+    <value>Profiili</value>
   </data>
   <data name="UserName" xml:space="preserve">
     <value>Käyttäjänimi</value>

@@ -1,4 +1,7 @@
-﻿namespace AgricultureApp.MauiClient.Models
+﻿using AgricultureApp.MauiClient.Resources.Strings;
+using System.Collections.ObjectModel;
+
+namespace AgricultureApp.MauiClient.Models
 {
     public class Farm
     {
@@ -12,9 +15,16 @@
         public string CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
 
-        public List<FarmManager> Managers { get; set; } = [];
+        public ObservableCollection<FarmManager> Managers { get; set; } = [];
         public FarmPerson Owner { get; set; }
-        public List<Field> Fields { get; set; } = [];
-        public List<Field> OwnedFields { get; set; } = [];
+        public ObservableCollection<Field> Fields { get; set; } = [];
+        public ObservableCollection<Field> OwnedFields { get; set; } = [];
+
+        public string ManagersCount =>
+            string.Format(AppResources.ManagerCount, Managers.Count);
+        public string FieldsCount =>
+            string.Format(AppResources.CultFieldsCount, Fields.Count);
+        public string OwnedFieldsCount =>
+            string.Format(AppResources.OwnedFieldsCount, OwnedFields.Count);
     }
 }

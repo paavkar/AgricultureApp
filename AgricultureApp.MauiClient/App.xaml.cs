@@ -18,7 +18,8 @@ namespace AgricultureApp.MauiClient
         {
             Window window = new()
             {
-                Page = new LoadingPage()
+                Page = new LoadingPage(),
+                Title = "AgricultureApp"
             };
 
             _ = InitializeRootPage(window);
@@ -50,6 +51,18 @@ namespace AgricultureApp.MauiClient
 
                 if (result)
                 {
+#if WINDOWS
+                    var displayInfo = DeviceDisplay.MainDisplayInfo;
+                    var density = displayInfo.Density;
+
+                    var width = displayInfo.Width / density;
+                    var height = displayInfo.Height / density;
+
+                    window.Width = width * 0.6;
+                    window.Height = height * 0.6;
+                    window.MinimumWidth = width * 0.5;
+                    window.MinimumHeight = height * 0.5;
+#endif
                     window.Page = new AppShell();
                 }
                 else

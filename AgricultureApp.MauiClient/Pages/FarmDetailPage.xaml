@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pageModels="clr-namespace:AgricultureApp.MauiClient.PageModels"
+             xmlns:models="clr-namespace:AgricultureApp.MauiClient.Models"
+             xmlns:pages="clr-namespace:AgricultureApp.MauiClient.Pages"
+             xmlns:sf="clr-namespace:Syncfusion.Maui.Toolkit.TextInputLayout;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:controls="clr-namespace:AgricultureApp.MauiClient.Pages.Controls"
+             xmlns:fonts="clr-namespace:Fonts"
+             x:Class="AgricultureApp.MauiClient.Pages.FarmDetailPage"
+             x:DataType="pageModels:FarmDetailPageModel"
+             Title="{Binding PageTitle}">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="{StaticResource LayoutPadding}"
+                                 Spacing="{StaticResource LayoutSpacing}">
+                
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>
