@@ -1,4 +1,4 @@
-﻿namespace AgricultureApp.Application.DTOs
+﻿namespace AgricultureApp.MauiClient.Models
 {
     public class TwoFactorDto
     {

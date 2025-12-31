@@ -1,0 +1,15 @@
+﻿namespace AgricultureApp.MauiClient.Models
+{
+    public class ApplicationUser
+    {
+        public string Id { get; set; }
+        public string UserName { get; set; }
+        public string NormalizedUserName { get; set; }
+        public string Email { get; set; }
+        public string NormalizedEmail { get; set; }
+        public string EmailConfirmed { get; set; }
+        public string PhoneNumber { get; set; }
+        public bool TwoFactorEnabled { get; set; }
+        public string? Name { get; set; }
+    }
+}

@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pageModels="clr-namespace:AgricultureApp.MauiClient.PageModels"
+             xmlns:resources="clr-namespace:AgricultureApp.MauiClient.Resources.Strings"
+             xmlns:models="clr-namespace:AgricultureApp.MauiClient.Models"
+             xmlns:pullToRefresh="clr-namespace:Syncfusion.Maui.Toolkit.PullToRefresh;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="AgricultureApp.MauiClient.Pages.MainPage"
+             x:DataType="pageModels:MainPageModel"
+             x:Name="OverviewPage">
+
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            BindingContext="{Binding Path=BindingContext, Source={x:Reference OverviewPage}, x:DataType=ContentPage}"
+            EventName="NavigatedTo"
+            Command="{Binding NavigatedToCommand}" />
+        <toolkit:EventToCommandBehavior
+            BindingContext="{Binding Path=BindingContext, Source={x:Reference OverviewPage}, x:DataType=ContentPage}"
+            EventName="NavigatedFrom"
+            Command="{Binding NavigatedFromCommand}" />
+        <toolkit:EventToCommandBehavior
+            BindingContext="{Binding Path=BindingContext, Source={x:Reference OverviewPage}, x:DataType=ContentPage}"
+            EventName="Appearing"                
+            Command="{Binding AppearingCommand}" />
+    </ContentPage.Behaviors>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <pullToRefresh:SfPullToRefresh
+            IsRefreshing="{Binding IsRefreshing}"
+            RefreshCommand="{Binding RefreshCommand}">
+            <pullToRefresh:SfPullToRefresh.PullableContent>
+                <ScrollView>
+                    <Grid Padding="{StaticResource LayoutPadding}" RowSpacing="{StaticResource LayoutSpacing}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Text="{x:Static resources:AppResources.OwnedFarms}"
+                               Style="{StaticResource Title2}" SemanticProperties.HeadingLevel="Level1"/>
+                        <CollectionView Grid.Row="1" ItemsSource="{Binding OwnedFarms}"
+                                        Margin="-7.5,0"
+                                        MinimumHeightRequest="250"
+                                        x:Name="OwnedFarmsCollectionView"
+                                        SelectionMode="Single"
+                                        SelectedItem="{Binding SelectedOwnedFarm}"
+                                        SelectionChangedCommand="{Binding NavigateToFarmCommand,
+                                            Source={RelativeSource AncestorType={x:Type pageModels:MainPageModel}},
+                                            x:DataType=pageModels:MainPageModel}"
+                                        SelectionChangedCommandParameter="{Binding SelectedOwnedFarm}">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15"/>
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Farm">
+                                    <Label Text="{Binding Name}" TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" FontSize="14" TextTransform="Uppercase"/>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <Label Grid.Row="2" Text="{x:Static resources:AppResources.ManagedFarms}"
+                            Style="{StaticResource Title2}" SemanticProperties.HeadingLevel="Level1"/>
+                        <CollectionView Grid.Row="3" ItemsSource="{Binding ManagedFarms}"
+                                        Margin="-7.5,0"
+                                        MinimumHeightRequest="250"
+                                        x:Name="ManagedFarmsCollectionView"
+                                        SelectionMode="Single"
+                                        SelectedItem="{Binding SelectedManagedFarm}"
+                                        SelectionChangedCommand="{Binding NavigateToFarmCommand,
+                                            Source={RelativeSource AncestorType={x:Type pageModels:MainPageModel}},
+                                            x:DataType=pageModels:MainPageModel}"
+                                        SelectionChangedCommandParameter="{Binding SelectedManagedFarm}">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15"/>
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Farm">
+                                    <Label Text="{Binding Name}" TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" FontSize="14" TextTransform="Uppercase"/>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Grid>
+                </ScrollView>
+            </pullToRefresh:SfPullToRefresh.PullableContent>
+        </pullToRefresh:SfPullToRefresh>
+    </Grid>
+
+</ContentPage>

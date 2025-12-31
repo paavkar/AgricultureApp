@@ -1,0 +1,71 @@
+﻿using AgricultureApp.MauiClient.Resources.Strings;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
+namespace AgricultureApp.MauiClient.PageModels
+{
+    public partial class LoginPageModel : ObservableObject
+    {
+        private readonly AuthenticationService _auth;
+
+        [ObservableProperty]
+        private string _email;
+        [ObservableProperty]
+        private string _userName;
+        [ObservableProperty]
+        private string _password;
+
+        [ObservableProperty]
+        private bool _useEmail = true;
+        public string LoginModeButtonText =>
+            UseEmail ? AppResources.UserNameLogin : AppResources.EmailLogin;
+
+        public LoginPageModel(AuthenticationService auth)
+        {
+            _auth = auth;
+        }
+
+        [RelayCommand]
+        private void ToggleLoginMode()
+        {
+            UseEmail = !UseEmail;
+        }
+
+        [RelayCommand]
+        private async Task Login()
+        {
+            if ((string.IsNullOrWhiteSpace(Email) && string.IsNullOrWhiteSpace(UserName))
+                || string.IsNullOrWhiteSpace(Password))
+            {
+                await AuthShell.DisplaySnackbarAsync("Email or UserName and Password cannot be empty.");
+                return;
+            }
+            LoginDto dto = new() { Email = Email, UserName = UserName, Password = Password };
+
+            AuthResult result = await _auth.LoginAsync(dto);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    await AuthShell.DisplaySnackbarAsync(error);
+                }
+                return;
+            }
+            Window window = Application.Current!.Windows[0];
+
+            if (result.TwoFactorRequired)
+            {
+                await Shell.Current.GoToAsync(nameof(VerifyTwoFactorPage), new Dictionary<string, object>
+                {
+                    { "LoginData", dto }
+                });
+            }
+            else
+            {
+                window.Page = new AppShell();
+            }
+
+        }
+    }
+}

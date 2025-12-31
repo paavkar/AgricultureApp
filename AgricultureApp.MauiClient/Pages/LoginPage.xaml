@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pageModels="clr-namespace:AgricultureApp.MauiClient.PageModels"
+             xmlns:resources="clr-namespace:AgricultureApp.MauiClient.Resources.Strings"
+             xmlns:local="clr-namespace:AgricultureApp.MauiClient.Converters"
+             x:Class="AgricultureApp.MauiClient.Pages.LoginPage"
+             x:DataType="pageModels:LoginPageModel"
+             Title="LoginPage">
+
+    <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+
+        <Label Text="{x:Static resources:AppResources.LoginPage}"
+               FontSize="28"
+               HorizontalOptions="Center" />
+
+        <Button Text="{Binding LoginModeButtonText}"
+                Command="{Binding ToggleLoginModeCommand}" />
+
+        <Entry Text="{Binding Email}"
+               Placeholder="{x:Static resources:AppResources.Email}"
+               Keyboard="Email"
+               IsVisible="{Binding UseEmail}" />
+
+        <Entry Text="{Binding UserName}"
+               Placeholder="{x:Static resources:AppResources.UserName}"
+               IsVisible="{Binding UseEmail, Converter={StaticResource InverseBoolConverter}}" />
+
+        <Entry Text="{Binding Password}"
+               Placeholder="{x:Static resources:AppResources.Password}"
+               IsPassword="True"
+               ClearButtonVisibility="WhileEditing" />
+
+        <Button Text="{x:Static resources:AppResources.Login}"
+                Command="{Binding LoginCommand}"
+                BackgroundColor="#4A90E2"
+                TextColor="White"
+                CornerRadius="8"
+                HeightRequest="50" />
+
+    </VerticalStackLayout>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <local:BoolToTextConverter x:Key="BoolToTextConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+</ContentPage>

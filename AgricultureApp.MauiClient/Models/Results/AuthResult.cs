@@ -1,4 +1,4 @@
-﻿namespace AgricultureApp.Application.ResultModels
+﻿namespace AgricultureApp.MauiClient.Models
 {
     public class AuthResult : BaseResult
     {

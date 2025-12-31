@@ -68,9 +68,9 @@ namespace AgricultureApp.Infrastructure.Auth
 
         public async Task<AuthResult> LoginAsync(LoginDto loginDto, string platform)
         {
-            ApplicationUser? user = loginDto.EmailOrUsername.Contains('@')
-                ? await userManager.FindByEmailAsync(loginDto.EmailOrUsername)
-                : await userManager.FindByNameAsync(loginDto.EmailOrUsername);
+            ApplicationUser? user = string.IsNullOrWhiteSpace(loginDto.UserName)
+                ? await userManager.FindByEmailAsync(loginDto.Email)
+                : await userManager.FindByNameAsync(loginDto.UserName);
 
             if (user == null || !await userManager.CheckPasswordAsync(user, loginDto.Password))
             {
@@ -96,9 +96,9 @@ namespace AgricultureApp.Infrastructure.Auth
 
         public async Task<AuthResult> VerifyTwoFactorAsync(TwoFactorDto twoFactorDto, string platform)
         {
-            ApplicationUser? user = twoFactorDto.EmailOrUsername.Contains('@')
-                ? await userManager.FindByEmailAsync(twoFactorDto.EmailOrUsername)
-                : await userManager.FindByNameAsync(twoFactorDto.EmailOrUsername);
+            ApplicationUser? user = string.IsNullOrWhiteSpace(twoFactorDto.UserName)
+                ? await userManager.FindByEmailAsync(twoFactorDto.Email)
+                : await userManager.FindByNameAsync(twoFactorDto.UserName);
 
             if (user is null)
             {
