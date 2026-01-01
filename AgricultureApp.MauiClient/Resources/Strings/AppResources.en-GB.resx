@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="FieldStatus_Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
   <data name="AddedAsFarmManager" xml:space="preserve">
     <value>You have been added as a manager to farm {0}.</value>
   </data>
@@ -134,6 +137,9 @@
   </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
+  </data>
+  <data name="FieldStatus_Inactive" xml:space="preserve">
+    <value>Inactive</value>
   </data>
   <data name="Login" xml:space="preserve">
     <value>Log in</value>
@@ -162,6 +168,9 @@
   <data name="RemovedAsFarmManager" xml:space="preserve">
     <value>You have been removed as farm manager from farm {0}.</value>
   </data>
+  <data name="FieldStatus_UnderMaintenance" xml:space="preserve">
+    <value>Under maintenance</value>
+  </data>
   <data name="UserName" xml:space="preserve">
     <value>UserName</value>
   </data>
@@ -170,5 +179,47 @@
   </data>
   <data name="VerifyButton" xml:space="preserve">
     <value>Verify</value>
+  </data>
+  <data name="SoilType_Sandy" xml:space="preserve">
+    <value>Sandy</value>
+  </data>
+  <data name="SoilType_Clay" xml:space="preserve">
+    <value>Clay</value>
+  </data>
+  <data name="SoilType_Silty" xml:space="preserve">
+    <value>Silty</value>
+  </data>
+  <data name="SoilType_Peaty" xml:space="preserve">
+    <value>Peaty</value>
+  </data>
+  <data name="SoilType_Chalky" xml:space="preserve">
+    <value>Chalky</value>
+  </data>
+  <data name="SoilType_Loamy" xml:space="preserve">
+    <value>Loamy</value>
+  </data>
+  <data name="SoilType_Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="SoilType_Generic" xml:space="preserve">
+    <value>Generic</value>
+  </data>
+  <data name="OwnerInformation" xml:space="preserve">
+    <value>Owner's information</value>
+  </data>
+  <data name="OwnedFields" xml:space="preserve">
+    <value>Owned fields</value>
+  </data>
+  <data name="CultFields" xml:space="preserve">
+    <value>Cultivated fields</value>
+  </data>
+  <data name="Managers" xml:space="preserve">
+    <value>Managers</value>
+  </data>
+  <data name="ManagerAssignedAt" xml:space="preserve">
+    <value>Assigned: {0}</value>
+  </data>
+  <data name="FieldSize" xml:space="preserve">
+    <value>Size: {0} {1}</value>
   </data>
 </root>

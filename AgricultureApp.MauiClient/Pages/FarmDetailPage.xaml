@@ -4,18 +4,129 @@
              xmlns:pageModels="clr-namespace:AgricultureApp.MauiClient.PageModels"
              xmlns:models="clr-namespace:AgricultureApp.MauiClient.Models"
              xmlns:pages="clr-namespace:AgricultureApp.MauiClient.Pages"
-             xmlns:sf="clr-namespace:Syncfusion.Maui.Toolkit.TextInputLayout;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:resources="clr-namespace:AgricultureApp.MauiClient.Resources.Strings"
+             xmlns:converters="clr-namespace:AgricultureApp.MauiClient.Converters"
+             xmlns:pullToRefresh="clr-namespace:Syncfusion.Maui.Toolkit.PullToRefresh;assembly=Syncfusion.Maui.Toolkit"
              xmlns:controls="clr-namespace:AgricultureApp.MauiClient.Pages.Controls"
              xmlns:fonts="clr-namespace:Fonts"
              x:Class="AgricultureApp.MauiClient.Pages.FarmDetailPage"
              x:DataType="pageModels:FarmDetailPageModel"
              Title="{Binding PageTitle}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:EnumToStringConverter x:Key="EnumConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <Grid>
-        <ScrollView>
-            <VerticalStackLayout Padding="{StaticResource LayoutPadding}"
-                                 Spacing="{StaticResource LayoutSpacing}">
-                
-            </VerticalStackLayout>
-        </ScrollView>
+        <pullToRefresh:SfPullToRefresh
+            IsRefreshing="{Binding IsRefreshing}"
+            RefreshCommand="{Binding RefreshCommand}">
+            <pullToRefresh:SfPullToRefresh.PullableContent>
+                <ScrollView>
+                    <VerticalStackLayout Padding="20" Spacing="16">
+
+                        <!-- Farm Header -->
+                        <Border Padding="16" BackgroundColor="{AppThemeBinding Light=#f5f5f5, Dark=#333}">
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="{Binding Farm.Location}"
+                                       FontSize="16"
+                                       TextColor="Gray" />
+
+                                <Label Text="{x:Static resources:AppResources.OwnerInformation}"
+                                        FontAttributes="Bold" />
+                                <Label Text="{Binding Owner.Name}" />
+                                <Label Text="{Binding Owner.Email}" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Stats -->
+                        <Grid ColumnDefinitions="*,*,*">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Farm.ManagersCount}" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="{Binding Farm.FieldsCount}" />
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="2">
+                                <Label Text="{Binding Farm.OwnedFieldsCount}" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!-- Managers List -->
+                        <Label Text="{x:Static resources:AppResources.Managers}"
+                               FontSize="20" FontAttributes="Bold" />
+                        <CollectionView ItemsSource="{Binding Managers}"
+                                        SelectionMode="Single"
+                                        SelectedItem="{Binding SelectedManager}">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:FarmManager">
+                                    <Border Padding="12" Margin="0,4" Style="{StaticResource CardStyle}">
+                                        <VerticalStackLayout>
+                                            <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                            <Label Text="{Binding Email}" FontSize="16"
+                                                   TextColor="Gray" />
+                                            <Label Text="{Binding AssignedAtString}"
+                                                    FontSize="16" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <!-- Fields List -->
+                        <Label Text="{x:Static resources:AppResources.CultFields}"
+                               FontSize="20" FontAttributes="Bold" />
+                        <CollectionView ItemsSource="{Binding Fields}"
+                                        SelectionMode="Single"
+                                        SelectedItem="{Binding SelectedField}">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Field">
+                                    <Border Padding="12" Margin="0,4" Style="{StaticResource CardStyle}">
+                                        <VerticalStackLayout>
+                                            <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                            <Label Text="{Binding SizeString}" />
+                                            <Label Text="{Binding SoilType, Converter={StaticResource EnumConverter}}" />
+                                            <Label Text="{Binding Status, Converter={StaticResource EnumConverter}}" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <!-- Owned Fields List -->
+                        <Label Text="{x:Static resources:AppResources.OwnedFields}" FontSize="20" FontAttributes="Bold" />
+                        <CollectionView ItemsSource="{Binding OwnedFields}"
+                                        SelectionMode="Single"
+                                        SelectedItem="{Binding SelectedField}">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="15" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Field">
+                                    <Border Padding="12" Margin="0,4" Style="{StaticResource CardStyle}">
+                                        <VerticalStackLayout>
+                                            <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                            <Label Text="{Binding SizeString}" />
+                                            <Label Text="{Binding SoilType, Converter={StaticResource EnumConverter}}" />
+                                            <Label Text="{Binding Status, Converter={StaticResource EnumConverter}}" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                    </VerticalStackLayout>
+                </ScrollView>
+            </pullToRefresh:SfPullToRefresh.PullableContent>
+        </pullToRefresh:SfPullToRefresh>
     </Grid>
 </ContentPage>

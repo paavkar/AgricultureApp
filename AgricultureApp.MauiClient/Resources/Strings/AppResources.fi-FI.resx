@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="FieldStatus_Active" xml:space="preserve">
+    <value>Aktiivinen</value>
+  </data>
   <data name="AddedAsFarmManager" xml:space="preserve">
     <value>Sinut on lisätty maatilan {0} hallinnoijaksi.</value>
   </data>
@@ -134,6 +137,9 @@
   </data>
   <data name="Home" xml:space="preserve">
     <value>Kotisivu</value>
+  </data>
+  <data name="FieldStatus_Inactive" xml:space="preserve">
+    <value>Epäaktiivinen</value>
   </data>
   <data name="Login" xml:space="preserve">
     <value>Kirjaudu sisään</value>
@@ -162,6 +168,9 @@
   <data name="RemovedAsFarmManager" xml:space="preserve">
     <value>Sinut on poistettu maatilan {0} hallinnoijista.</value>
   </data>
+  <data name="FieldStatus_UnderMaintenance" xml:space="preserve">
+    <value>Ylläpidossa</value>
+  </data>
   <data name="UserName" xml:space="preserve">
     <value>Käyttäjänimi</value>
   </data>
@@ -170,5 +179,47 @@
   </data>
   <data name="VerifyButton" xml:space="preserve">
     <value>Varmista</value>
+  </data>
+  <data name="SoilType_Sandy" xml:space="preserve">
+    <value>Hiekkainen</value>
+  </data>
+  <data name="SoilType_Clay" xml:space="preserve">
+    <value>Savinen</value>
+  </data>
+  <data name="SoilType_Silty" xml:space="preserve">
+    <value>Hiesuinen</value>
+  </data>
+  <data name="SoilType_Peaty" xml:space="preserve">
+    <value>Turpeinen</value>
+  </data>
+  <data name="SoilType_Chalky" xml:space="preserve">
+    <value>Kalkkinen</value>
+  </data>
+  <data name="SoilType_Loamy" xml:space="preserve">
+    <value>Multava</value>
+  </data>
+  <data name="SoilType_Other" xml:space="preserve">
+    <value>Muu</value>
+  </data>
+  <data name="SoilType_Generic" xml:space="preserve">
+    <value>Yleinen</value>
+  </data>
+  <data name="OwnerInformation" xml:space="preserve">
+    <value>Omistajan tiedot</value>
+  </data>
+  <data name="OwnedFields" xml:space="preserve">
+    <value>Omistetut pellot</value>
+  </data>
+  <data name="CultFields" xml:space="preserve">
+    <value>Kylvettävät pellot</value>
+  </data>
+  <data name="Managers" xml:space="preserve">
+    <value>Hallinnoijat</value>
+  </data>
+  <data name="ManagerAssignedAt" xml:space="preserve">
+    <value>Nimitetty: {0}</value>
+  </data>
+  <data name="FieldSize" xml:space="preserve">
+    <value>Koko: {0} {1}</value>
   </data>
 </root>

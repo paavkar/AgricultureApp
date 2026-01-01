@@ -1,4 +1,6 @@
-﻿namespace AgricultureApp.MauiClient.Models
+﻿using AgricultureApp.MauiClient.Resources.Strings;
+
+namespace AgricultureApp.MauiClient.Models
 {
     public class Field
     {
@@ -14,6 +16,9 @@
         public List<FieldCultivation> Cultivations { get; set; } = [];
         public Farm CurrentFarm { get; set; }
         public Farm OwnerFarm { get; set; }
+
+        public string SizeString =>
+            string.Format(AppResources.FieldSize, Size, SizeUnit);
     }
 
     public enum FieldStatus

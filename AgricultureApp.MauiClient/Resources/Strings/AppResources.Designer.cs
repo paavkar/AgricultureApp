@@ -70,6 +70,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cultivated fields.
+        /// </summary>
+        public static string CultFields {
+            get {
+                return ResourceManager.GetString("CultFields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cultivated fields: {0}.
         /// </summary>
         public static string CultFieldsCount {
@@ -102,6 +111,42 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         public static string EnterTwoFactorCode {
             get {
                 return ResourceManager.GetString("EnterTwoFactorCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size: {0} {1}.
+        /// </summary>
+        public static string FieldSize {
+            get {
+                return ResourceManager.GetString("FieldSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string FieldStatus_Active {
+            get {
+                return ResourceManager.GetString("FieldStatus_Active", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inactive.
+        /// </summary>
+        public static string FieldStatus_Inactive {
+            get {
+                return ResourceManager.GetString("FieldStatus_Inactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Under maintenance.
+        /// </summary>
+        public static string FieldStatus_UnderMaintenance {
+            get {
+                return ResourceManager.GetString("FieldStatus_UnderMaintenance", resourceCulture);
             }
         }
         
@@ -142,11 +187,29 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Assigned: {0}.
+        /// </summary>
+        public static string ManagerAssignedAt {
+            get {
+                return ResourceManager.GetString("ManagerAssignedAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Managers: {0}.
         /// </summary>
         public static string ManagerCount {
             get {
                 return ResourceManager.GetString("ManagerCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Managers.
+        /// </summary>
+        public static string Managers {
+            get {
+                return ResourceManager.GetString("Managers", resourceCulture);
             }
         }
         
@@ -160,11 +223,29 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Owned fields.
+        /// </summary>
+        public static string OwnedFields {
+            get {
+                return ResourceManager.GetString("OwnedFields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Owned fields: {0}.
         /// </summary>
         public static string OwnedFieldsCount {
             get {
                 return ResourceManager.GetString("OwnedFieldsCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Owner&apos;s information.
+        /// </summary>
+        public static string OwnerInformation {
+            get {
+                return ResourceManager.GetString("OwnerInformation", resourceCulture);
             }
         }
         
@@ -192,6 +273,78 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         public static string RemovedAsFarmManager {
             get {
                 return ResourceManager.GetString("RemovedAsFarmManager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chalky.
+        /// </summary>
+        public static string SoilType_Chalky {
+            get {
+                return ResourceManager.GetString("SoilType_Chalky", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clay.
+        /// </summary>
+        public static string SoilType_Clay {
+            get {
+                return ResourceManager.GetString("SoilType_Clay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generic.
+        /// </summary>
+        public static string SoilType_Generic {
+            get {
+                return ResourceManager.GetString("SoilType_Generic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loamy.
+        /// </summary>
+        public static string SoilType_Loamy {
+            get {
+                return ResourceManager.GetString("SoilType_Loamy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        public static string SoilType_Other {
+            get {
+                return ResourceManager.GetString("SoilType_Other", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Peaty.
+        /// </summary>
+        public static string SoilType_Peaty {
+            get {
+                return ResourceManager.GetString("SoilType_Peaty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sandy.
+        /// </summary>
+        public static string SoilType_Sandy {
+            get {
+                return ResourceManager.GetString("SoilType_Sandy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Silty.
+        /// </summary>
+        public static string SoilType_Silty {
+            get {
+                return ResourceManager.GetString("SoilType_Silty", resourceCulture);
             }
         }
         
