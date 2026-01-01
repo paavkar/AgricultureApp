@@ -60,6 +60,13 @@ namespace AgricultureApp.MauiClient
                 })
                 .AddHttpMessageHandler<JwtAuthHandler>();
 
+            builder.Services.AddSingleton<IFarmHubClient>(sp =>
+            {
+                AuthenticationService authService = sp.GetRequiredService<AuthenticationService>();
+                ILogger<FarmHubClient> logger = sp.GetRequiredService<ILogger<FarmHubClient>>();
+                return new FarmHubClient(authService, logger);
+            });
+
             builder.Services.AddScoped<FarmRepository>();
 
             builder.Services.AddSingleton<ModalErrorHandler>();

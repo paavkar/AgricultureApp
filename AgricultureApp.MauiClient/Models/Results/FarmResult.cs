@@ -1,8 +1,10 @@
-﻿namespace AgricultureApp.MauiClient.Models
+﻿using System.Collections.ObjectModel;
+
+namespace AgricultureApp.MauiClient.Models
 {
     public class FarmResult : BaseResult
     {
         public Farm? Farm { get; set; }
-        public List<Farm>? Farms { get; set; }
+        public ObservableCollection<Farm>? Farms { get; set; }
     }
 }

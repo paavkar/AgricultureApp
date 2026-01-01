@@ -13,11 +13,6 @@ namespace AgricultureApp.MauiClient
             ThemeSegmentedControl.SelectedIndex = currentTheme == AppTheme.Light ? 0 : 1;
         }
 
-        private async Task InitializeShell()
-        {
-
-        }
-
         public static async Task DisplaySnackbarAsync(string message)
         {
             CancellationTokenSource cancellationTokenSource = new();

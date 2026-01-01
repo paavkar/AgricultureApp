@@ -7,6 +7,7 @@ namespace AgricultureApp.MauiClient.PageModels
     public partial class LoginPageModel : ObservableObject
     {
         private readonly AuthenticationService _auth;
+        private readonly IFarmHubClient _farmHubClient;
 
         [ObservableProperty]
         private string _email;
@@ -20,9 +21,10 @@ namespace AgricultureApp.MauiClient.PageModels
         public string LoginModeButtonText =>
             UseEmail ? AppResources.UserNameLogin : AppResources.EmailLogin;
 
-        public LoginPageModel(AuthenticationService auth)
+        public LoginPageModel(AuthenticationService auth, IFarmHubClient farmHubClient)
         {
             _auth = auth;
+            _farmHubClient = farmHubClient;
         }
 
         [RelayCommand]
@@ -63,6 +65,7 @@ namespace AgricultureApp.MauiClient.PageModels
             }
             else
             {
+                window.Page = new AppShell();
 #if WINDOWS
                 var displayInfo = DeviceDisplay.MainDisplayInfo;
                 var density = displayInfo.Density;
@@ -75,7 +78,6 @@ namespace AgricultureApp.MauiClient.PageModels
                 window.MinimumWidth = width * 0.5;
                 window.MinimumHeight = height * 0.5;
 #endif
-                window.Page = new AppShell();
             }
 
         }

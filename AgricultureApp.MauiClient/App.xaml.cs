@@ -7,11 +7,22 @@ namespace AgricultureApp.MauiClient
     {
         private readonly AuthenticationService _auth;
         private readonly ILogger<App> _logger;
-        public App(AuthenticationService auth, ILogger<App> logger)
+        private readonly IFarmHubClient _farmHubClient;
+
+        public App(
+            AuthenticationService auth,
+            ILogger<App> logger,
+            IFarmHubClient farmHubClient)
         {
             InitializeComponent();
             _auth = auth;
             _logger = logger;
+            _farmHubClient = farmHubClient;
+        }
+
+        protected override async void OnResume()
+        {
+            base.OnResume();
         }
 
         protected override Window CreateWindow(IActivationState? activationState)

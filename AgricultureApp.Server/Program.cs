@@ -49,6 +49,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
+builder.Services.AddSingleton<IUserIdProvider, SubUserProvider>();
+
 builder.Services.AddSignalR(options => options.EnableDetailedErrors = true);
 builder.Services.AddScoped<IFarmHubContext, FarmHubContextWrapper>();
 
@@ -76,6 +78,15 @@ builder.Services.AddAuthentication(options =>
             {
                 StringValues accessToken = context.Request.Query["access_token"];
 
+                if (string.IsNullOrWhiteSpace(accessToken) &&
+                        context.Request.Headers.TryGetValue("Authorization", out StringValues authHeader))
+                {
+                    if (authHeader.ToString().StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        accessToken = authHeader.ToString()["Bearer ".Length..].Trim();
+                    }
+                }
+
                 PathString path = context.HttpContext.Request.Path;
                 if (!string.IsNullOrEmpty(accessToken) &&
                     path.StartsWithSegments("/farmhub"))
@@ -88,7 +99,6 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddAuthorization();
-builder.Services.AddSingleton<IUserIdProvider, SubUserProvider>();
 
 builder.Services.AddIdentityCore<ApplicationUser>()
     .AddRoles<IdentityRole>()

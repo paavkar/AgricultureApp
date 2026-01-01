@@ -72,8 +72,8 @@ namespace AgricultureApp.MauiClient.Services
                 return true;
             }
 
-            await SecureStorage.SetAsync(AccessTokenKey, string.Empty);
-            await SecureStorage.SetAsync(RefreshTokenKey, string.Empty);
+            SecureStorage.Remove(AccessTokenKey);
+            SecureStorage.Remove(RefreshTokenKey);
             return false;
         }
 

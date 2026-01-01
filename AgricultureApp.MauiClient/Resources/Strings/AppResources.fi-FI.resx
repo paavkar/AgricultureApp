@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddedAsFarmManager" xml:space="preserve">
+    <value>Sinut on lisätty maatilan {0} hallinnoijaksi.</value>
+  </data>
   <data name="CultFieldsCount" xml:space="preserve">
     <value>Kylvettäviä peltoja: {0}</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="ProfilePage" xml:space="preserve">
     <value>Profiili</value>
+  </data>
+  <data name="RemovedAsFarmManager" xml:space="preserve">
+    <value>Sinut on poistettu maatilan {0} hallinnoijista.</value>
   </data>
   <data name="UserName" xml:space="preserve">
     <value>Käyttäjänimi</value>

@@ -59,6 +59,7 @@ namespace AgricultureApp.MauiClient.PageModels
 
                 if (_farm is null)
                 {
+                    await AppShell.Current.GoToAsync("//MainPage");
                     _errorHandler.HandleError(new Exception($"Farm with id {id} could not be found."));
                     return;
                 }

@@ -61,6 +61,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have been added as a manager to farm {0}..
+        /// </summary>
+        public static string AddedAsFarmManager {
+            get {
+                return ResourceManager.GetString("AddedAsFarmManager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cultivated fields: {0}.
         /// </summary>
         public static string CultFieldsCount {
@@ -174,6 +183,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         public static string ProfilePage {
             get {
                 return ResourceManager.GetString("ProfilePage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have been removed as farm manager from farm {0}..
+        /// </summary>
+        public static string RemovedAsFarmManager {
+            get {
+                return ResourceManager.GetString("RemovedAsFarmManager", resourceCulture);
             }
         }
         

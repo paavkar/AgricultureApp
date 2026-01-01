@@ -164,7 +164,7 @@ namespace AgricultureApp.Infrastructure.Farms
                 };
             }
 
-            if (isOwner)
+            if (user.Id == userId)
             {
                 return new ManagerResult
                 {
@@ -187,7 +187,7 @@ namespace AgricultureApp.Infrastructure.Farms
                 };
             }
 
-            await notificationService.NotifyUserAddedToFarmAsync(userId, farmId);
+            await notificationService.NotifyUserAddedToFarmAsync(user.Id, farmId);
             return new ManagerResult
             {
                 Succeeded = true,
@@ -227,7 +227,7 @@ namespace AgricultureApp.Infrastructure.Farms
                 };
             }
 
-            await notificationService.NotifyUserRemovedFromFarmAsync(userId, farmId);
+            await notificationService.NotifyUserRemovedFromFarmAsync(managerId, farmId);
             return new BaseResult
             {
                 Succeeded = true

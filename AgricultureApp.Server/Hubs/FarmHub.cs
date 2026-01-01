@@ -10,6 +10,11 @@ namespace AgricultureApp.Server.Hubs
         IFarmRepository farmRepository,
         ILogger<FarmHub> logger) : Hub
     {
+        public override Task OnConnectedAsync()
+        {
+            return base.OnConnectedAsync();
+        }
+
         public async Task JoinFarm(string farmId)
         {
             var userId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
