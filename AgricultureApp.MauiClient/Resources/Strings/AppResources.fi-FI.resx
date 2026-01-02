@@ -234,4 +234,7 @@
   <data name="Cancel" xml:space="preserve">
     <value>Peruuta</value>
   </data>
+  <data name="LogOut" xml:space="preserve">
+    <value>Kirjaudu ulos</value>
+  </data>
 </root>

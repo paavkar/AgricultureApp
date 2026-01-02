@@ -22,7 +22,7 @@
             Command="{Binding NavigatedFromCommand}" />
         <toolkit:EventToCommandBehavior
             BindingContext="{Binding Path=BindingContext, Source={x:Reference OverviewPage}, x:DataType=ContentPage}"
-            EventName="Appearing"                
+            EventName="Appearing"
             Command="{Binding AppearingCommand}" />
     </ContentPage.Behaviors>
 

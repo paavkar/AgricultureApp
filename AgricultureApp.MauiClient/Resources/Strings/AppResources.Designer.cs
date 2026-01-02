@@ -196,6 +196,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Log out.
+        /// </summary>
+        public static string LogOut {
+            get {
+                return ResourceManager.GetString("LogOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Managed farms.
         /// </summary>
         public static string ManagedFarms {

@@ -22,10 +22,12 @@
         Route="ProfilePage" />
 
     <Shell.FlyoutFooter>
-        <Grid Padding="15">
-            <sf:SfSegmentedControl x:Name="ThemeSegmentedControl" 
-            VerticalOptions="Center" HorizontalOptions="Center" SelectionChanged="SfSegmentedControl_SelectionChanged"
-            SegmentWidth="40" SegmentHeight="40">
+        <Grid Padding="15" ColumnDefinitions="*, Auto">
+            <sf:SfSegmentedControl x:Name="ThemeSegmentedControl"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   SelectionChanged="SfSegmentedControl_SelectionChanged"
+                                   SegmentWidth="40" SegmentHeight="40">
                 <sf:SfSegmentedControl.ItemsSource>
                     <x:Array Type="{x:Type sf:SfSegmentItem}">
                         <sf:SfSegmentItem ImageSource="{StaticResource IconLight}" SemanticProperties.Description="Light mode"/>
@@ -33,6 +35,15 @@
                     </x:Array>
                 </sf:SfSegmentedControl.ItemsSource>
             </sf:SfSegmentedControl>
+
+            <Button Grid.Column="1"
+                    FontSize="14"
+                    Text="{x:Static resources:AppResources.LogOut}"
+                    ImageSource="{StaticResource IconSignOut}"
+                    ContentLayout="Left, 10"
+                    SemanticProperties.Description="Sign out"
+                    VerticalOptions="Center"
+                    Clicked="LogoutButton_Clicked"/>
         </Grid>
     </Shell.FlyoutFooter>
 

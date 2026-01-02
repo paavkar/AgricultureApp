@@ -62,6 +62,7 @@ namespace AgricultureApp.MauiClient.Services
         public void AddPlatfromHeader()
         {
             var platform = _platformInfoService.GetPlatformInfo();
+            _http.DefaultRequestHeaders.Remove("X-Client-Platform");
             _http.DefaultRequestHeaders.Add(
                 "X-Client-Platform", platform);
         }
@@ -122,6 +123,42 @@ namespace AgricultureApp.MauiClient.Services
             {
                 _logger.LogError(ex, "Error in login method: {Method}", nameof(LoginAsync));
                 return new AuthResult { Succeeded = false, Errors = [ex.Message] };
+            }
+        }
+
+        public async Task<BaseResult> LogOutAsync()
+        {
+            Uri uri = new(Constants.ApiBaseUrl + "v1/auth/revoke");
+            var token = await GetRefreshTokenAsync();
+            JwtRefreshRequest jwt = new()
+            {
+                RefreshToken = token
+            };
+
+            await AddLanguageHeaders();
+            AddPlatfromHeader();
+
+            try
+            {
+                HttpResponseMessage response = await _http.PostAsJsonAsync(uri, jwt);
+                BaseResult result = await response.Content.ReadFromJsonAsync<BaseResult>();
+
+                if (result.Succeeded)
+                {
+                    SecureStorage.Remove(AccessTokenKey);
+                    SecureStorage.Remove(RefreshTokenKey);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation(ex, "Error in logout method: {Method}", nameof(LogOutAsync));
+                return new BaseResult
+                {
+                    Succeeded = false,
+                    Errors = [ex.Message]
+                };
             }
         }
 

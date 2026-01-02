@@ -47,5 +47,27 @@ namespace AgricultureApp.MauiClient
         {
             Application.Current!.UserAppTheme = e.NewIndex == 0 ? AppTheme.Light : AppTheme.Dark;
         }
+
+        private async void LogoutButton_Clicked(object sender, EventArgs e)
+        {
+            BaseResult result = await App.Current.AuthService.LogOutAsync();
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    await AppShell.DisplaySnackbarAsync(error);
+                }
+                return;
+            }
+            Window window = Application.Current!.Windows[0];
+            window.Page = new AuthShell();
+#if WINDOWS || MACCATALYST
+            window.Width = 600;
+            window.Height = 750;
+            window.MinimumWidth = 600;
+            window.MinimumHeight = 750;
+#endif
+        }
     }
 }

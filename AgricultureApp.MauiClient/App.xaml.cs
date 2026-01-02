@@ -5,19 +5,18 @@ namespace AgricultureApp.MauiClient
 {
     public partial class App : Application
     {
-        private readonly AuthenticationService _auth;
+        public readonly AuthenticationService AuthService;
         private readonly ILogger<App> _logger;
-        private readonly IFarmHubClient _farmHubClient;
+
+        public static new App Current => (App)Application.Current;
 
         public App(
             AuthenticationService auth,
-            ILogger<App> logger,
-            IFarmHubClient farmHubClient)
+            ILogger<App> logger)
         {
             InitializeComponent();
-            _auth = auth;
+            AuthService = auth;
             _logger = logger;
-            _farmHubClient = farmHubClient;
         }
 
         protected override async void OnResume()
@@ -58,11 +57,11 @@ namespace AgricultureApp.MauiClient
 
             if (isAuthenticated)
             {
-                var result = await _auth.RefreshTokensAsync();
+                var result = await AuthService.RefreshTokensAsync();
 
                 if (result)
                 {
-#if WINDOWS
+#if WINDOWS || MACCATALYST
                     var displayInfo = DeviceDisplay.MainDisplayInfo;
                     var density = displayInfo.Density;
 
@@ -78,7 +77,7 @@ namespace AgricultureApp.MauiClient
                 }
                 else
                 {
-#if WINDOWS
+#if WINDOWS || MACCATALYST
                     window.Width = 600;
                     window.Height = 750;
                     window.MinimumWidth = 600;
@@ -89,7 +88,7 @@ namespace AgricultureApp.MauiClient
             }
             else
             {
-#if WINDOWS
+#if WINDOWS || MACCATALYST
                 window.Width = 600;
                 window.Height = 750;
                 window.MinimumWidth = 600;

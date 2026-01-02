@@ -234,4 +234,7 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="LogOut" xml:space="preserve">
+    <value>Log out</value>
+  </data>
 </root>

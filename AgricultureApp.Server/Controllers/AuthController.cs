@@ -189,6 +189,7 @@ namespace AgricultureApp.Server.Controllers
         public async Task<IActionResult> Revoke([FromBody] JwtRefreshRequest? request)
         {
             var refreshToken = request?.RefreshToken ?? "";
+            var platform = Request.Headers["X-Client-Platform"].ToString();
             if (string.IsNullOrWhiteSpace(refreshToken))
             {
                 refreshToken = Request.Cookies["refresh_token"];
@@ -204,14 +205,17 @@ namespace AgricultureApp.Server.Controllers
                 return BadRequest(new BaseResult { Succeeded = false, Errors = [localizer["InvalidRefresh"]] });
             }
 
-            CookieOptions cookieOptions = new()
+            if (platform.Equals("web", StringComparison.OrdinalIgnoreCase))
             {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Lax,
-                Path = "/"
-            };
-            Response.Cookies.Delete("refresh_token", cookieOptions);
+                CookieOptions cookieOptions = new()
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax,
+                    Path = "/"
+                };
+                Response.Cookies.Delete("refresh_token", cookieOptions);
+            }
 
             return Ok(new BaseResult { Succeeded = true, Message = localizer["RefreshRevoked"] });
         }

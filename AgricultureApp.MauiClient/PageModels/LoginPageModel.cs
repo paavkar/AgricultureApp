@@ -68,7 +68,7 @@ namespace AgricultureApp.MauiClient.PageModels
             else
             {
                 window.Page = new AppShell();
-#if WINDOWS
+#if WINDOWS || MACCATALYST
                 var displayInfo = DeviceDisplay.MainDisplayInfo;
                 var density = displayInfo.Density;
 
