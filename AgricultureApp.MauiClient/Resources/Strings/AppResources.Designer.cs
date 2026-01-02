@@ -70,6 +70,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cultivated fields.
         /// </summary>
         public static string CultFields {
@@ -97,7 +106,7 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use email to login..
+        ///   Looks up a localized string similar to Use email instead to login..
         /// </summary>
         public static string EmailLogin {
             get {
@@ -106,11 +115,20 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter two factor code from authenticator application..
+        ///   Looks up a localized string similar to Enter two-factor code from authenticator application..
         /// </summary>
         public static string EnterTwoFactorCode {
             get {
                 return ResourceManager.GetString("EnterTwoFactorCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
             }
         }
         
@@ -349,6 +367,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Two-factor authentication has been enabled..
+        /// </summary>
+        public static string TwoFactorEnabled {
+            get {
+                return ResourceManager.GetString("TwoFactorEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to UserName.
         /// </summary>
         public static string UserName {
@@ -358,7 +385,7 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use username to login..
+        ///   Looks up a localized string similar to Use username instead to login..
         /// </summary>
         public static string UserNameLogin {
             get {
@@ -372,6 +399,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         public static string VerifyButton {
             get {
                 return ResourceManager.GetString("VerifyButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Two-factor verification.
+        /// </summary>
+        public static string VerifyTwoFactorPage {
+            get {
+                return ResourceManager.GetString("VerifyTwoFactorPage", resourceCulture);
             }
         }
     }

@@ -8,7 +8,6 @@ namespace AgricultureApp.MauiClient.Utilities
         AuthenticationService authService,
         PlatformInfoService platformInfoService) : DelegatingHandler
     {
-
         protected override async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request, CancellationToken cancellationToken)
         {

@@ -3,13 +3,91 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:pageModels="clr-namespace:AgricultureApp.MauiClient.PageModels"
              xmlns:resources="clr-namespace:AgricultureApp.MauiClient.Resources.Strings"
+             xmlns:models="clr-namespace:AgricultureApp.MauiClient.Models"
+             xmlns:pullToRefresh="clr-namespace:Syncfusion.Maui.Toolkit.PullToRefresh;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="AgricultureApp.MauiClient.Pages.ProfilePage"
              x:DataType="pageModels:ProfilePageModel"
+             x:Name="UserProfilePage"
              Title="{x:Static resources:AppResources.ProfilePage}">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+                BindingContext="{Binding Path=BindingContext, Source={x:Reference UserProfilePage}, x:DataType=ContentPage}"
+                EventName="NavigatedTo"
+                Command="{Binding NavigatedToCommand}" />
+        <toolkit:EventToCommandBehavior
+                BindingContext="{Binding Path=BindingContext, Source={x:Reference UserProfilePage}, x:DataType=ContentPage}"
+                EventName="NavigatedFrom"
+                Command="{Binding NavigatedFromCommand}" />
+        <toolkit:EventToCommandBehavior
+                BindingContext="{Binding Path=BindingContext, Source={x:Reference UserProfilePage}, x:DataType=ContentPage}"
+                EventName="Appearing"                
+                Command="{Binding AppearingCommand}" />
+    </ContentPage.Behaviors>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="25">
+
+            <!-- Profile Grid -->
+            <Grid ColumnDefinitions="120,*"
+                  RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                  ColumnSpacing="10"
+                  RowSpacing="12">
+
+                <Label Text="Name:" Grid.Row="0" Grid.Column="0" FontAttributes="Bold" />
+                <Label Text="{Binding CurrentUser.Name}" Grid.Row="0" Grid.Column="1" />
+
+                <Label Text="Username:" Grid.Row="1" Grid.Column="0" FontAttributes="Bold" />
+                <Label Text="{Binding CurrentUser.UserName}" Grid.Row="1" Grid.Column="1" />
+
+                <Label Text="Email:" Grid.Row="2" Grid.Column="0" FontAttributes="Bold" />
+                <Label Text="{Binding CurrentUser.Email}" Grid.Row="2" Grid.Column="1" />
+
+                <Label Text="Phone:" Grid.Row="3" Grid.Column="0" FontAttributes="Bold" />
+                <Label Text="{Binding CurrentUser.PhoneNumber}" Grid.Row="3" Grid.Column="1" />
+            </Grid>
+
+            <!-- 2FA Section -->
+            <VerticalStackLayout Spacing="10" Margin="0,20,0,0">
+                <Label Text="Two‑Factor Authentication"
+                       FontSize="20"
+                       FontAttributes="Bold" />
+
+                <Button Text="Set Up 2FA"
+                        Command="{Binding Setup2FACommand}"
+                        IsVisible="{Binding Is2FASetupVisible}" />
+
+                <Button Text="Remove 2FA"
+                        Command="{Binding Remove2FACommand}"
+                        IsVisible="{Binding Is2FARemoveVisible}"
+                        BackgroundColor="DarkRed"
+                        TextColor="White" />
+            </VerticalStackLayout>
+            
+            <!-- 2FA Setup UI -->
+            <VerticalStackLayout Spacing="10"
+                     Margin="0,20,0,0"
+                     IsVisible="{Binding IsIn2FASetup}">
+
+                <Label Text="Scan this QR code with your authenticator app:"
+                        FontAttributes="Bold" />
+
+                <!-- QR Code Image -->
+                <Image Source="{Binding QrCodeImage}" 
+                       HeightRequest="200"
+                       WidthRequest="200" />
+
+                <Label Text="Enter the 6‑digit code from your authenticator app:" />
+
+                <Entry Placeholder="123456"
+                       Keyboard="Numeric"
+                       Text="{Binding TwoFactorCode}" />
+
+                <Button Text="Enable 2FA"
+                        Command="{Binding Confirm2FACommand}" />
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+    
 </ContentPage>

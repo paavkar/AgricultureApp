@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:AgricultureApp.MauiClient.Converters"
              x:Class="AgricultureApp.MauiClient.Pages.VerifyTwoFactorPage"
              x:DataType="pageModels:VerifyTwoFactorPageModel"
-             Title="VerifyTwoFactorPage">
+             Title="{x:Static resources:AppResources.VerifyTwoFactorPage}">
     <VerticalStackLayout>
 
         <Label Text="{x:Static resources:AppResources.EnterTwoFactorCode}"
@@ -18,7 +18,7 @@
                HorizontalOptions="Center"
                WidthRequest="200" />
         <Button Text="{x:Static resources:AppResources.VerifyButton}"
-                Command="{Binding VerifyCommand}"
+                Command="{Binding VerifyTwoFactorCommand}"
                 BackgroundColor="#4A90E2"
                 TextColor="White"
                 CornerRadius="8"

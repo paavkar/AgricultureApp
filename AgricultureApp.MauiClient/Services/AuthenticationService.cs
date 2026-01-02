@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
@@ -11,8 +12,11 @@ namespace AgricultureApp.MauiClient.Services
 
         private readonly HttpClient _http;
         private readonly ILogger<AuthenticationService> _logger;
+        private readonly PlatformInfoService _platformInfoService;
 
-        public AuthenticationService(ILogger<AuthenticationService> logger)
+        public AuthenticationService(
+            ILogger<AuthenticationService> logger,
+            PlatformInfoService platformInfoService)
         {
             HttpClientHandler handler = new();
 #if DEBUG
@@ -25,6 +29,7 @@ namespace AgricultureApp.MauiClient.Services
 #endif
             _http = new HttpClient(handler);
             _logger = logger;
+            _platformInfoService = platformInfoService;
         }
 
         public async Task<string?> GetAccessTokenAsync()
@@ -39,12 +44,26 @@ namespace AgricultureApp.MauiClient.Services
             await SecureStorage.SetAsync(RefreshTokenKey, refreshToken);
         }
 
-        public async Task AddHeaders()
+        public async Task AddLanguageHeaders()
         {
             var locale = await SecureStorage.GetAsync("preferred_culture");
             _http.DefaultRequestHeaders.AcceptLanguage.Clear();
             _http.DefaultRequestHeaders.AcceptLanguage.Add(
                 new StringWithQualityHeaderValue(locale ?? "en-GB"));
+        }
+
+        public async Task AddAuthHeader()
+        {
+            var accessToken = await GetAccessTokenAsync();
+            _http.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", accessToken);
+        }
+
+        public void AddPlatfromHeader()
+        {
+            var platform = _platformInfoService.GetPlatformInfo();
+            _http.DefaultRequestHeaders.Add(
+                "X-Client-Platform", platform);
         }
 
         public async Task<bool> RefreshTokensAsync()
@@ -53,7 +72,8 @@ namespace AgricultureApp.MauiClient.Services
             if (string.IsNullOrWhiteSpace(refreshToken))
                 return false;
 
-            await AddHeaders();
+            await AddLanguageHeaders();
+            AddPlatfromHeader();
 
             Uri uri = new(Constants.ApiBaseUrl + "v1/auth/refresh");
             HttpResponseMessage response = await _http.PostAsJsonAsync(uri,
@@ -81,7 +101,8 @@ namespace AgricultureApp.MauiClient.Services
         {
             Uri uri = new(Constants.ApiBaseUrl + "v1/auth/login");
 
-            await AddHeaders();
+            await AddLanguageHeaders();
+            AddPlatfromHeader();
 
             try
             {
@@ -108,23 +129,182 @@ namespace AgricultureApp.MauiClient.Services
         {
             Uri uri = new(Constants.ApiBaseUrl + "v1/auth/verify-2fa");
 
-            await AddHeaders();
+            await AddLanguageHeaders();
+            AddPlatfromHeader();
 
             try
             {
                 HttpResponseMessage response = await _http.PostAsJsonAsync(uri, twoFactorDto);
-                AuthResult? result = await response.Content.ReadFromJsonAsync<AuthResult>();
+                AuthResult result = await response.Content.ReadFromJsonAsync<AuthResult>();
 
                 if (response.IsSuccessStatusCode)
                 {
-                    await SaveTokensAsync(result!.AccessToken!, result.RefreshToken!);
+                    await SaveTokensAsync(result.AccessToken, result.RefreshToken);
                 }
 
                 return result;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new AuthResult { Succeeded = false };
+                _logger.LogError(ex, "Error in {Method}", nameof(VerifyTwoFactorAsync));
+                return new AuthResult { Succeeded = false, Errors = [ex.Message] };
+            }
+        }
+
+        public async Task<AuthResult> SetupTwoFactorAsync()
+        {
+            Uri uri = new(Constants.ApiBaseUrl + "v1/auth/setup-2fa");
+
+            await AddLanguageHeaders();
+            await AddAuthHeader();
+
+            try
+            {
+                HttpResponseMessage response = await _http.GetAsync(uri);
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    var refreshed = await RefreshTokensAsync();
+
+                    if (!refreshed)
+                    {
+                        AppShell.Current.Window.Page = new AuthShell();
+
+                        return new AuthResult
+                        {
+                            Succeeded = false,
+                            Errors = ["Unauthorized and token refresh failed"]
+                        };
+                    }
+
+                    await AddAuthHeader();
+                    response = await _http.GetAsync(uri);
+                }
+
+                if (response.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.OK)
+                {
+                    AuthResult result = await response.Content.ReadFromJsonAsync<AuthResult>();
+                    return result;
+                }
+
+                return new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [""]
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [ex.Message]
+                };
+            }
+        }
+
+        public async Task<AuthResult> EnableTwoFactorAsync(VerifyTwoFactorDto dto)
+        {
+            Uri uri = new(Constants.ApiBaseUrl + "v1/auth/enable-2fa");
+
+            await AddLanguageHeaders();
+            await AddAuthHeader();
+
+            try
+            {
+                HttpResponseMessage response = await _http.PostAsJsonAsync(uri, dto);
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    var refreshed = await RefreshTokensAsync();
+
+                    if (!refreshed)
+                    {
+                        AppShell.Current.Window.Page = new AuthShell();
+
+                        return new AuthResult
+                        {
+                            Succeeded = false,
+                            Errors = ["Unauthorized and token refresh failed"]
+                        };
+                    }
+
+                    await AddAuthHeader();
+                    response = await _http.PostAsJsonAsync(uri, dto);
+                }
+
+                if (response.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.OK)
+                {
+                    AuthResult result = await response.Content.ReadFromJsonAsync<AuthResult>();
+                    return result;
+                }
+
+                return new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [""]
+                };
+            }
+            catch (Exception ex)
+            {
+                return new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [ex.Message]
+                };
+            }
+        }
+
+        public async Task<AuthResult> DisableTwoFactorAsync()
+        {
+            Uri uri = new(Constants.ApiBaseUrl + "v1/auth/disable-2fa");
+
+            await AddLanguageHeaders();
+            await AddAuthHeader();
+
+            try
+            {
+                HttpResponseMessage response = await _http.PostAsync(uri, null);
+
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    var refreshed = await RefreshTokensAsync();
+
+                    if (!refreshed)
+                    {
+                        AppShell.Current.Window.Page = new AuthShell();
+
+                        return new AuthResult
+                        {
+                            Succeeded = false,
+                            Errors = ["Unauthorized and token refresh failed"]
+                        };
+                    }
+
+                    await AddAuthHeader();
+                    response = await _http.PostAsync(uri, null);
+                }
+
+                if (response.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.OK)
+                {
+                    AuthResult result = await response.Content.ReadFromJsonAsync<AuthResult>();
+                    return result;
+                }
+
+                return new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [""]
+                };
+            }
+            catch (Exception ex)
+            {
+                return new AuthResult
+                {
+                    Succeeded = false,
+                    Errors = [ex.Message]
+                };
             }
         }
     }

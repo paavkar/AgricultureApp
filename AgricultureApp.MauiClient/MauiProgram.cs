@@ -68,14 +68,14 @@ namespace AgricultureApp.MauiClient
             });
 
             builder.Services.AddScoped<FarmRepository>();
+            builder.Services.AddScoped<UserRepository>();
 
             builder.Services.AddSingleton<ModalErrorHandler>();
             builder.Services.AddSingleton<MainPageModel>();
             builder.Services.AddSingleton<LoginPageModel>();
             builder.Services.AddSingleton<ProfilePageModel>();
-            builder.Services.AddSingleton<VerifyTwoFactorPageModel>();
 
-            Routing.RegisterRoute(nameof(VerifyTwoFactorPage), typeof(VerifyTwoFactorPage));
+            builder.Services.AddTransientWithShellRoute<VerifyTwoFactorPage, VerifyTwoFactorPageModel>(nameof(VerifyTwoFactorPage));
             builder.Services.AddTransientWithShellRoute<FarmDetailPage, FarmDetailPageModel>("farm");
 
             return builder.Build();

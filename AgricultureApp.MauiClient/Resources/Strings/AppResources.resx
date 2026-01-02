@@ -130,10 +130,10 @@
     <value>Email</value>
   </data>
   <data name="EmailLogin" xml:space="preserve">
-    <value>Use email to login.</value>
+    <value>Use email instead to login.</value>
   </data>
   <data name="EnterTwoFactorCode" xml:space="preserve">
-    <value>Enter two factor code from authenticator application.</value>
+    <value>Enter two-factor code from authenticator application.</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
@@ -175,7 +175,7 @@
     <value>UserName</value>
   </data>
   <data name="UserNameLogin" xml:space="preserve">
-    <value>Use username to login.</value>
+    <value>Use username instead to login.</value>
   </data>
   <data name="VerifyButton" xml:space="preserve">
     <value>Verify</value>
@@ -221,5 +221,17 @@
   </data>
   <data name="FieldSize" xml:space="preserve">
     <value>Size: {0} {1}</value>
+  </data>
+  <data name="TwoFactorEnabled" xml:space="preserve">
+    <value>Two-factor authentication has been enabled.</value>
+  </data>
+  <data name="VerifyTwoFactorPage" xml:space="preserve">
+    <value>Two-factor verification</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
   </data>
 </root>

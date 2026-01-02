@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AgricultureApp.Server.Hubs
 {
@@ -7,7 +7,7 @@ namespace AgricultureApp.Server.Hubs
     {
         public string? GetUserId(HubConnectionContext connection)
         {
-            return connection.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return connection.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
         }
     }
 }

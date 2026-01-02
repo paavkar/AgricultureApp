@@ -1,13 +1,14 @@
 ﻿using AgricultureApp.MauiClient.Resources.Strings;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 
 namespace AgricultureApp.MauiClient.PageModels
 {
     public partial class LoginPageModel : ObservableObject
     {
         private readonly AuthenticationService _auth;
-        private readonly IFarmHubClient _farmHubClient;
+        private readonly ILogger<LoginPageModel> _logger;
 
         [ObservableProperty]
         private string _email;
@@ -21,10 +22,10 @@ namespace AgricultureApp.MauiClient.PageModels
         public string LoginModeButtonText =>
             UseEmail ? AppResources.UserNameLogin : AppResources.EmailLogin;
 
-        public LoginPageModel(AuthenticationService auth, IFarmHubClient farmHubClient)
+        public LoginPageModel(AuthenticationService auth, ILogger<LoginPageModel> logger)
         {
             _auth = auth;
-            _farmHubClient = farmHubClient;
+            _logger = logger;
         }
 
         [RelayCommand]
@@ -58,10 +59,11 @@ namespace AgricultureApp.MauiClient.PageModels
 
             if (result.TwoFactorRequired)
             {
-                await Shell.Current.GoToAsync(nameof(VerifyTwoFactorPage), new Dictionary<string, object>
-                {
-                    { "LoginData", dto }
-                });
+                await Shell.Current.GoToAsync(nameof(VerifyTwoFactorPage),
+                    new Dictionary<string, object>
+                    {
+                        { "LoginData", dto }
+                    });
             }
             else
             {
@@ -79,7 +81,6 @@ namespace AgricultureApp.MauiClient.PageModels
                 window.MinimumHeight = height * 0.5;
 #endif
             }
-
         }
     }
 }

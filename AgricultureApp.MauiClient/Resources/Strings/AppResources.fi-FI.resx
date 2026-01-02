@@ -130,7 +130,7 @@
     <value>Sähköposti</value>
   </data>
   <data name="EmailLogin" xml:space="preserve">
-    <value>Käytä sähköpostia sisäänkirjautumiseen.</value>
+    <value>Käytä sähköpostia tunnuksen sijaan sisäänkirjautumiseen.</value>
   </data>
   <data name="EnterTwoFactorCode" xml:space="preserve">
     <value>Anna kaksivaiheisen tunnistuksen koodi tunnistussovelluksesta.</value>
@@ -175,7 +175,7 @@
     <value>Käyttäjänimi</value>
   </data>
   <data name="UserNameLogin" xml:space="preserve">
-    <value>Käytä käyttäjänimeä sisäänkirjatumiseen.</value>
+    <value>Käytä käyttäjänimeä sähköpostin sijaan sisäänkirjautumiseen.</value>
   </data>
   <data name="VerifyButton" xml:space="preserve">
     <value>Varmista</value>
@@ -221,5 +221,17 @@
   </data>
   <data name="FieldSize" xml:space="preserve">
     <value>Koko: {0} {1}</value>
+  </data>
+  <data name="TwoFactorEnabled" xml:space="preserve">
+    <value>Kaksivaiheinen tunnistus on asetettu päälle.</value>
+  </data>
+  <data name="VerifyTwoFactorPage" xml:space="preserve">
+    <value>Kaksivaiheisen tunnistuksen varmistus</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Virhe</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Peruuta</value>
   </data>
 </root>

@@ -115,11 +115,10 @@ namespace AgricultureApp.Server.Controllers
         }
 
         [Authorize]
-        [HttpGet("enable-2fa")]
+        [HttpPost("enable-2fa")]
         public async Task<IActionResult> EnableTwoFactor([FromBody] VerifyTwoFactorDto model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
-            Console.WriteLine(model.Code);
 
             AuthResult result = await authService.EnableTwoFactorAsync(userId, model);
 
