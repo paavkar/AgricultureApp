@@ -79,6 +79,24 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm password.
+        /// </summary>
+        public static string ConfirmPassword {
+            get {
+                return ResourceManager.GetString("ConfirmPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password confirmation must match the password..
+        /// </summary>
+        public static string ConfirmPasswordMustMatch {
+            get {
+                return ResourceManager.GetString("ConfirmPasswordMustMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cultivated fields.
         /// </summary>
         public static string CultFields {
@@ -129,6 +147,24 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         public static string EmailLogin {
             get {
                 return ResourceManager.GetString("EmailLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email or username and password cannot be empty..
+        /// </summary>
+        public static string EmailOrUsernamAndPasswordRequired {
+            get {
+                return ResourceManager.GetString("EmailOrUsernamAndPasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email is required for registration..
+        /// </summary>
+        public static string EmailRequired {
+            get {
+                return ResourceManager.GetString("EmailRequired", resourceCulture);
             }
         }
         
@@ -286,6 +322,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name is required for registration..
+        /// </summary>
+        public static string NameRequired {
+            get {
+                return ResourceManager.GetString("NameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Owned farms.
         /// </summary>
         public static string OwnedFarms {
@@ -345,6 +390,24 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         public static string ProfilePage {
             get {
                 return ResourceManager.GetString("ProfilePage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Register.
+        /// </summary>
+        public static string Register {
+            get {
+                return ResourceManager.GetString("Register", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registration.
+        /// </summary>
+        public static string RegisterPage {
+            get {
+                return ResourceManager.GetString("RegisterPage", resourceCulture);
             }
         }
         
@@ -489,6 +552,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         public static string UserNameLogin {
             get {
                 return ResourceManager.GetString("UserNameLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username is required for registration..
+        /// </summary>
+        public static string UserNameRequired {
+            get {
+                return ResourceManager.GetString("UserNameRequired", resourceCulture);
             }
         }
         

@@ -126,6 +126,32 @@ namespace AgricultureApp.MauiClient.Services
             }
         }
 
+        public async Task<AuthResult> RegisterAsync(RegisterDto registerDto)
+        {
+            Uri uri = new(Constants.ApiBaseUrl + "v1/auth/register");
+
+            await AddLanguageHeaders();
+            AddPlatfromHeader();
+
+            try
+            {
+                HttpResponseMessage response = await _http.PostAsJsonAsync(uri, registerDto);
+                AuthResult? result = await response.Content.ReadFromJsonAsync<AuthResult>();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    await SaveTokensAsync(result!.AccessToken!, result.RefreshToken!);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in register method: {Method}", nameof(RegisterAsync));
+                return new AuthResult { Succeeded = false, Errors = [ex.Message] };
+            }
+        }
+
         public async Task<BaseResult> LogOutAsync()
         {
             Uri uri = new(Constants.ApiBaseUrl + "v1/auth/revoke");

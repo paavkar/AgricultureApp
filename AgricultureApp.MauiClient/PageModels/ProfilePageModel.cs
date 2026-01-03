@@ -7,15 +7,14 @@ using QRCoder;
 
 namespace AgricultureApp.MauiClient.PageModels
 {
-    public partial class ProfilePageModel : ObservableObject
+    public partial class ProfilePageModel(
+        ILogger<ProfilePageModel> logger,
+        ModalErrorHandler errorHandler,
+        UserRepository userRepository,
+        AuthenticationService auth) : ObservableObject
     {
         private bool _isNavigatedTo;
         private bool _dataLoaded;
-
-        private readonly ILogger<ProfilePageModel> _logger;
-        private readonly ModalErrorHandler _errorHandler;
-        private readonly UserRepository _userRepository;
-        private readonly AuthenticationService _auth;
 
         [ObservableProperty]
         private ApplicationUser _currentUser;
@@ -44,25 +43,13 @@ namespace AgricultureApp.MauiClient.PageModels
         [ObservableProperty]
         private bool _isEditing;
 
-        public ProfilePageModel(
-            ILogger<ProfilePageModel> logger,
-            ModalErrorHandler errorHandler,
-            UserRepository userRepository,
-            AuthenticationService auth)
-        {
-            _logger = logger;
-            _errorHandler = errorHandler;
-            _userRepository = userRepository;
-            _auth = auth;
-        }
-
         private async Task LoadData()
         {
             try
             {
                 IsBusy = true;
 
-                UserResult result = await _userRepository.GetLoggedInUserAsync();
+                UserResult result = await userRepository.GetLoggedInUserAsync();
 
                 if (result.Succeeded)
                 {
@@ -78,7 +65,7 @@ namespace AgricultureApp.MauiClient.PageModels
             }
             catch (Exception e)
             {
-                _errorHandler.HandleError(e);
+                errorHandler.HandleError(e);
             }
             finally
             {
@@ -96,7 +83,7 @@ namespace AgricultureApp.MauiClient.PageModels
             }
             catch (Exception e)
             {
-                _errorHandler.HandleError(e);
+                errorHandler.HandleError(e);
             }
             finally
             {
@@ -130,7 +117,7 @@ namespace AgricultureApp.MauiClient.PageModels
         [RelayCommand]
         private async Task Setup2FA()
         {
-            AuthResult result = await _auth.SetupTwoFactorAsync();
+            AuthResult result = await auth.SetupTwoFactorAsync();
 
             if (!result.Succeeded)
             {
@@ -142,7 +129,7 @@ namespace AgricultureApp.MauiClient.PageModels
             }
 
             var otpAuthUrl = result.TwoFactorUri;
-            _logger.LogInformation(otpAuthUrl);
+            logger.LogInformation(otpAuthUrl);
 
             QrCodeImage = GenerateQrCode(otpAuthUrl);
 
@@ -172,7 +159,7 @@ namespace AgricultureApp.MauiClient.PageModels
                 Code = TwoFactorCode
             };
 
-            AuthResult result = await _auth.EnableTwoFactorAsync(dto);
+            AuthResult result = await auth.EnableTwoFactorAsync(dto);
 
             if (!result.Succeeded)
             {
@@ -202,7 +189,7 @@ namespace AgricultureApp.MauiClient.PageModels
 
             if (!confirm)
                 return;
-            AuthResult result = await _auth.DisableTwoFactorAsync();
+            AuthResult result = await auth.DisableTwoFactorAsync();
 
             if (result.Succeeded)
             {

@@ -37,7 +37,7 @@ namespace AgricultureApp.MauiClient
             builder.Logging.AddDebug();
 #endif
             builder.Services.AddSingleton<PlatformInfoService>();
-            builder.Services.AddSingleton<AuthenticationService>();
+            builder.Services.AddScoped<AuthenticationService>();
             builder.Services.AddTransient<JwtAuthHandler>();
 
             builder.Services.AddHttpClient("ApiClient",
@@ -73,9 +73,11 @@ namespace AgricultureApp.MauiClient
             builder.Services.AddSingleton<ModalErrorHandler>();
             builder.Services.AddSingleton<MainPageModel>();
             builder.Services.AddSingleton<LoginPageModel>();
+            builder.Services.AddSingleton<RegisterPageModel>();
             builder.Services.AddSingleton<ProfilePageModel>();
 
-            builder.Services.AddTransientWithShellRoute<VerifyTwoFactorPage, VerifyTwoFactorPageModel>(nameof(VerifyTwoFactorPage));
+            builder.Services.AddTransientWithShellRoute<VerifyTwoFactorPage,
+                VerifyTwoFactorPageModel>(nameof(VerifyTwoFactorPage));
             builder.Services.AddTransientWithShellRoute<FarmDetailPage, FarmDetailPageModel>("farm");
 
             return builder.Build();

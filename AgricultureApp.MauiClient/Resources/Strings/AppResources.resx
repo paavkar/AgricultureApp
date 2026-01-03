@@ -267,4 +267,28 @@
   <data name="Edit" xml:space="preserve">
     <value>Edit</value>
   </data>
+  <data name="Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="RegisterPage" xml:space="preserve">
+    <value>Registration</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>Email is required for registration.</value>
+  </data>
+  <data name="UserNameRequired" xml:space="preserve">
+    <value>Username is required for registration.</value>
+  </data>
+  <data name="NameRequired" xml:space="preserve">
+    <value>Name is required for registration.</value>
+  </data>
+  <data name="ConfirmPasswordMustMatch" xml:space="preserve">
+    <value>Password confirmation must match the password.</value>
+  </data>
+  <data name="EmailOrUsernamAndPasswordRequired" xml:space="preserve">
+    <value>Email or username and password cannot be empty.</value>
+  </data>
 </root>

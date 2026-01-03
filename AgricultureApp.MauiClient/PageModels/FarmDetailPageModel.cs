@@ -5,12 +5,11 @@ using System.Collections.ObjectModel;
 
 namespace AgricultureApp.MauiClient.PageModels
 {
-    public partial class FarmDetailPageModel : ObservableObject, IQueryAttributable, IFarmPageModel
+    public partial class FarmDetailPageModel(
+        FarmRepository farmRepository,
+        ModalErrorHandler errorHandler,
+        ILogger<FarmDetailPageModel> logger) : ObservableObject, IQueryAttributable, IFarmPageModel
     {
-        private readonly FarmRepository _farmRepository;
-        private readonly ModalErrorHandler _errorHandler;
-        private readonly ILogger<FarmDetailPageModel> _logger;
-
         [ObservableProperty]
         Farm _farm;
 
@@ -41,26 +40,16 @@ namespace AgricultureApp.MauiClient.PageModels
         [ObservableProperty]
         private Field selectedField;
 
-        public FarmDetailPageModel(
-            FarmRepository farmRepository,
-            ModalErrorHandler errorHandler,
-            ILogger<FarmDetailPageModel> logger)
-        {
-            _farmRepository = farmRepository;
-            _errorHandler = errorHandler;
-            _logger = logger;
-        }
-
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.TryGetValue("id", out var value))
             {
                 var id = value.ToString();
-                LoadData(id).FireAndForgetSafeAsync(_errorHandler);
+                LoadData(id).FireAndForgetSafeAsync(errorHandler);
             }
             else if (query.ContainsKey("refresh"))
             {
-                RefreshData().FireAndForgetSafeAsync(_errorHandler);
+                RefreshData().FireAndForgetSafeAsync(errorHandler);
             }
             else
             {
@@ -81,7 +70,7 @@ namespace AgricultureApp.MauiClient.PageModels
             {
                 IsBusy = true;
 
-                FarmResult result = await _farmRepository.GetFarmAsync(id);
+                FarmResult result = await farmRepository.GetFarmAsync(id);
 
                 if (result.Succeeded)
                 {
@@ -95,14 +84,14 @@ namespace AgricultureApp.MauiClient.PageModels
                 if (Farm is null)
                 {
                     await AppShell.Current.GoToAsync("//MainPage");
-                    _errorHandler.HandleError(new Exception($"Farm with id {id} could not be found."));
+                    errorHandler.HandleError(new Exception($"Farm with id {id} could not be found."));
                     return;
                 }
                 PageTitle = Farm.Name;
             }
             catch (Exception e)
             {
-                _errorHandler.HandleError(e);
+                errorHandler.HandleError(e);
             }
             finally
             {
@@ -120,7 +109,7 @@ namespace AgricultureApp.MauiClient.PageModels
             }
             catch (Exception e)
             {
-                _errorHandler.HandleError(e);
+                errorHandler.HandleError(e);
             }
             finally
             {

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pageModels="clr-namespace:AgricultureApp.MauiClient.PageModels"
+             xmlns:resources="clr-namespace:AgricultureApp.MauiClient.Resources.Strings"
+             x:Class="AgricultureApp.MauiClient.Pages.RegisterPage"
+             x:DataType="pageModels:RegisterPageModel"
+             Title="{x:Static resources:AppResources.RegisterPage}">
+
+    <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+
+        <Entry Text="{Binding Email}"
+               Placeholder="{x:Static resources:AppResources.Email}"
+               Keyboard="Email" />
+
+        <Entry Text="{Binding UserName}"
+               Placeholder="{x:Static resources:AppResources.UserName}" />
+
+        <Entry Text="{Binding Name}"
+               Placeholder="{x:Static resources:AppResources.Name}" />
+
+        <Entry Text="{Binding Password}"
+               Placeholder="{x:Static resources:AppResources.Password}"
+               IsPassword="True"
+               ClearButtonVisibility="WhileEditing" />
+
+        <Entry Text="{Binding ConfirmPassword}"
+               Placeholder="{x:Static resources:AppResources.ConfirmPassword}"
+               IsPassword="True"
+               ClearButtonVisibility="WhileEditing" />
+
+        <Button Text="{x:Static resources:AppResources.Register}"
+                Command="{Binding RegisterCommand}"
+                BackgroundColor="#4A90E2"
+                TextColor="White"
+                CornerRadius="8"
+                HeightRequest="50"/>
+
+    </VerticalStackLayout>
+
+</ContentPage>

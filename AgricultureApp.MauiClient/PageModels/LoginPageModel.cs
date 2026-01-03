@@ -5,10 +5,10 @@ using Microsoft.Extensions.Logging;
 
 namespace AgricultureApp.MauiClient.PageModels
 {
-    public partial class LoginPageModel : ObservableObject
+    public partial class LoginPageModel(
+        AuthenticationService auth,
+        ILogger<LoginPageModel> logger) : ObservableObject
     {
-        private readonly AuthenticationService _auth;
-        private readonly ILogger<LoginPageModel> _logger;
 
         [ObservableProperty]
         private string _email;
@@ -22,12 +22,6 @@ namespace AgricultureApp.MauiClient.PageModels
         public string LoginModeButtonText =>
             UseEmail ? AppResources.UserNameLogin : AppResources.EmailLogin;
 
-        public LoginPageModel(AuthenticationService auth, ILogger<LoginPageModel> logger)
-        {
-            _auth = auth;
-            _logger = logger;
-        }
-
         [RelayCommand]
         private void ToggleLoginMode()
         {
@@ -40,12 +34,12 @@ namespace AgricultureApp.MauiClient.PageModels
             if ((string.IsNullOrWhiteSpace(Email) && string.IsNullOrWhiteSpace(UserName))
                 || string.IsNullOrWhiteSpace(Password))
             {
-                await AuthShell.DisplaySnackbarAsync("Email or UserName and Password cannot be empty.");
+                await AuthShell.DisplaySnackbarAsync(AppResources.EmailOrUsernamAndPasswordRequired);
                 return;
             }
             LoginDto dto = new() { Email = Email, UserName = UserName, Password = Password };
 
-            AuthResult result = await _auth.LoginAsync(dto);
+            AuthResult result = await auth.LoginAsync(dto);
 
             if (!result.Succeeded)
             {

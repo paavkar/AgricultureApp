@@ -267,4 +267,28 @@
   <data name="Edit" xml:space="preserve">
     <value>Muokkaa</value>
   </data>
+  <data name="Register" xml:space="preserve">
+    <value>Rekisteröidy</value>
+  </data>
+  <data name="RegisterPage" xml:space="preserve">
+    <value>Rekisteröinti</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Varmista salasana</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>Sähköposti vaaditaan rekisteröintiin.</value>
+  </data>
+  <data name="UserNameRequired" xml:space="preserve">
+    <value>Käyttäjänimi vaaditaan rekisteröintiin.</value>
+  </data>
+  <data name="NameRequired" xml:space="preserve">
+    <value>Nimi vaaditaan rekisteröintiin.</value>
+  </data>
+  <data name="ConfirmPasswordMustMatch" xml:space="preserve">
+    <value>Salasanan varmistuksen täytyy vastata salasanaa.</value>
+  </data>
+  <data name="EmailOrUsernamAndPasswordRequired" xml:space="preserve">
+    <value>Sähköposti tai käyttäjätunnus ja salasana eivät voi olla tyhjiä.</value>
+  </data>
 </root>
