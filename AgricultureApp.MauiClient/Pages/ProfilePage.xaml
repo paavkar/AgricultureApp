@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:pageModels="clr-namespace:AgricultureApp.MauiClient.PageModels"
              xmlns:resources="clr-namespace:AgricultureApp.MauiClient.Resources.Strings"
+             xmlns:local="clr-namespace:AgricultureApp.MauiClient.Converters"
              xmlns:models="clr-namespace:AgricultureApp.MauiClient.Models"
              xmlns:pullToRefresh="clr-namespace:Syncfusion.Maui.Toolkit.PullToRefresh;assembly=Syncfusion.Maui.Toolkit"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -10,6 +11,12 @@
              x:DataType="pageModels:ProfilePageModel"
              x:Name="UserProfilePage"
              Title="{x:Static resources:AppResources.ProfilePage}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
                 BindingContext="{Binding Path=BindingContext, Source={x:Reference UserProfilePage}, x:DataType=ContentPage}"
@@ -28,36 +35,120 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="25">
 
-            <!-- Profile Grid -->
-            <Grid ColumnDefinitions="120,*"
-                  RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                  ColumnSpacing="10"
-                  RowSpacing="12">
+            <Grid ColumnDefinitions="{OnIdiom Phone='*', Desktop='Auto,Auto'}"
+                    RowDefinitions="{OnIdiom Phone='Auto,Auto,Auto', Desktop='Auto,Auto,Auto'}"
+                    ColumnSpacing="50"
+                    RowSpacing="10">
+                <Border StrokeThickness="0"
+                        HeightRequest="200"
+                        MinimumWidthRequest="{OnIdiom Phone=370, Desktop=500}"
+                        Background="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="{OnIdiom 15, Desktop=20}"
+                        Shadow="5"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Start">
+                    <Grid ColumnDefinitions="{OnIdiom Phone='100,*', Desktop='150,*'}"
+                          RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                          ColumnSpacing="{OnIdiom Phone=10, Desktop=20}"
+                          RowSpacing="{OnIdiom Phone=12, Desktop=20}">
 
-                <Label Text="Name:" Grid.Row="0" Grid.Column="0" FontAttributes="Bold" />
-                <Label Text="{Binding CurrentUser.Name}" Grid.Row="0" Grid.Column="1" />
+                        <Label Text="{x:Static resources:AppResources.Name}"
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Primary}" />
 
-                <Label Text="Username:" Grid.Row="1" Grid.Column="0" FontAttributes="Bold" />
-                <Label Text="{Binding CurrentUser.UserName}" Grid.Row="1" Grid.Column="1" />
+                        <Label Text="{Binding CurrentUser.Name}"
+                               Grid.Row="0"
+                               Grid.Column="1"
+                               FontSize="{OnIdiom Phone=14, Desktop=18}" />
 
-                <Label Text="Email:" Grid.Row="2" Grid.Column="0" FontAttributes="Bold" />
-                <Label Text="{Binding CurrentUser.Email}" Grid.Row="2" Grid.Column="1" />
+                        <Label Text="{x:Static resources:AppResources.UserName}"
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Primary}" />
 
-                <Label Text="Phone:" Grid.Row="3" Grid.Column="0" FontAttributes="Bold" />
-                <Label Text="{Binding CurrentUser.PhoneNumber}" Grid.Row="3" Grid.Column="1" />
+                        <Label Text="{Binding CurrentUser.UserName}"
+                               Grid.Row="1"
+                               Grid.Column="1"
+                               FontSize="{OnIdiom Phone=14, Desktop=18}" />
+
+                        <Label Text="{x:Static resources:AppResources.Email}"
+                               Grid.Row="2"
+                               Grid.Column="0"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Primary}" />
+
+                        <Label Text="{Binding CurrentUser.Email}"
+                               Grid.Row="2"
+                               Grid.Column="1"
+                               FontSize="{OnIdiom Phone=14, Desktop=18}" />
+
+                        <Label Text="{x:Static resources:AppResources.PhoneNumber}"
+                               Grid.Row="3"
+                               Grid.Column="0"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource Primary}" />
+
+                        <Label Text="{Binding CurrentUser.PhoneNumber}"
+                               Grid.Row="3"
+                               Grid.Column="1"
+                               FontSize="{OnIdiom Phone=14, Desktop=18}" />
+                    </Grid>
+                </Border>
+                
+                <Button Grid.Row="1" Grid.Column="0" HorizontalOptions="Start"
+                        Margin="0,10,0,0"
+                        Text="{x:Static resources:AppResources.Edit}"
+                        MaximumWidthRequest="150"
+                        Command="{Binding OpenProfileEditCommand}"
+                        IsVisible="{Binding IsEditing, Converter={StaticResource InverseBoolConverter}}" />
+                
+                <Border StrokeThickness="0"
+                        MinimumWidthRequest="{OnIdiom Phone=370, Desktop=500}"
+                        Background="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="{OnIdiom 15, Desktop=20}"
+                        Shadow="5"
+                        HorizontalOptions="Start"
+                        Grid.Row="{OnIdiom Phone=2, Desktop=0}"
+                        Grid.Column="{OnIdiom Phone=0, Desktop=1}"
+                        IsVisible="{Binding IsEditing}">
+                    <StackLayout>
+                        <Entry Text="{Binding CurrentUser.Name}"
+                                Placeholder="{x:Static resources:AppResources.Name}" />
+                        <Entry Text="{Binding CurrentUser.UserName}"
+                                Placeholder="{x:Static resources:AppResources.UserName}" />
+                        <Entry Text="{Binding CurrentUser.Email}"
+                                Placeholder="{x:Static resources:AppResources.Email}" />
+                        <Entry Text="{Binding CurrentUser.PhoneNumber}"
+                                Placeholder="{x:Static resources:AppResources.PhoneNumber}" />
+                        <Button Text="{x:Static resources:AppResources.Save}"
+                                Margin="0,20,0,0"
+                                Command="{Binding SaveCommand}" />
+                    </StackLayout>
+                </Border>
             </Grid>
 
             <!-- 2FA Section -->
-            <VerticalStackLayout Spacing="10" Margin="0,20,0,0">
-                <Label Text="Two‑Factor Authentication"
+            <VerticalStackLayout Spacing="10" Margin="0,0,0,0">
+                <Label Text="{x:Static resources:AppResources.TwoFactorAuthentication}"
                        FontSize="20"
                        FontAttributes="Bold" />
 
-                <Button Text="Set Up 2FA"
+                <Button Text="{x:Static resources:AppResources.Setup2FA}"
+                        Margin="0,10,0,0"
+                        HorizontalOptions="Start"
+                        WidthRequest="250"
                         Command="{Binding Setup2FACommand}"
                         IsVisible="{Binding Is2FASetupVisible}" />
 
-                <Button Text="Remove 2FA"
+                <Button Text="{x:Static resources:AppResources.Disable2FA}"
+                        Margin="0,10"
+                        HorizontalOptions="Start"
+                        WidthRequest="250"
                         Command="{Binding Remove2FACommand}"
                         IsVisible="{Binding Is2FARemoveVisible}"
                         BackgroundColor="DarkRed"
@@ -69,7 +160,7 @@
                      Margin="0,20,0,0"
                      IsVisible="{Binding IsIn2FASetup}">
 
-                <Label Text="Scan this QR code with your authenticator app:"
+                <Label Text="{x:Static resources:AppResources.ScanQRCode}"
                         FontAttributes="Bold" />
 
                 <!-- QR Code Image -->
@@ -77,7 +168,7 @@
                        HeightRequest="200"
                        WidthRequest="200" />
 
-                <Label Text="Enter the 6‑digit code from your authenticator app:" />
+                <Label Text="{x:Static resources:AppResources.EnterAuthCode}" />
 
                 <Entry Placeholder="123456"
                        Keyboard="Numeric"

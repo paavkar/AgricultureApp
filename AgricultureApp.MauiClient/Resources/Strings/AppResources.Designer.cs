@@ -97,6 +97,24 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disable 2FA.
+        /// </summary>
+        public static string Disable2FA {
+            get {
+                return ResourceManager.GetString("Disable2FA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        public static string Edit {
+            get {
+                return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
         public static string Email {
@@ -106,11 +124,20 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use email instead to login..
+        ///   Looks up a localized string similar to Press here to use email.
         /// </summary>
         public static string EmailLogin {
             get {
                 return ResourceManager.GetString("EmailLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the 6‑digit code from your authenticator app:.
+        /// </summary>
+        public static string EnterAuthCode {
+            get {
+                return ResourceManager.GetString("EnterAuthCode", resourceCulture);
             }
         }
         
@@ -178,6 +205,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
+        public static string Location {
+            get {
+                return ResourceManager.GetString("Location", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Log in.
         /// </summary>
         public static string Login {
@@ -241,6 +277,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Owned farms.
         /// </summary>
         public static string OwnedFarms {
@@ -286,6 +331,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Phone number.
+        /// </summary>
+        public static string PhoneNumber {
+            get {
+                return ResourceManager.GetString("PhoneNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Profile.
         /// </summary>
         public static string ProfilePage {
@@ -300,6 +354,33 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         public static string RemovedAsFarmManager {
             get {
                 return ResourceManager.GetString("RemovedAsFarmManager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan this QR code with your authenticator app:.
+        /// </summary>
+        public static string ScanQRCode {
+            get {
+                return ResourceManager.GetString("ScanQRCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setup 2FA.
+        /// </summary>
+        public static string Setup2FA {
+            get {
+                return ResourceManager.GetString("Setup2FA", resourceCulture);
             }
         }
         
@@ -376,6 +457,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Two-Factor Authentication.
+        /// </summary>
+        public static string TwoFactorAuthentication {
+            get {
+                return ResourceManager.GetString("TwoFactorAuthentication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Two-factor authentication has been enabled..
         /// </summary>
         public static string TwoFactorEnabled {
@@ -385,7 +475,7 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UserName.
+        ///   Looks up a localized string similar to Username.
         /// </summary>
         public static string UserName {
             get {
@@ -394,7 +484,7 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use username instead to login..
+        ///   Looks up a localized string similar to Press here to use username.
         /// </summary>
         public static string UserNameLogin {
             get {

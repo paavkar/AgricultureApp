@@ -41,6 +41,9 @@ namespace AgricultureApp.MauiClient.PageModels
         [ObservableProperty]
         private string _twoFactorCode;
 
+        [ObservableProperty]
+        private bool _isEditing;
+
         public ProfilePageModel(
             ILogger<ProfilePageModel> logger,
             ModalErrorHandler errorHandler,
@@ -215,6 +218,18 @@ namespace AgricultureApp.MauiClient.PageModels
                 }
             }
             return;
+        }
+
+        [RelayCommand]
+        private void OpenProfileEdit()
+        {
+            IsEditing = true;
+        }
+
+        [RelayCommand]
+        private void Save()
+        {
+            IsEditing = false;
         }
     }
 }

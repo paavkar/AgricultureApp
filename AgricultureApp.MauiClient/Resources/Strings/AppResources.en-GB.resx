@@ -130,7 +130,7 @@
     <value>Email</value>
   </data>
   <data name="EmailLogin" xml:space="preserve">
-    <value>Use email instead to login.</value>
+    <value>Press here to use email</value>
   </data>
   <data name="EnterTwoFactorCode" xml:space="preserve">
     <value>Enter two-factor code from authenticator application.</value>
@@ -172,10 +172,10 @@
     <value>Under maintenance</value>
   </data>
   <data name="UserName" xml:space="preserve">
-    <value>UserName</value>
+    <value>Username</value>
   </data>
   <data name="UserNameLogin" xml:space="preserve">
-    <value>Use username instead to login.</value>
+    <value>Press here to use username</value>
   </data>
   <data name="VerifyButton" xml:space="preserve">
     <value>Verify</value>
@@ -236,5 +236,35 @@
   </data>
   <data name="LogOut" xml:space="preserve">
     <value>Log out</value>
+  </data>
+  <data name="TwoFactorAuthentication" xml:space="preserve">
+    <value>Two-Factor Authentication</value>
+  </data>
+  <data name="ScanQRCode" xml:space="preserve">
+    <value>Scan this QR code with your authenticator app:</value>
+  </data>
+  <data name="EnterAuthCode" xml:space="preserve">
+    <value>Enter the 6‑digit code from your authenticator app:</value>
+  </data>
+  <data name="Setup2FA" xml:space="preserve">
+    <value>Setup 2FA</value>
+  </data>
+  <data name="Disable2FA" xml:space="preserve">
+    <value>Disable 2FA</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>Phone number</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
   </data>
 </root>

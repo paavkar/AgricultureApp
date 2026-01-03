@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:AgricultureApp.MauiClient.Converters"
              x:Class="AgricultureApp.MauiClient.Pages.LoginPage"
              x:DataType="pageModels:LoginPageModel"
-             Title="LoginPage">
+             Title="{x:Static resources:AppResources.LoginPage}">
 
     <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
 
@@ -15,7 +15,7 @@
                HorizontalOptions="Center" />
 
         <Button Text="{Binding LoginModeButtonText}"
-                Command="{Binding ToggleLoginModeCommand}" />
+                Command="{Binding ToggleLoginModeCommand}"/>
 
         <Entry Text="{Binding Email}"
                Placeholder="{x:Static resources:AppResources.Email}"
@@ -36,7 +36,7 @@
                 BackgroundColor="#4A90E2"
                 TextColor="White"
                 CornerRadius="8"
-                HeightRequest="50" />
+                HeightRequest="50"/>
 
     </VerticalStackLayout>
 

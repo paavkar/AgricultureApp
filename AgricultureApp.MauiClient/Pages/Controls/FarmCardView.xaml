@@ -10,11 +10,11 @@
         x:Class="AgricultureApp.MauiClient.Pages.Controls.FarmCardView"
         SemanticProperties.Description="{Binding AccessibilityDescription}"
         Style="{StaticResource CardStyle}"
-        MinimumHeightRequest="250"
         x:DataType="models:Farm">
     <shimmer:SfShimmer
         BackgroundColor="Transparent"
-        IsActive="{Binding IsBusy, Source={RelativeSource AncestorType={x:Type pageModels:MainPageModel}},
+        IsActive="{Binding IsBusy, Source={RelativeSource
+        AncestorType={x:Type pageModels:MainPageModel}},
                     x:DataType=pageModels:IFarmPageModel}">
         <shimmer:SfShimmer.CustomView>
             <VerticalStackLayout Spacing="15">

@@ -130,7 +130,7 @@
     <value>Sähköposti</value>
   </data>
   <data name="EmailLogin" xml:space="preserve">
-    <value>Käytä sähköpostia tunnuksen sijaan sisäänkirjautumiseen.</value>
+    <value>Paina tästä käyttääksesi sähköpostia</value>
   </data>
   <data name="EnterTwoFactorCode" xml:space="preserve">
     <value>Anna kaksivaiheisen tunnistuksen koodi tunnistussovelluksesta.</value>
@@ -175,7 +175,7 @@
     <value>Käyttäjänimi</value>
   </data>
   <data name="UserNameLogin" xml:space="preserve">
-    <value>Käytä käyttäjänimeä sähköpostin sijaan sisäänkirjautumiseen.</value>
+    <value>Paina tästä käyttääksesi käyttäjänimeä</value>
   </data>
   <data name="VerifyButton" xml:space="preserve">
     <value>Varmista</value>
@@ -236,5 +236,35 @@
   </data>
   <data name="LogOut" xml:space="preserve">
     <value>Kirjaudu ulos</value>
+  </data>
+  <data name="TwoFactorAuthentication" xml:space="preserve">
+    <value>Kaksivaiheinen Tunnistus</value>
+  </data>
+  <data name="ScanQRCode" xml:space="preserve">
+    <value>Skannaa tämä QR-koodi autentikointisovelluksellasi:</value>
+  </data>
+  <data name="EnterAuthCode" xml:space="preserve">
+    <value>Syötä kuusinumeroinen koodi autentikointisovelluksestasi:</value>
+  </data>
+  <data name="Setup2FA" xml:space="preserve">
+    <value>Aseta 2FA</value>
+  </data>
+  <data name="Disable2FA" xml:space="preserve">
+    <value>Poista 2FA käytöstä</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nimi</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>Puhelinnumero</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Sijainti</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Tallenna</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Muokkaa</value>
   </data>
 </root>

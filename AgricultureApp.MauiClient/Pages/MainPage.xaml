@@ -49,7 +49,7 @@
                                Style="{StaticResource Title2}" SemanticProperties.HeadingLevel="Level1"/>
                         <CollectionView Grid.Row="1" ItemsSource="{Binding OwnedFarms}"
                                         Margin="-7.5,0"
-                                        MinimumHeightRequest="250"
+                                        MinimumHeightRequest="200"
                                         x:Name="OwnedFarmsCollectionView"
                                         SelectionMode="Single"
                                         SelectedItem="{Binding SelectedOwnedFarm}"
@@ -71,7 +71,7 @@
                             Style="{StaticResource Title2}" SemanticProperties.HeadingLevel="Level1"/>
                         <CollectionView Grid.Row="3" ItemsSource="{Binding ManagedFarms}"
                                         Margin="-7.5,0"
-                                        MinimumHeightRequest="250"
+                                        MinimumHeightRequest="200"
                                         x:Name="ManagedFarmsCollectionView"
                                         SelectionMode="Single"
                                         SelectedItem="{Binding SelectedManagedFarm}"

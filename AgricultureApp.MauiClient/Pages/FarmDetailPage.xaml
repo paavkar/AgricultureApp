@@ -27,11 +27,20 @@
                     <VerticalStackLayout Padding="20" Spacing="16">
 
                         <!-- Farm Header -->
-                        <Border Padding="16" BackgroundColor="{AppThemeBinding Light=#f5f5f5, Dark=#333}">
+                        <Border Padding="16"
+                                HorizontalOptions="Start"
+                                MinimumWidthRequest="400"
+                                MinimumHeightRequest="150"
+                                BackgroundColor="{AppThemeBinding Light=#f5f5f5, Dark=#333}">
                             <VerticalStackLayout Spacing="6">
-                                <Label Text="{Binding Farm.Location}"
-                                       FontSize="16"
-                                       TextColor="Gray" />
+                                <HorizontalStackLayout Spacing="10">
+                                    <Label Text="{x:Static resources:AppResources.Location}"
+                                           FontSize="18"
+                                           TextColor="{DynamicResource Primary}"/>
+                                    <Label Text="{Binding Farm.Location}"
+                                           FontSize="16"
+                                           TextColor="{DynamicResource Secondary}" />
+                                </HorizontalStackLayout>
 
                                 <Label Text="{x:Static resources:AppResources.OwnerInformation}"
                                         FontAttributes="Bold" />
@@ -67,7 +76,8 @@
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="models:FarmManager">
                                     <Border Padding="12" Margin="0,4" Style="{StaticResource CardStyle}">
-                                        <VerticalStackLayout>
+                                        <VerticalStackLayout MinimumHeightRequest="80"
+                                                             MinimumWidthRequest="300">
                                             <Label Text="{Binding Name}" FontAttributes="Bold" />
                                             <Label Text="{Binding Email}" FontSize="16"
                                                    TextColor="Gray" />
@@ -91,7 +101,7 @@
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Field">
                                     <Border Padding="12" Margin="0,4" Style="{StaticResource CardStyle}">
-                                        <VerticalStackLayout>
+                                        <VerticalStackLayout WidthRequest="150" HeightRequest="100">
                                             <Label Text="{Binding Name}" FontAttributes="Bold" />
                                             <Label Text="{Binding SizeString}" />
                                             <Label Text="{Binding SoilType, Converter={StaticResource EnumConverter}}" />
@@ -113,7 +123,7 @@
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="models:Field">
                                     <Border Padding="12" Margin="0,4" Style="{StaticResource CardStyle}">
-                                        <VerticalStackLayout>
+                                        <VerticalStackLayout WidthRequest="150" HeightRequest="100">
                                             <Label Text="{Binding Name}" FontAttributes="Bold" />
                                             <Label Text="{Binding SizeString}" />
                                             <Label Text="{Binding SoilType, Converter={StaticResource EnumConverter}}" />

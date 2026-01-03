@@ -61,13 +61,15 @@ namespace AgricultureApp.MauiClient
                 return;
             }
             Window window = Application.Current!.Windows[0];
-            window.Page = new AuthShell();
 #if WINDOWS || MACCATALYST
             window.Width = 600;
             window.Height = 750;
             window.MinimumWidth = 600;
             window.MinimumHeight = 750;
+            window.MaximumWidth = 600;
+            window.MaximumHeight = 750;
 #endif
+            window.Page = new AuthShell();
         }
     }
 }

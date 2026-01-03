@@ -50,7 +50,15 @@ namespace AgricultureApp.MauiClient
             if (string.IsNullOrWhiteSpace(preferredCulture))
             {
                 preferredCulture = CultureInfo.CurrentCulture.Name;
-                await SecureStorage.SetAsync("preferred_culture", preferredCulture);
+                if (preferredCulture.Equals("en-GB", StringComparison.OrdinalIgnoreCase)
+                    || preferredCulture.Equals("fi-FI", StringComparison.OrdinalIgnoreCase))
+                {
+                    await SecureStorage.SetAsync("preferred_culture", preferredCulture);
+                }
+                else
+                {
+                    preferredCulture = "en-GB";
+                }
             }
 
             ApplyCulture(preferredCulture);
@@ -82,6 +90,8 @@ namespace AgricultureApp.MauiClient
                     window.Height = 750;
                     window.MinimumWidth = 600;
                     window.MinimumHeight = 750;
+                    window.MaximumWidth = 600;
+                    window.MaximumHeight = 750;
 #endif
                     window.Page = new AuthShell();
                 }
@@ -93,6 +103,8 @@ namespace AgricultureApp.MauiClient
                 window.Height = 750;
                 window.MinimumWidth = 600;
                 window.MinimumHeight = 750;
+                window.MaximumWidth = 600;
+                window.MaximumHeight = 750;
 #endif
                 window.Page = new AuthShell();
             }
