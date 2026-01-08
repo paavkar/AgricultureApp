@@ -291,4 +291,22 @@
   <data name="EmailOrUsernamAndPasswordRequired" xml:space="preserve">
     <value>Email or username and password cannot be empty.</value>
   </data>
+  <data name="AssistantTyping" xml:space="preserve">
+    <value>Assistant is typing…</value>
+  </data>
+  <data name="WriteMessage" xml:space="preserve">
+    <value>Write a message...</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="FirstAssistantMessage" xml:space="preserve">
+    <value>Hello there. How may I help you today?</value>
+  </data>
+  <data name="ErrorInSendingMessage" xml:space="preserve">
+    <value>There was an error trying to send the message.</value>
+  </data>
+  <data name="FarmAssistant" xml:space="preserve">
+    <value>Farm Assistant</value>
+  </data>
 </root>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pageModels="clr-namespace:AgricultureApp.MauiClient.PageModels"
+             xmlns:resources="clr-namespace:AgricultureApp.MauiClient.Resources.Strings"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local="clr-namespace:AgricultureApp.MauiClient.Converters"
+             x:Class="AgricultureApp.MauiClient.Pages.FarmChatPage"
+             x:DataType="pageModels:FarmChatPageModel"
+             BackgroundColor="{OnIdiom Phone=White, Desktop=#00000055}"
+             x:Name="ChatPage"
+             Title="{x:Static resources:AppResources.FarmAssistant}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <local:ChatBubbleColorConverter x:Key="ChatBubbleColorConverter" />
+            <local:ChatBubbleAlignmentConverter x:Key="ChatBubbleAlignmentConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            BindingContext="{Binding Path=BindingContext, Source={x:Reference ChatPage}, x:DataType=ContentPage}"
+            EventName="Appearing"
+            Command="{Binding AppearingCommand}" />
+    </ContentPage.Behaviors>
+
+    <Grid VerticalOptions="{OnIdiom Phone=Fill, Desktop=Center}"
+          HorizontalOptions="{OnIdiom Phone=Fill, Desktop=Center}">
+
+        <Border StrokeThickness="0"
+                BackgroundColor="{AppThemeBinding Light=White, Dark=#222}"
+                StrokeShape="RoundRectangle 18"
+                WidthRequest="{OnIdiom Phone=Fill, Desktop=600}"
+                HeightRequest="{OnIdiom Phone=Fill, Desktop=700}"
+                Padding="0">
+
+            <Grid RowDefinitions="Auto,*,Auto">
+
+                <!-- Header -->
+                <Grid BackgroundColor="{AppThemeBinding Light=#f0f0f0, Dark=#333}"
+                      Padding="12"
+                      ColumnDefinitions="*,Auto">
+
+                    <VerticalStackLayout>
+                        <Label Text="{Binding Farm.Name}"
+                               FontAttributes="Bold"
+                               FontSize="18" />
+                        <Label Text="{Binding Farm.Location}"
+                               FontSize="14"
+                               TextColor="Gray" />
+                    </VerticalStackLayout>
+
+                    <Button Grid.Column="1"
+                            Text="✕"
+                            BackgroundColor="Transparent"
+                            Command="{Binding CloseCommand}" />
+                </Grid>
+
+                <!-- Messages -->
+                <CollectionView x:Name="MessagesCollectionView"
+                                Grid.Row="1"
+                                ItemsSource="{Binding Messages}"
+                                Margin="10">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="pageModels:ChatMessageViewModel">
+                            <Grid Padding="4">
+                                <Border Stroke="{Binding Author, Converter={StaticResource ChatBubbleColorConverter}}"
+                                        Background="{Binding Author, Converter={StaticResource ChatBubbleColorConverter}}"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 14"
+                                        Padding="12"
+                                        HorizontalOptions="{Binding Author, Converter={StaticResource ChatBubbleAlignmentConverter}}">
+
+                                    <Label TextColor="Black">
+                                        <Label.FormattedText>
+                                            <Binding Path="Markdown"
+                                                     Converter="{StaticResource MarkdownToFormattedStringConverter}" />
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Typing Indicator -->
+                <Label Grid.Row="2"
+                       Text="{x:Static resources:AppResources.AssistantTyping}"
+                       IsVisible="{Binding IsAssistantTyping}"
+                       FontAttributes="Italic"
+                       TextColor="Gray"
+                       Margin="10,0" />
+
+                <!-- Input -->
+                <Grid Grid.Row="2"
+                      ColumnDefinitions="*,Auto"
+                      Padding="10"
+                      Margin="0,30,0,0">
+
+                    <Editor Text="{Binding UserMessage}"
+                            AutoSize="TextChanges"
+                            Placeholder="{x:Static resources:AppResources.WriteMessage}"
+                            MinimumHeightRequest="40"
+                            MaximumHeightRequest="120" />
+
+                    <Button Grid.Column="1"
+                            Text="{x:Static resources:AppResources.Send}"
+                            Margin="8,0,0,0"
+                            Command="{Binding SendMessageCommand}"
+                            IsEnabled="{Binding IsStreaming, Converter={StaticResource InverseBoolConverter}}" />
+                </Grid>
+
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>

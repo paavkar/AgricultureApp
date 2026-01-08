@@ -2,6 +2,7 @@
 {
     public class StreamingChatMessageContent
     {
+        public string MessageId { get; set; }
         public string Content { get; set; }
         public string? AuthorName { get; set; }
         public AuthorRole? Role { get; set; }

@@ -29,7 +29,7 @@
                         <!-- Farm Header -->
                         <Border Padding="16"
                                 HorizontalOptions="Start"
-                                MinimumWidthRequest="400"
+                                MinimumWidthRequest="{OnIdiom Phone=370 Desktop=400}"
                                 MinimumHeightRequest="150"
                                 BackgroundColor="{AppThemeBinding Light=#f5f5f5, Dark=#333}">
                             <VerticalStackLayout Spacing="6">
@@ -138,5 +138,15 @@
                 </ScrollView>
             </pullToRefresh:SfPullToRefresh.PullableContent>
         </pullToRefresh:SfPullToRefresh>
+
+        <Button ImageSource="{StaticResource IconChatAI}" 
+                BackgroundColor="{StaticResource Primary}" 
+                CornerRadius="30"
+                HeightRequest="60"
+                WidthRequest="60"
+                VerticalOptions="End"
+                HorizontalOptions="End"
+                Margin="30"
+                Command="{Binding OpenChatCommand}" />
     </Grid>
 </ContentPage>

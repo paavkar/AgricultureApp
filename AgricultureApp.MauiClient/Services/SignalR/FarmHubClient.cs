@@ -82,7 +82,7 @@ namespace AgricultureApp.MauiClient.Services
                 LlmStreamingError?.Invoke(this, message);
             });
 
-            _connection.On("LlmStreamingFinished", () =>
+            _connection.On<object>("LlmStreamingFinished", (t) =>
             {
                 LlmStreamingFinished?.Invoke(this, EventArgs.Empty);
             });

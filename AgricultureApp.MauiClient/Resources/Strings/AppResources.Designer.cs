@@ -70,6 +70,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Assistant is typing….
+        /// </summary>
+        public static string AssistantTyping {
+            get {
+                return ResourceManager.GetString("AssistantTyping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
@@ -196,6 +205,24 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There was an error trying to send the message..
+        /// </summary>
+        public static string ErrorInSendingMessage {
+            get {
+                return ResourceManager.GetString("ErrorInSendingMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Farm Assistant.
+        /// </summary>
+        public static string FarmAssistant {
+            get {
+                return ResourceManager.GetString("FarmAssistant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Size: {0} {1}.
         /// </summary>
         public static string FieldSize {
@@ -228,6 +255,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         public static string FieldStatus_UnderMaintenance {
             get {
                 return ResourceManager.GetString("FieldStatus_UnderMaintenance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello there. How may I help you today?.
+        /// </summary>
+        public static string FirstAssistantMessage {
+            get {
+                return ResourceManager.GetString("FirstAssistantMessage", resourceCulture);
             }
         }
         
@@ -439,6 +475,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Send.
+        /// </summary>
+        public static string Send {
+            get {
+                return ResourceManager.GetString("Send", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Setup 2FA.
         /// </summary>
         public static string Setup2FA {
@@ -579,6 +624,15 @@ namespace AgricultureApp.MauiClient.Resources.Strings {
         public static string VerifyTwoFactorPage {
             get {
                 return ResourceManager.GetString("VerifyTwoFactorPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write a message....
+        /// </summary>
+        public static string WriteMessage {
+            get {
+                return ResourceManager.GetString("WriteMessage", resourceCulture);
             }
         }
     }

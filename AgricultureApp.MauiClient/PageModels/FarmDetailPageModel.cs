@@ -116,5 +116,29 @@ namespace AgricultureApp.MauiClient.PageModels
                 IsRefreshing = false;
             }
         }
+
+        [RelayCommand]
+        private async Task OpenChat()
+        {
+            if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
+            {
+                // Desktop → modal window
+                FarmChatPage? page = App.Current.Handler.MauiContext.Services.GetService<FarmChatPage>();
+
+                await Shell.Current.Navigation.PushModalAsync(page);
+
+                // Pass query manually
+                FarmChatPageModel vm = (FarmChatPageModel)((FarmChatPage)Shell.Current.Navigation.ModalStack[Shell.Current.Navigation.ModalStack.Count - 1]).BindingContext;
+                vm.ApplyQueryAttributes(new Dictionary<string, object> { { "Farm", Farm } });
+            }
+            else
+            {
+                // Mobile → normal Shell navigation
+                await Shell.Current.GoToAsync(nameof(FarmChatPage), new Dictionary<string, object>
+                {
+                    { "Farm", Farm }
+                });
+            }
+        }
     }
 }

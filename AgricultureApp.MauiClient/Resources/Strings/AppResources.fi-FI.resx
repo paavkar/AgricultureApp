@@ -291,4 +291,22 @@
   <data name="EmailOrUsernamAndPasswordRequired" xml:space="preserve">
     <value>Sähköposti tai käyttäjätunnus ja salasana eivät voi olla tyhjiä.</value>
   </data>
+  <data name="AssistantTyping" xml:space="preserve">
+    <value>Assistentti kirjoittaa...</value>
+  </data>
+  <data name="WriteMessage" xml:space="preserve">
+    <value>Kirjoita viesti...</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Lähetä</value>
+  </data>
+  <data name="FirstAssistantMessage" xml:space="preserve">
+    <value>Terve. Kuinka voin auttaa sinua tänään?</value>
+  </data>
+  <data name="ErrorInSendingMessage" xml:space="preserve">
+    <value>Viestin lähettämisessä ilmeni ongelma.</value>
+  </data>
+  <data name="FarmAssistant" xml:space="preserve">
+    <value>Maatilan assistentti</value>
+  </data>
 </root>

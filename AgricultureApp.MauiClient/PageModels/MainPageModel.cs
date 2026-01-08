@@ -49,7 +49,7 @@ namespace AgricultureApp.MauiClient.PageModels
             _farmHubClient.UserAddedToFarm += OnUserAddedToFarm;
             _farmHubClient.UserRemovedFromFarm += OnUserRemovedFromFarm;
 
-            _ = _farmHubClient.ConnectAsync();
+            //_ = _farmHubClient.ConnectAsync();
         }
 
         private async void OnUserAddedToFarm(object? sender, string farmId)
@@ -90,26 +90,26 @@ namespace AgricultureApp.MauiClient.PageModels
             {
                 IsBusy = true;
 
-                if (_farmHubClient.ConnectionState != Microsoft.AspNetCore.SignalR.Client.HubConnectionState.Connected)
-                {
-                    _logger.LogInformation("Waiting a second before retrying.");
-                    await Task.Delay(TimeSpan.FromSeconds(1));
-                    await LoadData();
-                }
+                //if (_farmHubClient.ConnectionState != Microsoft.AspNetCore.SignalR.Client.HubConnectionState.Connected)
+                //{
+                //    _logger.LogInformation("Waiting a second before retrying.");
+                //    await Task.Delay(TimeSpan.FromSeconds(1));
+                //    await LoadData();
+                //}
 
                 FarmResult result = await _farmRepository.GetOwnedFarmsAsync();
                 OwnedFarms = result.Farms;
-                foreach (Farm farm in OwnedFarms)
-                {
-                    await _farmHubClient.JoinGroupAsync(farm.Id);
-                }
+                //foreach (Farm farm in OwnedFarms)
+                //{
+                //    await _farmHubClient.JoinGroupAsync(farm.Id);
+                //}
                 FarmResult managedResult = await _farmRepository.GetManagedFarmsAsync();
                 ManagedFarms = managedResult.Farms;
 
-                foreach (Farm farm in ManagedFarms)
-                {
-                    await _farmHubClient.JoinFarmAsync(farm.Id);
-                }
+                //foreach (Farm farm in ManagedFarms)
+                //{
+                //    await _farmHubClient.JoinFarmAsync(farm.Id);
+                //}
             }
             finally
             {

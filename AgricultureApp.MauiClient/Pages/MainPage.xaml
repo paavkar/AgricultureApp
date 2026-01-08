@@ -45,6 +45,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
+
                         <Label Grid.Row="0" Text="{x:Static resources:AppResources.OwnedFarms}"
                                Style="{StaticResource Title2}" SemanticProperties.HeadingLevel="Level1"/>
                         <CollectionView Grid.Row="1" ItemsSource="{Binding OwnedFarms}"

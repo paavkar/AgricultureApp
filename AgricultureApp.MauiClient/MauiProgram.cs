@@ -69,6 +69,7 @@ namespace AgricultureApp.MauiClient
 
             builder.Services.AddScoped<FarmRepository>();
             builder.Services.AddScoped<UserRepository>();
+            builder.Services.AddScoped<ChatService>();
 
             builder.Services.AddSingleton<ModalErrorHandler>();
             builder.Services.AddSingleton<MainPageModel>();
@@ -79,6 +80,8 @@ namespace AgricultureApp.MauiClient
             builder.Services.AddTransientWithShellRoute<VerifyTwoFactorPage,
                 VerifyTwoFactorPageModel>(nameof(VerifyTwoFactorPage));
             builder.Services.AddTransientWithShellRoute<FarmDetailPage, FarmDetailPageModel>("farm");
+            builder.Services.AddTransientWithShellRoute<FarmChatPage, FarmChatPageModel>(
+                    nameof(FarmChatPage));
 
             return builder.Build();
         }

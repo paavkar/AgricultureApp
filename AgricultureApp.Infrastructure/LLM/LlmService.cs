@@ -13,11 +13,11 @@ using System.Text;
 
 namespace AgricultureApp.Infrastructure.LLM
 {
-    public class OllamaLlmService : ILlmService
+    public class LlmService : ILlmService
     {
         private Kernel Kernel;
         private HybridCache Cache;
-        private ILogger<OllamaLlmService> Logger;
+        private ILogger<LlmService> Logger;
         private IChatCompletionService ChatCompletionService;
         private IFarmNotificationService NotificationService;
         private IStringLocalizer<AgricultureAppLoc> Localizer;
@@ -29,21 +29,38 @@ namespace AgricultureApp.Infrastructure.LLM
             Use plain text only. Do not use any markdown, HTML, or other formatting.
             """;
 
-        public OllamaLlmService(
+        public LlmService(
             IConfiguration configuration,
             HybridCache cache,
             IFarmNotificationService notificationService,
-            ILogger<OllamaLlmService> logger,
+            ILogger<LlmService> logger,
             IStringLocalizer<AgricultureAppLoc> localizer,
             IFarmRepository farmRepository)
         {
             var modelId = configuration["LLM:ModelId"] ?? throw new InvalidOperationException("LLM:ModelId not found.");
             var endpoint = configuration["LLM:Endpoint"] ?? throw new InvalidOperationException("LLM:Endpoint not found."); ;
+            var environment = configuration["ASPNETCORE_ENVIRONMENT"] ?? "Production";
 
             IKernelBuilder kernelBuilder = Kernel.CreateBuilder();
-            kernelBuilder.AddOllamaChatCompletion(
-                modelId: modelId,
-                endpoint: new Uri(endpoint));
+            if (environment.Equals("Development", StringComparison.OrdinalIgnoreCase))
+            {
+                kernelBuilder.AddOllamaChatCompletion(
+                    modelId: modelId,
+                    endpoint: new Uri(endpoint));
+            }
+            else
+            {
+                var deploymentName = configuration["LLM:DeploymentName"]
+                    ?? throw new InvalidOperationException("LLM:DeploymentName not found.");
+                var apiKey = configuration["LLM:ApiKey"]
+                    ?? throw new InvalidOperationException("LLM:ApiKey not found.");
+
+                kernelBuilder.AddAzureOpenAIChatCompletion(
+                    deploymentName: deploymentName,
+                    apiKey: apiKey,
+                    endpoint: endpoint,
+                    modelId: modelId);
+            }
             kernelBuilder.Plugins.AddFromObject(
                 new FarmPlugin(farmRepository),
                 "FarmPlugin");
@@ -86,6 +103,7 @@ namespace AgricultureApp.Infrastructure.LLM
             chatHistory.AddUserMessage($"{Localizer["FarmId", farmId]}. {message}");
 
             StringBuilder assistantResponse = new();
+            var responseId = Guid.CreateVersion7().ToString();
 
             await foreach (StreamingChatMessageContent token in
                 ChatCompletionService.GetStreamingChatMessageContentsAsync(
@@ -96,7 +114,14 @@ namespace AgricultureApp.Infrastructure.LLM
                 try
                 {
                     assistantResponse.Append(token.Content);
-                    await NotificationService.NotifyLlmStreamingResponseAsync(chatId, token);
+                    await NotificationService.NotifyLlmStreamingResponseAsync(chatId,
+                        new
+                        {
+                            Content = token.Content,
+                            AuthorName = token.AuthorName,
+                            AuthorRole = token.Role,
+                            MessageId = responseId
+                        });
                 }
                 catch (Exception ex)
                 {

@@ -36,7 +36,7 @@ namespace AgricultureApp.Infrastructure
             services.AddScoped<IFarmRepository, FarmRepository>();
             services.AddScoped<IFarmService, FarmService>();
             services.AddScoped<IFarmNotificationService, SignalRFarmNotificationService>();
-            services.AddScoped<ILlmService, OllamaLlmService>();
+            services.AddScoped<ILlmService, LlmService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
 

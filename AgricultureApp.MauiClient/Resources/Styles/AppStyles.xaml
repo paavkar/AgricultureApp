@@ -109,6 +109,12 @@
                      Color="{AppThemeBinding Light={StaticResource DarkOnLightBackground}, Dark={StaticResource LightOnDarkBackground}}"
                      Size="{StaticResource size240}" />
 
+    <FontImageSource x:Key="IconChatAI"
+                 Glyph="{x:Static f:FluentUI.chat_sparkle_28_regular}"
+                 FontFamily="{x:Static f:FluentUI.FontFamily}"
+                 Color="{AppThemeBinding Light={StaticResource DarkOnLightBackground}, Dark={StaticResource LightOnDarkBackground}}"
+                 Size="{StaticResource size240}" />
+
     <Style TargetType="Label">
         <Setter Property="TextColor"
                 Value="{AppThemeBinding Light={StaticResource DarkOnLightBackground}, Dark={StaticResource LightOnDarkBackground}}" />

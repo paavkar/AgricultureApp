@@ -2,7 +2,6 @@
 using AgricultureApp.Application.Notifications;
 using AgricultureApp.Domain.Farms;
 using Microsoft.Extensions.Logging;
-using Microsoft.SemanticKernel;
 
 namespace AgricultureApp.Infrastructure.Notifications
 {
@@ -130,7 +129,7 @@ namespace AgricultureApp.Infrastructure.Notifications
             }
         }
 
-        public async Task NotifyLlmStreamingResponseAsync(string chatId, StreamingChatMessageContent token, CancellationToken cancellationToken = default)
+        public async Task NotifyLlmStreamingResponseAsync(string chatId, object token, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -146,8 +145,7 @@ namespace AgricultureApp.Infrastructure.Notifications
         {
             try
             {
-                Console.WriteLine("STREAMING FINISHED");
-                await hubContext.SendToGroupAsync(chatId, "LlmStreamingFinished", arg: null, cancellationToken: cancellationToken);
+                await hubContext.SendToGroupAsync(chatId, "LlmStreamingFinished", null, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -159,7 +157,7 @@ namespace AgricultureApp.Infrastructure.Notifications
         {
             try
             {
-                await hubContext.SendToGroupAsync(chatId, "LlmStreamingError", arg: message, cancellationToken: cancellationToken);
+                await hubContext.SendToGroupAsync(chatId, "LlmStreamingError", message, cancellationToken);
             }
             catch (Exception ex)
             {
