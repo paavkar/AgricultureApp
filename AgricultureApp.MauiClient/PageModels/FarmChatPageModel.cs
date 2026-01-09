@@ -150,6 +150,7 @@ public partial class FarmChatPageModel : ObservableObject, IQueryAttributable
     [RelayCommand]
     private async Task Appearing()
     {
+        IsStreaming = true;
         if (string.IsNullOrWhiteSpace(chatId))
         {
             chatId = await _chatService.CreateChatAsync();
@@ -165,6 +166,7 @@ public partial class FarmChatPageModel : ObservableObject, IQueryAttributable
                 Markdown = AppResources.FirstAssistantMessage
             });
         }
+        IsStreaming = false;
     }
 
     public void Dispose()

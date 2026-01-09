@@ -27,6 +27,8 @@ namespace AgricultureApp.Infrastructure.LLM
         };
         string SystemPrompt = """
             Use plain text only. Do not use any markdown, HTML, or other formatting.
+            You will be given a farm id before the user message like this: Farm ID: <GUID>. <USER_MESSAGE>.
+            DO NOT USE THE ID OF THE FARM OR FIELDS IN YOUR RESPONSE.
             """;
 
         public LlmService(
@@ -47,9 +49,13 @@ namespace AgricultureApp.Infrastructure.LLM
                 kernelBuilder.AddOllamaChatCompletion(
                     modelId: modelId,
                     endpoint: new Uri(endpoint));
+                OpenAIPromptExecutionSettings.FunctionChoiceBehavior =
+                    FunctionChoiceBehavior.Auto(autoInvoke: false);
             }
             else
             {
+                modelId = configuration["LLM:AzureModelId"] ?? throw new InvalidOperationException("LLM:AzureModelId not found.");
+                endpoint = configuration["LLM:AzureEndpoint"] ?? throw new InvalidOperationException("LLM:AzureEndpoint not found.");
                 var deploymentName = configuration["LLM:DeploymentName"]
                     ?? throw new InvalidOperationException("LLM:DeploymentName not found.");
                 var apiKey = configuration["LLM:ApiKey"]
