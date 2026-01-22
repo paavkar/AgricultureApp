@@ -1,17 +1,33 @@
-# Use the official Nginx image as the base image
-FROM nginx:stable-alpine
+# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-# Remove the default Nginx config file
-RUN rm -f /etc/nginx/conf.d/default.conf
+# This stage is used when running from VS in fast mode (Default for Debug configuration)
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+USER $APP_UID
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
 
-# Copy the custom Nginx configuration into the container
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# This stage is used to build the service project
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["AgricultureApp.Server/AgricultureApp.Server.csproj", "AgricultureApp.Server/"]
+COPY ["AgricultureApp.Domain/AgricultureApp.Domain.csproj", "AgricultureApp.Domain/"]
+COPY ["AgricultureApp.Application/AgricultureApp.Application.csproj", "AgricultureApp.Application/"]
+COPY ["AgricultureApp.Infrastructure/AgricultureApp.Infrastructure.csproj", "AgricultureApp.Infrastructure/"]
+COPY ["AgricultureApp.SharedKernel/AgricultureApp.SharedKernel.csproj", "AgricultureApp.SharedKernel/"]
+RUN dotnet restore "./AgricultureApp.Server/AgricultureApp.Server.csproj"
+COPY . .
+WORKDIR "/src/AgricultureApp.Server"
+RUN dotnet build "./AgricultureApp.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-COPY /ssl/cert.pem /etc/nginx/ssl/cert.pem
-COPY /ssl/key.pem /etc/nginx/ssl/key.pem
+# This stage is used to publish the service project to be copied to the final stage
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./AgricultureApp.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# Expose ports 80, 443, 8080, 8081
-EXPOSE 80 443 8080 8081
-
-# Start Nginx in the foreground
-CMD ["nginx", "-g", "daemon off;"]
+# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "AgricultureApp.Server.dll"]

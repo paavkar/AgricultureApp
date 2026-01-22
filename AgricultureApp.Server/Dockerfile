@@ -7,23 +7,15 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
 # This stage is used to build the service project
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS with-node
-RUN apt-get update
-RUN apt-get install curl
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
-RUN apt-get -y install nodejs
-
-
-FROM with-node AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["AgricultureApp.Server/AgricultureApp.Server.csproj", "AgricultureApp.Server/"]
 COPY ["AgricultureApp.Domain/AgricultureApp.Domain.csproj", "AgricultureApp.Domain/"]
 COPY ["AgricultureApp.Application/AgricultureApp.Application.csproj", "AgricultureApp.Application/"]
 COPY ["AgricultureApp.Infrastructure/AgricultureApp.Infrastructure.csproj", "AgricultureApp.Infrastructure/"]
-#COPY ["agricultureapp.client/agricultureapp.client.esproj", "agricultureapp.client/"]
+COPY ["AgricultureApp.SharedKernel/AgricultureApp.SharedKernel.csproj", "AgricultureApp.SharedKernel/"]
 RUN dotnet restore "./AgricultureApp.Server/AgricultureApp.Server.csproj"
 COPY . .
 WORKDIR "/src/AgricultureApp.Server"

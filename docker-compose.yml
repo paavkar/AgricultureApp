@@ -7,17 +7,17 @@ services:
     networks:
       - appnet
 
-  agricultureapp.client:
-    depends_on:
-      - agricultureapp.server
-    networks:
-      - appnet
+  # agricultureapp.client:
+  #   depends_on:
+  #     - agricultureapp.server
+  #   networks:
+  #     - appnet
 
   nginx_proxy:
     image: ${DOCKER_REGISTRY-}nginxproxy
     depends_on:
         - agricultureapp.server
-        - agricultureapp.client
+        # - agricultureapp.client
     build:
         context: ./nginx-proxy
         dockerfile: Dockerfile
