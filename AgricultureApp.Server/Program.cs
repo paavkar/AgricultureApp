@@ -162,7 +162,6 @@ app.UseRequestLocalization();
 app.UseDefaultFiles();
 app.MapStaticAssets();
 
-Console.WriteLine($"ENVIRONMENT: {app.Environment.EnvironmentName}");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
