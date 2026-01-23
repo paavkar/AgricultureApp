@@ -161,9 +161,9 @@ sequenceDiagram
     FR-->>FS: int rowsAffected
     FS-->>API: FarmResult result
     alt operation not succesful
-      API-->>U: BadRequest(result)
+      API-->>U: 400 Bad Request<br/> { result }
     else operation successful
-      API-->>U: CreatedAtAction(result)
+      API-->>U: 204 Created<br/> { result }
     end
 ```
 
@@ -188,16 +188,16 @@ sequenceDiagram
     FS-->>API: FarmResult result
     alt !result.Succeeded
       alt result.StatusCode is 404
-        API-->>U: NotFound(result)
+        API-->>U: 404 Not Found<br/> { result }
       end
       alt authenticated user not permitted
-        API-->>U: Forbid
+        API-->>U: 403 Forbid
       end
       alt 
-        API-->>U: BadRequest(result)
+        API-->>U: 400 Bad Request<br/> { result }
       end
     else result.Succeeded
-      API-->>U: Ok(result)
+      API-->>U: 200 OK<br/> { result }
     end
 ```
 
@@ -221,9 +221,9 @@ sequenceDiagram
     FR-->>FS: IEnumerable<FarmDto>? farms
     FS-->>API: FarmResult result
     alt operation not successful
-      API-->>U: BadRequest(result)
+      API-->>U: 400 Bad Request<br/> { result }
     else operation successful
-      API-->>U: Ok(result)
+      API-->>U: 200 OK<br/> { result }
     end
 ```
 
@@ -247,9 +247,9 @@ sequenceDiagram
     FR-->>FS: IEnumerable<FarmDto>? farms
     FS-->>API: FarmResult result
     alt operation not successful
-      API-->>U: BadRequest(result)
+      API-->>U: 400 BadRequest<br/> { result }
     else operation successful
-      API-->>U: Ok(result)
+      API-->>U: 200 OK<br/> { result }
     end
 ```
 
@@ -267,10 +267,10 @@ sequenceDiagram
 
     U-->>API: PATCH /update/{farmId}<br/>UpdateFarmDto farmDto
     alt authenticated user and farm owner not matching
-      API-->>U: Forbid
+      API-->>U: 403 Forbid
     end
     alt farm id not matching in URL and body
-      API-->>U: BadRequest(BaseResult)
+      API-->>U: 400 Bad Request<br/> { new BaseResult }
     end
     API->>FS: UpdateAsync(farmDto, userId)
     FS->>FR: UpdateAsync(farmDto, userId)
@@ -279,9 +279,9 @@ sequenceDiagram
     FR-->>FS: int rowsfAffected
     FS-->>API: FarmResult result
     alt operation not successful
-      API-->>U: BadRequest(result)
+      API-->>U: 400 Bad Request<br/> { result }
     else operation successful
-      API-->>U: Ok(result)
+      API-->>U: 200 OK<br/> { result }
     end
 ```
 
@@ -301,7 +301,7 @@ sequenceDiagram
 
     U->>API: POST /add-manager/{farmId}<br/>string email
     alt email not provided
-      API-->>U: BadRequest(BaseResult)
+      API-->>U: 400 BadRequest<br/> { new BaseResult }
     end
     API->>FS: AddManagerAsync(userId, farmId, email)
     FS->>FR: IsUserOwnerAsync(farmId, userId)
@@ -310,20 +310,20 @@ sequenceDiagram
     FR-->>FS: bool count > 0
 
     alt user is not owner
-      FS-->>API: ManagerResult
-      API-->>U: Forbid
+      FS-->>API: ManagerResult result
+      API-->>U: 403 Forbid
 
     else user is owner
       FS->>UM: FindByEmailAsync(email)
       UM-->>FS: ApplicationUser? user
       alt user not found
-        FS-->>API: ManagerResult
-        API-->>U: NotFound(result)
+        FS-->>API: ManagerResult result
+        API-->>U: 404 Not Found<br/> { result }
 
       else user with email is found
         alt authenticated user matches with the found user
-          FS-->>API: ManagerResult
-          API-->>U: BadRequest(result)
+          FS-->>API: ManagerResult result
+          API-->>U: 400 Bad Request<br/> { result }
 
         else found user is not the same as authenticated
           FS->>FR: AddManagerAsync(farmId, user.Id, DateTimeOffset.Now)
@@ -332,13 +332,13 @@ sequenceDiagram
           FR-->>FS: int rowsAffected
 
           alt insertion not successful
-            FS-->>API: ManagerResult
-            API-->>U: BadRequest(result)
+            FS-->>API: ManagerResult result
+            API-->>U: 400 Bad Request<br/> { result }
           
           else insertion successful
             FS->>NS: NotifyUserAddedToFarmAsync(user.Id, farmId)
             FS-->>API: ManagerResult
-            API-->>U: Ok(result)
+            API-->>U: 200 Ok<br/> { result }
           end
         end
       end
@@ -360,7 +360,7 @@ sequenceDiagram
 
     U->>API: DELETE /remove-manager/{farmId}<br/>string managerId
     alt managerId not provided
-      API-->>U: BadRequest(BaseResult)
+      API-->>U: 400 Bad Request<br/> { new BaseResult }
     end
     API->>FS: DeleteManagerAsync(farmId, userId, managerId)
     FS->>FR: IsUserOwnerAsync(farmId, userId)
@@ -369,8 +369,8 @@ sequenceDiagram
     FR-->>FS: bool count > 0
 
     alt user is not owner
-      FS-->>API: ManagerResult
-      API-->>U: Forbid
+      FS-->>API: ManagerResult result
+      API-->>U: 403 Forbid
 
       else user is owner
         FS->>FR: DeleteManagerAsync(farmId, managerId)
@@ -378,12 +378,12 @@ sequenceDiagram
         Dapper-->>FR: int rowsAffected
 
         alt no rows in DB were affected
-          FS-->>API: ManagerResult
-          API-->>U: BadRequest(result)
+          FS-->>API: ManagerResult result
+          API-->>U: 400 Bad Request<br/> { result }
           else a manager was removed
             FS->>NS: NotifyUserRemovedFromFarmAsync(managerId, farmId)
-            FS-->>API: BaseResult
-            API-->>U: Ok(result)
+            FS-->>API: BaseResult result
+            API-->>U: 200 OK<br/> { result }
         end
     end
 ```
